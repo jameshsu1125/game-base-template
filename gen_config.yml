@@ -1,0 +1,38 @@
+description: |
+  This is a merge puzzle game where players drag and merge items to reach the highest level. Items are merged by combining two of the same type/level to create the next level item.
+
+complex_assets:
+  - background_image:
+      prompt: You are tasked to generate a background for this merge game screenshot, make sure to copy it exactly how it looks like in the game. The image should not include any game components like buttons, text, or UI elements, just a scene suitable for a merge puzzle game background. No text inside.
+      background: opaque
+      size: 1536x1024
+      placement: public/assets/merge/tnt_barrel.png
+
+simple_assets:
+  - itemA1:
+      prompt: Generate a merge game item for level 1 of item type A. This should be a simple, clean game asset that represents the first level of a mergeable item series.
+      placement: public/assets/merge/3.png
+  - itemA2:
+      prompt: Generate a merge game item for level 2 of item type A. This should be an evolved/upgraded version of itemA1, showing progression while maintaining visual consistency. Make sure the color and shape is consistent with level 1 of itemA1
+      placement: public/assets/merge/4.png
+  - itemA3:
+      prompt: Generate a merge game item for level 3 of item type A. This should be the final/highest level of item type A, showing clear advancement from previous levels. Make sure the color and shape is consistent with level 1. Make sure the color and shape is consistent with level 2 of itemA2
+      placement: public/assets/merge/6.png
+  - itemB1:
+      prompt: Generate a merge game item for level 1 of item type B. This should be visually distinct from item type A but similar in style and complexity level.
+      placement: public/assets/merge/7.png
+  - itemB2:
+      prompt: Generate a merge game item for level 2 of item type B. This should be an evolved/upgraded version of itemB1, showing progression while maintaining the B-type visual identity. . Make sure the color and shape is consistent with level 1 of itemB1
+      placement: public/assets/merge/14.png
+  - itemB3:
+      prompt: Generate a merge game item for level 3 of item type B. This should be the final/highest level of item type B, showing clear advancement from previous levels. Make sure the color and shape is consistent with level 2 of itemB2
+      placement: public/assets/merge/16.png
+  - providerA:
+      prompt: Generate a provider/source item for item type A. This should look like a generator or source that produces item type A, with visual hints connecting it to the A-series items.
+      placement: public/assets/merge/provider-a.png
+  - providerB:
+      prompt: Generate a provider/source item for item type B. This should look like a generator or source that produces item type B, with visual hints connecting it to the B-series items.
+      placement: public/assets/merge/provider-b.png
+  - dustyItem:
+      prompt: Generate a dusty or faded merge game item that represents an old, unused, or special item in the merge game. Should have a weathered or dusty appearance.
+      placement: public/assets/merge/dusty-item.png
