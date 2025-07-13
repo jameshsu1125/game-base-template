@@ -15,8 +15,9 @@ export interface GameAssets {
     background: string;
     logo: string;
     player: string;
+    firepowerLevel1: string;
+    firepowerLevel2: string;
 
-    // demo assets
     enemyAvatar: string;
     enemyAvatarContainer: string;
     enemyAvatarContainerOuterShadow: string;
@@ -49,6 +50,8 @@ const defaultGameAssets = {
     background: "assets/choice-runner/background.png",
     logo: "assets/choice-runner/logo.png",
     player: "assets/choice-runner/player.png",
+    firepowerLevel1: "assets/choice-runner/firepower-level-1.png",
+    firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
 
     enemyAvatar: "assets/match-fight/enemy-avatar.png",
     enemyAvatarContainer: "assets/match-fight/enemy-avatar-container.svg",

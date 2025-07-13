@@ -15,6 +15,9 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = undefined;
   private healthBar: Phaser.GameObjects.Graphics | null = null;
 
+  private isStarted = false;
+  private touchState = { isDown: false, playerX: 0, pointerX: 0 };
+
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
     this.build();
@@ -42,7 +45,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   update(): void {
-    if (!this.cursors || !this.player) return;
+    if (!this.cursors || !this.player || !this.isStarted) return;
 
     if (this.cursors.left.isDown) {
       this.x -= 5;
@@ -64,5 +67,23 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.healthBar.fillStyle(0xff6600, 1);
     this.healthBar.fillRect(currentX, currentY, currentWidth, currentHeight);
     this.add(this.healthBar);
+  }
+
+  onStart(): void {
+    this.isStarted = true;
+    this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      this.touchState.isDown = true;
+      this.touchState.playerX = this.x;
+      this.touchState.pointerX = pointer.x;
+    });
+    this.scene.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+      if (this.touchState.isDown) {
+        const deltaX = pointer.x - this.touchState.pointerX;
+        this.x = this.touchState.playerX + deltaX;
+      }
+    });
+    this.scene.input.on("pointerup", () => {
+      this.touchState.isDown = false;
+    });
   }
 }

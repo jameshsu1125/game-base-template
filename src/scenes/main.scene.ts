@@ -18,6 +18,17 @@ export default class MainScene extends Phaser.Scene {
     // DebugOverlay.getInstance();
     new ServiceRegistry(this);
     this.initializeChoreography();
+    this.initEventListeners();
+  }
+
+  private initEventListeners(): void {
+    const onUserInput = () => {
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart();
+      window.removeEventListener("pointerdown", onUserInput);
+      window.removeEventListener("keydown", onUserInput);
+    };
+    window.addEventListener("pointerdown", onUserInput);
+    window.addEventListener("keydown", onUserInput);
   }
 
   private initializeChoreography(): void {

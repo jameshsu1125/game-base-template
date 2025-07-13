@@ -1,10 +1,10 @@
 import Phaser from "phaser";
+import { PlayerComponent } from "../../components/characters/player.component";
 import {
   EndGameResult,
   EndScreenOverlayComponent,
 } from "../../components/end-screen.component";
-
-import { PlayerComponent } from "../../components/characters/player.component";
+import { FirepowerComponent } from "../../components/firepower/firepower.component";
 import { LogoComponent } from "../../components/logo/logo.component";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { ANCHORS } from "../../utils/anchors.constants";
@@ -15,11 +15,13 @@ type Background = Phaser.GameObjects.Image;
 
 export interface LayoutContainers {
   sceneContainer: Phaser.GameObjects.Container;
+
+  background: Background;
   logo: LogoComponent;
   player: PlayerComponent;
+  firepower: FirepowerComponent;
 
   endScreenComponent: EndScreenOverlayComponent;
-  background: Background;
 }
 
 export interface GameAreaConfig {
@@ -45,29 +47,31 @@ export default class SceneLayoutManager {
   public createGameAreas(): LayoutContainers {
     this.createMainContainer();
     this.layoutContainers.background = this.createBackground();
-
     this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.player = this.createPlayer();
+    this.layoutContainers.firepower = this.createFirepower();
+
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
       this.layoutContainers.logo,
       this.layoutContainers.player,
+      this.layoutContainers.firepower,
     ]);
     return this.layoutContainers;
-  }
-
-  public update(): void {
-    this.layoutContainers.player.update();
   }
 
   private createMainContainer(): void {
     const sceneContainer = this.scene.add.container(0, 0);
     this.layoutManager.placeAt(sceneContainer, ANCHORS.CENTER);
-
     this.layoutContainers = {
       sceneContainer: sceneContainer,
     } as LayoutContainers;
+  }
+
+  private createFirepower(): FirepowerComponent {
+    const firepowerComponent = new FirepowerComponent(this.scene);
+    return firepowerComponent;
   }
 
   private createPlayer(): PlayerComponent {
@@ -107,5 +111,15 @@ export default class SceneLayoutManager {
       type: endGameResult,
       onRestart,
     });
+  }
+
+  public update(): void {
+    this.layoutContainers.player.update();
+    this.layoutContainers.firepower.update(this.layoutContainers.player.x);
+  }
+
+  public onStart(): void {
+    this.layoutContainers.player.onStart();
+    this.layoutContainers.firepower.onStart();
   }
 }
