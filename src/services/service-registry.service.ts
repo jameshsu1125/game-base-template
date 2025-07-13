@@ -4,17 +4,12 @@ import EndScreenSystem from "../systems/end-screen.system";
 import ServiceLocator from "./service-locator/service-locator.service";
 
 export default class ServiceRegistry {
-    constructor(scene: Phaser.Scene) {
-        this.createServices(scene);
-    }
+  constructor(scene: Phaser.Scene) {
+    this.createServices(scene);
+  }
 
-    private createServices(scene: Phaser.Scene): void {
-        ServiceLocator.register("victorySystem", new EndScreenSystem());
-
-        ServiceLocator.register(
-            "gameAreaManager",
-            new SceneLayoutManager(scene)
-        );
-    }
+  private createServices(scene: Phaser.Scene): void {
+    ServiceLocator.register("victorySystem", new EndScreenSystem());
+    ServiceLocator.register("gameAreaManager", new SceneLayoutManager(scene));
+  }
 }
-

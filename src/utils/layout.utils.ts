@@ -7,36 +7,36 @@ import Phaser from "phaser";
  * @param targetHeight The target height to cover
  */
 export function scaleImageToCover(
-    gameObject: Phaser.GameObjects.Image,
-    targetWidth: number,
-    targetHeight: number
+  gameObject: Phaser.GameObjects.Image,
+  targetWidth: number,
+  targetHeight: number
 ): void {
-    if (gameObject.displayWidth <= 0 || gameObject.displayHeight <= 0) {
-        if (process.env.NODE_ENV === "development") {
-            console.warn(
-                "scaleToCover: Invalid gameObject dimensions. Cannot calculate aspect ratio."
-            );
-        }
-        return;
+  if (gameObject.displayWidth <= 0 || gameObject.displayHeight <= 0) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        "scaleToCover: Invalid gameObject dimensions. Cannot calculate aspect ratio."
+      );
     }
+    return;
+  }
 
-    const objRatio = gameObject.displayWidth / gameObject.displayHeight;
-    const targetRatio = targetWidth / targetHeight;
+  const objRatio = gameObject.displayWidth / gameObject.displayHeight;
+  const targetRatio = targetWidth / targetHeight;
 
-    let newWidth: number;
-    let newHeight: number;
+  let newWidth: number;
+  let newHeight: number;
 
-    if (objRatio > targetRatio) {
-        // Object is wider than target, fit to height
-        newHeight = targetHeight;
-        newWidth = newHeight * objRatio;
-    } else {
-        // Object is taller than target, fit to width
-        newWidth = targetWidth;
-        newHeight = newWidth / objRatio;
-    }
+  if (objRatio > targetRatio) {
+    // Object is wider than target, fit to height
+    newHeight = targetHeight;
+    newWidth = newHeight * objRatio;
+  } else {
+    // Object is taller than target, fit to width
+    newWidth = targetWidth;
+    newHeight = newWidth / objRatio;
+  }
 
-    gameObject.setDisplaySize(newWidth, newHeight);
+  gameObject.setDisplaySize(newWidth, newHeight);
 }
 
 /**
@@ -46,11 +46,33 @@ export function scaleImageToCover(
  * @returns An object with the calculated width and height.
  */
 export function getDisplaySizeByWidthPercentage(
-    gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
-    widthPercentage: number
+  gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
+  widthPercentage: number
 ): { width: number; height: number } {
-    const aspectRatio = gameObject.width / gameObject.height;
-    const targetWidth = gameObject.scene.scale.width * widthPercentage;
-    return { width: targetWidth, height: targetWidth / aspectRatio };
+  const aspectRatio = gameObject.width / gameObject.height;
+  const targetWidth = gameObject.scene.scale.width * widthPercentage;
+  return { width: targetWidth, height: targetWidth / aspectRatio };
 }
 
+export function setDisplayPositionByBorderAlign(
+  gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
+  scene: Phaser.Scene,
+  align: "LEFT" | "RIGHT" | "TOP" | "BOTTOM"
+): number {
+  const { width, height } = scene.scale;
+
+  switch (align) {
+    case "LEFT":
+      return -width / 2 + (gameObject.width * gameObject.scale) / 2;
+
+    case "RIGHT":
+      return width / 2 - (gameObject.width * gameObject.scale) / 2;
+
+    case "TOP":
+      return -height / 2 + (gameObject.height * gameObject.scale) / 2;
+
+    case "BOTTOM":
+      return height / 2 - (gameObject.height * gameObject.scale) / 2;
+  }
+  return 0;
+}
