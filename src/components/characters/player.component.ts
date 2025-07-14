@@ -99,8 +99,6 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.healthBar.setDisplaySize(currentWidth, currentHeight);
     this.healthBar.setMask(mask);
 
-    console.log(this.healthBarMask.x, this.x, this.healthBar.x);
-
     this.healthText = this.scene.add.text(currentX, currentY + 2, "100%", {
       fontSize: "7px",
       color: "#000000",

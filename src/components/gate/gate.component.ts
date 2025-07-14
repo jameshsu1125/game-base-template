@@ -3,6 +3,7 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 import Phaser from "phaser";
 import {
   GATE_WIDTH_SCALE_RATIO,
+  PLAYER_OFFSET_Y,
   SCENE_PERSPECTIVE,
 } from "../../configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
@@ -112,7 +113,12 @@ export class GateComponent extends Phaser.GameObjects.Container {
     });
 
     this.gateContainer.forEach((gate) => {
-      if (gate.y > this.scene.scale.height + gate.displayHeight) {
+      if (
+        gate.y >
+        this.scene.scale.height -
+          gate.displayHeight * (2 + SCENE_PERSPECTIVE) -
+          PLAYER_OFFSET_Y
+      ) {
         gate.destroy();
         this.gateContainer.shift();
       }
