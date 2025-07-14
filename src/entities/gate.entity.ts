@@ -1,14 +1,10 @@
-import { FIREPOWER_RELOAD_TIME } from "@/configs/constants/game.constants";
+import { GATE_SHOW_TIME } from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 
-/**
- * FirepowerEntity class representing the firepower component in the game.
- */
-export default class FirepowerEntity {
+export default class GateEntity {
   private isStarted = false;
-  private state = { startTime: 0, index: -1 };
-
+  private state = { startTime: 0, index: 0 };
   constructor() {}
 
   public onStart(): void {
@@ -20,13 +16,13 @@ export default class FirepowerEntity {
     if (this.state.startTime === 0) this.state.startTime = time;
 
     const index = Math.floor(
-      (time - this.state.startTime) / (FIREPOWER_RELOAD_TIME * 1000)
+      (time - this.state.startTime) / (GATE_SHOW_TIME * 1000)
     );
     if (index !== this.state.index && index > this.state.index) {
       this.state.index = index;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.firepower.fire(delta);
+      ).layoutContainers.gate.fire(delta);
     }
   }
 }

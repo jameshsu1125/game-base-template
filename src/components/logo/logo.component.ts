@@ -1,7 +1,10 @@
 import { LOGO_WIDTH_SCALE_RATIO } from "../../configs/constants/layout.constants";
 import Phaser from "phaser";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
-import { getDisplaySizeByWidthPercentage } from "../../utils/layout.utils";
+import {
+  getDisplayPositionByBorderAlign,
+  getDisplaySizeByWidthPercentage,
+} from "../../utils/layout.utils";
 
 export class LogoComponent extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene) {
@@ -16,7 +19,10 @@ export class LogoComponent extends Phaser.GameObjects.Container {
       LOGO_WIDTH_SCALE_RATIO
     );
     image.setDisplaySize(width, height);
-    image.setPosition(0, -this.scene.cameras.main.height / 2 + height / 2);
+    image.setPosition(
+      0,
+      getDisplayPositionByBorderAlign(image, this.scene, "TOP")
+    );
 
     this.add(image);
   }

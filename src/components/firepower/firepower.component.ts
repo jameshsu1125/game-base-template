@@ -11,10 +11,12 @@ import {
 } from "../../utils/layout.utils";
 import { PlayerComponent } from "../characters/player.component";
 import { FIREPOWER_SPEED } from "@/configs/constants/game.constants";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
   private player: PlayerComponent;
-  private firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
+  public firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
 
   private isStarted = false;
   private baseDelta = 16;
@@ -28,16 +30,6 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   }
 
   private build(): void {
-    const graphics = this.scene.add.graphics();
-    graphics.fillStyle(0xff0066, 1);
-    graphics.fillRect(
-      -FIREPOWER_OFFSET_Y,
-      -FIREPOWER_OFFSET_Y,
-      FIREPOWER_OFFSET_Y * 2,
-      FIREPOWER_OFFSET_Y * 2
-    );
-    this.add(graphics);
-
     if (this.player && this.player.player) {
       this.setPosition(
         0,
@@ -55,32 +47,58 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   public fire(delta: number): void {
     if (!this.isStarted || !this.player || !this.player.player) return;
 
-    const firepower = this.scene.physics.add.sprite(
-      this.x,
-      this.y,
-      this.level === 1
-        ? GAME_ASSET_KEYS.firepowerLevel1
-        : GAME_ASSET_KEYS.firepowerLevel2
-    );
+    const firepower = this.scene.physics.add
+      .sprite(
+        this.x,
+        this.y,
+        this.level === 1
+          ? GAME_ASSET_KEYS.firepowerLevel1
+          : GAME_ASSET_KEYS.firepowerLevel2
+      )
+      .refreshBody();
     const { width, height } = getDisplaySizeByWidthPercentage(
       firepower,
       FIREPOWER_WIDTH_SCALE_RATIO
     );
+
     firepower.setDisplaySize(width, height);
     firepower.setPosition(this.player.x, 0 - firepower.displayHeight * 0.5);
     this.baseScale = firepower.scale;
 
     firepower.setVelocityY(-(FIREPOWER_SPEED * this.baseDelta) / delta);
     firepower.setVelocityX(this.player.x * -1 * SCENE_PERSPECTIVE);
+
     this.add(firepower);
+    this.addCollision(firepower);
 
     this.firepowerContainer.push(firepower);
+  }
+
+  private addCollision(firepower: Phaser.Physics.Arcade.Sprite) {
+    ServiceLocator.get<SceneLayoutManager>(
+      "gameAreaManager"
+    ).layoutContainers.gate.gateContainer.forEach((gate) => {
+      this.scene.physics.add.collider(
+        firepower,
+        gate,
+        () => {
+          firepower.destroy();
+          gate.destroy();
+          this.firepowerContainer.shift();
+          console.log("a");
+        },
+        () => {
+          console.log("b");
+        },
+        this.scene
+      );
+    });
   }
 
   public update(): void {
     if (!this.isStarted) return;
 
-    this.firepowerContainer.forEach((firepower, index) => {
+    this.firepowerContainer.forEach((firepower) => {
       const scale =
         this.baseScale -
         this.baseScale *
@@ -90,7 +108,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       firepower.setScale(scale, scale);
       if (firepower.y < 0 - this.scene.scale.height) {
         firepower.destroy();
-        this.firepowerContainer.splice(index, 1);
+        this.firepowerContainer.shift();
       }
     });
   }

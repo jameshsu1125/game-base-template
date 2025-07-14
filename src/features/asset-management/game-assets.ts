@@ -17,6 +17,8 @@ export interface GameAssets {
     player: string;
     firepowerLevel1: string;
     firepowerLevel2: string;
+    gateBlue: string;
+    gateRed: string;
 
     enemyAvatar: string;
     enemyAvatarContainer: string;
@@ -52,6 +54,8 @@ const defaultGameAssets = {
     player: "assets/choice-runner/player.png",
     firepowerLevel1: "assets/choice-runner/firepower-level-1.png",
     firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
+    gateBlue: "assets/choice-runner/gate-blue.png",
+    gateRed: "assets/choice-runner/gate-red.png",
 
     enemyAvatar: "assets/match-fight/enemy-avatar.png",
     enemyAvatarContainer: "assets/match-fight/enemy-avatar-container.svg",

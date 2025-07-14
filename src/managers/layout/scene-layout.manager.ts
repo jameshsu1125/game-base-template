@@ -10,6 +10,7 @@ import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
+import { GateComponent } from "@/components/gate/gate.component";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -20,6 +21,7 @@ export interface LayoutContainers {
   logo: LogoComponent;
   player: PlayerComponent;
   firepower: FirepowerComponent;
+  gate: GateComponent;
 
   endScreenComponent: EndScreenOverlayComponent;
 }
@@ -52,9 +54,11 @@ export default class SceneLayoutManager {
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.player = this.createPlayer();
     this.layoutContainers.firepower = this.createFirepower();
+    this.layoutContainers.gate = this.createGate();
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
+      this.layoutContainers.gate,
       this.layoutContainers.firepower,
       this.layoutContainers.player,
       this.layoutContainers.logo,
@@ -86,6 +90,11 @@ export default class SceneLayoutManager {
   private createLogo(): LogoComponent {
     const logoComponent = new LogoComponent(this.scene);
     return logoComponent;
+  }
+
+  private createGate(): GateComponent {
+    const gateComponent = new GateComponent(this.scene);
+    return gateComponent;
   }
 
   private createBackground(): Background {
@@ -120,10 +129,12 @@ export default class SceneLayoutManager {
   public update(): void {
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
+    this.layoutContainers.gate.update();
   }
 
   public onStart(): void {
     this.layoutContainers.player.onStart();
     this.layoutContainers.firepower.onStart();
+    this.layoutContainers.gate.onStart();
   }
 }
