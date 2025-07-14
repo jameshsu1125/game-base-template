@@ -9,7 +9,7 @@ import GateEntity from "@/entities/gate.entity";
 
 export default class MainScene extends Phaser.Scene {
   private firepowerEntity?: FirepowerEntity = undefined;
-  private getEntity?: GateEntity = undefined;
+  private gateEntity?: GateEntity = undefined;
 
   constructor() {
     super("MainScene");
@@ -41,7 +41,7 @@ export default class MainScene extends Phaser.Scene {
 
   private addEntityListener(): void {
     this.firepowerEntity = new FirepowerEntity();
-    this.getEntity = new GateEntity();
+    this.gateEntity = new GateEntity();
   }
 
   private addOnStartListener(): void {
@@ -49,7 +49,7 @@ export default class MainScene extends Phaser.Scene {
       ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart();
 
       this.firepowerEntity?.onStart();
-      this.getEntity?.onStart();
+      this.gateEntity?.onStart();
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
@@ -59,9 +59,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
-    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update();
+    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(
+      time,
+      delta
+    );
 
     this.firepowerEntity?.update(time, delta);
-    this.getEntity?.update(time, delta);
+    this.gateEntity?.update(time, delta);
   }
 }

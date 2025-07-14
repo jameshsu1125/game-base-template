@@ -48,10 +48,14 @@ export function scaleImageToCover(
 export function getDisplaySizeByWidthPercentage(
   gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
   widthPercentage: number
-): { width: number; height: number } {
+): { width: number; height: number; ratio: number } {
   const aspectRatio = gameObject.width / gameObject.height;
   const targetWidth = gameObject.scene.scale.width * widthPercentage;
-  return { width: targetWidth, height: targetWidth / aspectRatio };
+  return {
+    width: targetWidth,
+    height: targetWidth / aspectRatio,
+    ratio: aspectRatio,
+  };
 }
 
 export function getDisplayPositionByBorderAlign(

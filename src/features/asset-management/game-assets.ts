@@ -13,8 +13,10 @@ import { GAME_NAME } from "../../configs/constants/constants";
 export interface GameAssets {
   assets: {
     background: string;
+    road: string;
     logo: string;
     player: string;
+    healthBar: string;
     firepowerLevel1: string;
     firepowerLevel2: string;
     gateBlue: string;
@@ -50,8 +52,10 @@ type MatchFightAssetKeys = keyof GameAssets["assets"];
 const defaultGameAssets = {
   assets: {
     background: "assets/choice-runner/background.png",
+    road: "assets/choice-runner/road.png",
     logo: "assets/choice-runner/logo.png",
     player: "assets/choice-runner/player.png",
+    healthBar: "assets/choice-runner/health-bar.png",
     firepowerLevel1: "assets/choice-runner/firepower-level-1.png",
     firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
     gateBlue: "assets/choice-runner/gate-blue.png",

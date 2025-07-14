@@ -1,17 +1,34 @@
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import Phaser from "phaser";
 import {
   GATE_WIDTH_SCALE_RATIO,
-  LOGO_WIDTH_SCALE_RATIO,
+  SCENE_PERSPECTIVE,
 } from "../../configs/constants/layout.constants";
-import Phaser from "phaser";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
-import { getDisplaySizeByWidthPercentage } from "../../utils/layout.utils";
-import { GATE_SPEED } from "@/configs/constants/game.constants";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
+import {
+  GAME_DELTA,
+  GATE_DURATION,
+  GATE_SPEED,
+  STOP_COLLISION,
+} from "@/configs/constants/game.constants";
+
+type TGateState = {
+  direction: -1 | 0 | 1;
+  percent: number;
+  startTime: number;
+  scale: number;
+  target: Phaser.Physics.Arcade.Sprite;
+};
 
 export class GateComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
+
   public gateContainer: Phaser.Physics.Arcade.Sprite[] = [];
+  public gateState: TGateState[] = [];
+  private baseScale = 1;
+
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
     this.build();
@@ -21,23 +38,32 @@ export class GateComponent extends Phaser.GameObjects.Container {
     this.y = -this.scene.scale.height / 2;
   }
 
-  public fire(delta: number): void {
-    const gate = this.scene.physics.add.sprite(
-      this.x,
-      this.y,
-      GAME_ASSET_KEYS.gateBlue
-    );
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      gate,
-      GATE_WIDTH_SCALE_RATIO
-    );
-    gate.setDisplaySize(width, height);
-    gate.setPosition(0, 0);
-    gate.setVelocityY(GATE_SPEED * delta);
-    this.add(gate);
-    this.addCollision(gate);
+  public fire(time: number): void {
+    const positionX = [0, -1, 1].sort(() => Math.random() - 0.5);
 
-    this.gateContainer.push(gate);
+    [GAME_ASSET_KEYS.gateBlue, GAME_ASSET_KEYS.gateRed]
+      .sort(() => Math.random() - 0.5)
+      .forEach((assetsKey, index) => {
+        const gate = this.scene.physics.add.sprite(0, 0, assetsKey);
+        const { width, height } = getDisplaySizeByWidthPercentage(
+          gate,
+          GATE_WIDTH_SCALE_RATIO
+        );
+        gate.setDisplaySize(width, height);
+        gate.setPosition((positionX[index] * gate.width) / 2, this.y);
+        this.add(gate);
+
+        this.gateState.push({
+          direction: positionX[index] as -1 | 0 | 1,
+          percent: 0,
+          startTime: time,
+          target: gate,
+          scale: gate.scale,
+        });
+
+        this.gateContainer.push(gate);
+        if (!STOP_COLLISION) this.addCollision(gate);
+      });
   }
 
   private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
@@ -50,19 +76,40 @@ export class GateComponent extends Phaser.GameObjects.Container {
         () => {
           gate.destroy();
           firepower.destroy();
-          this.gateContainer.shift();
-          console.log("a");
         },
+        () => {},
+        this.scene
+      );
+      this.scene.physics.add.overlap(
+        gate,
+        firepower,
         () => {
-          console.log("b");
+          gate.destroy();
+          firepower.destroy();
         },
+        () => {},
         this.scene
       );
     });
   }
 
-  public update(): void {
+  public update(time: number, delta: number): void {
     if (!this.isStarted) return;
+
+    this.gateState.forEach((state) => {
+      const percent = (time - state.startTime) / GATE_DURATION;
+
+      const scale =
+        state.scale - state.scale * (1 - SCENE_PERSPECTIVE) * (1 - percent);
+      state.target.setScale(scale, scale);
+
+      const x = state.direction * state.target.displayWidth;
+
+      const y =
+        (this.scene.scale.height + state.target.displayHeight) * percent;
+
+      state.target.setPosition(x, y);
+    });
 
     this.gateContainer.forEach((gate) => {
       if (gate.y > this.scene.scale.height + gate.displayHeight) {

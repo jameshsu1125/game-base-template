@@ -18,6 +18,7 @@ export interface LayoutContainers {
   sceneContainer: Phaser.GameObjects.Container;
 
   background: Background;
+  road: Phaser.GameObjects.Image;
   logo: LogoComponent;
   player: PlayerComponent;
   firepower: FirepowerComponent;
@@ -39,7 +40,6 @@ export default class SceneLayoutManager {
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
-    // this.scene.matter.world.setFrictionAir(0);
     this.layoutManager = new BaseLayoutManager(scene);
     this.constants = {
       containerWidth: this.scene.scale.width,
@@ -50,6 +50,7 @@ export default class SceneLayoutManager {
   public createGameAreas(): LayoutContainers {
     this.createMainContainer();
     this.layoutContainers.background = this.createBackground();
+    this.layoutContainers.road = this.createRoad();
     this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.player = this.createPlayer();
@@ -58,6 +59,7 @@ export default class SceneLayoutManager {
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
+      this.layoutContainers.road,
       this.layoutContainers.gate,
       this.layoutContainers.firepower,
       this.layoutContainers.player,
@@ -104,7 +106,18 @@ export default class SceneLayoutManager {
       this.constants.containerWidth,
       this.constants.containerHeight
     );
+
     return background;
+  }
+
+  private createRoad(): Phaser.GameObjects.Image {
+    const road = this.scene.add.image(0, 0, GAME_ASSET_KEYS.road);
+    scaleImageToCover(
+      road,
+      this.constants.containerWidth,
+      this.constants.containerHeight
+    );
+    return road;
   }
 
   private createEndScreenOverlay(): EndScreenOverlayComponent {
@@ -126,10 +139,10 @@ export default class SceneLayoutManager {
     });
   }
 
-  public update(): void {
+  public update(time: number, delta: number): void {
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
-    this.layoutContainers.gate.update();
+    this.layoutContainers.gate.update(time, delta);
   }
 
   public onStart(): void {

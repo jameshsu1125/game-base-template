@@ -1,5 +1,8 @@
 import Phaser from "phaser";
-import { PLAYER_WIDTH_SCALE_RATIO } from "../../configs/constants/layout.constants";
+import {
+  PLAYER_OFFSET_Y,
+  PLAYER_WIDTH_SCALE_RATIO,
+} from "../../configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
   getDisplaySizeByWidthPercentage,
@@ -14,7 +17,10 @@ import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.co
 export class PlayerComponent extends Phaser.GameObjects.Container {
   public player: Phaser.Physics.Arcade.Sprite | null = null;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = undefined;
-  private healthBar: Phaser.GameObjects.Graphics | null = null;
+  private healthBarBorder: Phaser.GameObjects.Graphics | null = null;
+  private healthBarMask: Phaser.GameObjects.Graphics | null = null;
+  private healthBar: Phaser.GameObjects.Image | null = null;
+  private healthText: Phaser.GameObjects.Text | null = null;
 
   private isStarted = false;
   private touchState = { isDown: false, playerX: 0, pointerX: 0 };
@@ -38,7 +44,8 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.player.setDisplaySize(width, height);
     this.player.setPosition(
       0,
-      getDisplayPositionByBorderAlign(this.player, this.scene, "BOTTOM")
+      getDisplayPositionByBorderAlign(this.player, this.scene, "BOTTOM") +
+        PLAYER_OFFSET_Y
     );
     this.add(this.player);
     this.cursors = this.scene.input.keyboard?.createCursorKeys();
@@ -47,17 +54,66 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
   private createHealthBar(): void {
     if (!this.player) return;
-    const { width, height, scale } = this.player;
+    const { displayHeight: height, scale } = this.player;
 
-    const currentX = -width * scale * 0.5;
-    const currentY = this.scene.scale.height * 0.5 - height * scale;
     const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
+
+    const x = this.scene.scale.width * 0.5 - currentWidth * 0.5 + 2;
+    const y =
+      this.scene.scale.height - this.player.displayHeight + 2 + PLAYER_OFFSET_Y;
+
+    const currentX = -currentWidth * 0.5;
+    const currentY = this.scene.scale.height * 0.5 - height + PLAYER_OFFSET_Y;
     const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
 
-    this.healthBar = this.scene.add.graphics();
-    this.healthBar.fillStyle(0xff6600, 1);
-    this.healthBar.fillRect(currentX, currentY, currentWidth, currentHeight);
+    this.healthBarBorder = this.scene.add.graphics();
+    this.healthBarBorder.fillStyle(0xffffff, 1);
+    this.healthBarBorder.fillRoundedRect(
+      currentX,
+      currentY,
+      currentWidth,
+      currentHeight,
+      currentHeight * 0.5
+    );
+
+    this.healthBarMask = this.scene.make.graphics({});
+    this.healthBarMask.fillStyle(0x000000, 1);
+    this.healthBarMask.fillRoundedRect(
+      x,
+      y,
+      currentWidth - 4,
+      currentHeight - 4,
+      (currentHeight - 4) * 0.5
+    );
+    const mask = new Phaser.Display.Masks.BitmapMask(
+      this.scene,
+      this.healthBarMask
+    );
+
+    this.healthBar = this.scene.add.image(
+      currentX,
+      currentY,
+      GAME_ASSET_KEYS.healthBar
+    );
+    this.healthBar.setOrigin(0, 0);
+    this.healthBar.setDisplaySize(currentWidth, currentHeight);
+    this.healthBar.setMask(mask);
+
+    console.log(this.healthBarMask.x, this.x, this.healthBar.x);
+
+    this.healthText = this.scene.add.text(currentX, currentY + 2, "100%", {
+      fontSize: "7px",
+      color: "#000000",
+      fontFamily: "Arial",
+      align: "center",
+      fixedWidth: currentWidth - 2,
+      fixedHeight: PLAYER_COMPONENT_HEALTH_BAR_SIZE.height - 2,
+    });
+
+    this.add(this.healthBarBorder);
     this.add(this.healthBar);
+    this.add(this.healthBarMask);
+    this.add(this.healthText);
   }
 
   private setCurrentPositionByUserInput(targetX: number, deltaX: number): void {
@@ -66,6 +122,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     const maxX = this.scene.scale.width * 0.5 - this.player!.displayWidth * 0.5;
     const currentX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
     this.x = currentX;
+    if (this.healthBarMask) this.healthBarMask.x = currentX;
   }
 
   public onStart(): void {

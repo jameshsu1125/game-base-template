@@ -1,25 +1,29 @@
+import {
+  FIREPOWER_SPEED,
+  GAME_DELTA,
+  STOP_COLLISION,
+} from "@/configs/constants/game.constants";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
 import Phaser from "phaser";
 import {
   FIREPOWER_OFFSET_Y,
+  FIREPOWER_PERSPECTIVE,
   FIREPOWER_WIDTH_SCALE_RATIO,
   SCENE_PERSPECTIVE,
-} from "../../configs/constants/layout.constants";
-import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
+} from "@/configs/constants/layout.constants";
+import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
-  getDisplaySizeByWidthPercentage,
   getDisplayPositionByBorderAlign,
-} from "../../utils/layout.utils";
+  getDisplaySizeByWidthPercentage,
+} from "@/utils/layout.utils";
 import { PlayerComponent } from "../characters/player.component";
-import { FIREPOWER_SPEED } from "@/configs/constants/game.constants";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
   private player: PlayerComponent;
   public firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
 
   private isStarted = false;
-  private baseDelta = 16;
   private baseScale = 1;
   public level = 1;
 
@@ -65,11 +69,14 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     firepower.setPosition(this.player.x, 0 - firepower.displayHeight * 0.5);
     this.baseScale = firepower.scale;
 
-    firepower.setVelocityY(-(FIREPOWER_SPEED * this.baseDelta) / delta);
-    firepower.setVelocityX(this.player.x * -1 * SCENE_PERSPECTIVE);
+    firepower.setVelocityY(-(FIREPOWER_SPEED * GAME_DELTA) / delta);
+    firepower.setVelocityX(
+      this.player.x * FIREPOWER_PERSPECTIVE * -1 * SCENE_PERSPECTIVE
+    );
+    firepower.setRotation(Phaser.Math.DegToRad(this.player.x * -0.1));
 
     this.add(firepower);
-    this.addCollision(firepower);
+    if (!STOP_COLLISION) this.addCollision(firepower);
 
     this.firepowerContainer.push(firepower);
   }
@@ -85,11 +92,19 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
           firepower.destroy();
           gate.destroy();
           this.firepowerContainer.shift();
-          console.log("a");
         },
+        () => {},
+        this.scene
+      );
+      this.scene.physics.add.overlap(
+        firepower,
+        gate,
         () => {
-          console.log("b");
+          firepower.destroy();
+          gate.destroy();
+          this.firepowerContainer.shift();
         },
+        () => {},
         this.scene
       );
     });
