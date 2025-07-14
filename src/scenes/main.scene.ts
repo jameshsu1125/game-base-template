@@ -2,11 +2,13 @@ import Phaser from "phaser";
 import SceneLayoutManager from "../managers/layout/scene-layout.manager";
 import ServiceLocator from "../services/service-locator/service-locator.service";
 import ServiceRegistry from "../services/service-registry.service";
-
-// import { DebugOverlay } from "../services/event-bus/debug-overlay";
 import EndScreenSystem from "../systems/end-screen.system";
+import FirepowerEntity from "@/entities/firepower.entity";
+// import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
+  private firepowerEntity?: FirepowerEntity = undefined;
+
   constructor() {
     super("MainScene");
   }
@@ -21,16 +23,6 @@ export default class MainScene extends Phaser.Scene {
     this.initEventListeners();
   }
 
-  private initEventListeners(): void {
-    const onUserInput = () => {
-      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart();
-      window.removeEventListener("pointerdown", onUserInput);
-      window.removeEventListener("keydown", onUserInput);
-    };
-    window.addEventListener("pointerdown", onUserInput);
-    window.addEventListener("keydown", onUserInput);
-  }
-
   private initializeChoreography(): void {
     this.initializeSystems();
   }
@@ -40,7 +32,28 @@ export default class MainScene extends Phaser.Scene {
     ServiceLocator.get<EndScreenSystem>("victorySystem").initialize();
   }
 
+  private initEventListeners(): void {
+    this.addOnStartListener();
+    this.addEntityListener();
+  }
+
+  private addEntityListener(): void {
+    this.firepowerEntity = new FirepowerEntity();
+  }
+
+  private addOnStartListener(): void {
+    const onUserInput = () => {
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart();
+      this.firepowerEntity?.onStart();
+      window.removeEventListener("pointerdown", onUserInput);
+      window.removeEventListener("keydown", onUserInput);
+    };
+    window.addEventListener("pointerdown", onUserInput);
+    window.addEventListener("keydown", onUserInput);
+  }
+
   update() {
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update();
+    this.firepowerEntity?.update();
   }
 }

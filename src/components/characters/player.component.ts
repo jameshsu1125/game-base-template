@@ -3,7 +3,7 @@ import { PLAYER_WIDTH_SCALE_RATIO } from "../../configs/constants/layout.constan
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
   getDisplaySizeByWidthPercentage,
-  setDisplayPositionByBorderAlign,
+  getDisplayPositionByBorderAlign,
 } from "../../utils/layout.utils";
 import {
   PLAYER_COMPONENT_HEALTH_BAR_SIZE,
@@ -11,7 +11,7 @@ import {
 } from "./player.config";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
-  private player: Phaser.Physics.Arcade.Sprite | null = null;
+  public player: Phaser.Physics.Arcade.Sprite | null = null;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = undefined;
   private healthBar: Phaser.GameObjects.Graphics | null = null;
 
@@ -37,24 +37,14 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.player.setDisplaySize(width, height);
     this.player.setPosition(
       0,
-      setDisplayPositionByBorderAlign(this.player, this.scene, "BOTTOM")
+      getDisplayPositionByBorderAlign(this.player, this.scene, "BOTTOM")
     );
     this.add(this.player);
     this.cursors = this.scene.input.keyboard?.createCursorKeys();
     this.createHealthBar();
   }
 
-  update(): void {
-    if (!this.cursors || !this.player || !this.isStarted) return;
-
-    if (this.cursors.left.isDown) {
-      this.x -= 5;
-    } else if (this.cursors.right.isDown) {
-      this.x += 5;
-    }
-  }
-
-  createHealthBar() {
+  private createHealthBar(): void {
     if (!this.player) return;
     const { width, height, scale } = this.player;
 
@@ -69,7 +59,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.add(this.healthBar);
   }
 
-  onStart(): void {
+  public onStart(): void {
     this.isStarted = true;
     this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       this.touchState.isDown = true;
@@ -85,5 +75,15 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.scene.input.on("pointerup", () => {
       this.touchState.isDown = false;
     });
+  }
+
+  update(): void {
+    if (!this.cursors || !this.player || !this.isStarted) return;
+
+    if (this.cursors.left.isDown) {
+      this.x -= 5;
+    } else if (this.cursors.right.isDown) {
+      this.x += 5;
+    }
   }
 }

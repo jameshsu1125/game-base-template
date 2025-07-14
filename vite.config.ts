@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import type { PluginOption } from "vite";
 import { defineConfig } from "vite";
@@ -25,6 +26,11 @@ export default defineConfig({
   base: "",
   server: {
     open: true,
+  },
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "src"),
+    },
   },
   build: {
     outDir: "dist",

@@ -54,7 +54,7 @@ export function getDisplaySizeByWidthPercentage(
   return { width: targetWidth, height: targetWidth / aspectRatio };
 }
 
-export function setDisplayPositionByBorderAlign(
+export function getDisplayPositionByBorderAlign(
   gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
   scene: Phaser.Scene,
   align: "LEFT" | "RIGHT" | "TOP" | "BOTTOM"

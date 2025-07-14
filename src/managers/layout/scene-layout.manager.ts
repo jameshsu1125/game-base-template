@@ -33,7 +33,7 @@ export default class SceneLayoutManager {
   private scene: Phaser.Scene;
   private constants: Required<GameAreaConfig>;
   private layoutManager: BaseLayoutManager;
-  private layoutContainers!: LayoutContainers;
+  public layoutContainers!: LayoutContainers;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -70,7 +70,10 @@ export default class SceneLayoutManager {
   }
 
   private createFirepower(): FirepowerComponent {
-    const firepowerComponent = new FirepowerComponent(this.scene);
+    const firepowerComponent = new FirepowerComponent(
+      this.scene,
+      this.layoutContainers.player
+    );
     return firepowerComponent;
   }
 
