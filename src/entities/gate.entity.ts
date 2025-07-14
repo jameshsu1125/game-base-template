@@ -22,7 +22,7 @@ export default class GateEntity {
       this.state.index = index;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.gate.fire(time, delta);
+      ).layoutContainers.gate.fire(time);
     }
   }
 }
