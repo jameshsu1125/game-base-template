@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
   FIREPOWER_OFFSET_Y,
   FIREPOWER_WIDTH_SCALE_RATIO,
+  SCENE_PERSPECTIVE,
 } from "../../configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
@@ -9,11 +10,15 @@ import {
   getDisplayPositionByBorderAlign,
 } from "../../utils/layout.utils";
 import { PlayerComponent } from "../characters/player.component";
+import { FIREPOWER_SPEED } from "@/configs/constants/game.constants";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
   private player: PlayerComponent;
+  private firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
 
   private isStarted = false;
+  private baseDelta = 16;
+  private baseScale = 1;
   public level = 1;
 
   constructor(scene: Phaser.Scene, player: PlayerComponent) {
@@ -47,10 +52,10 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     }
   }
 
-  public fire(): void {
+  public fire(delta: number): void {
     if (!this.isStarted || !this.player || !this.player.player) return;
 
-    const firepower = this.scene.add.sprite(
+    const firepower = this.scene.physics.add.sprite(
       this.x,
       this.y,
       this.level === 1
@@ -62,13 +67,32 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       FIREPOWER_WIDTH_SCALE_RATIO
     );
     firepower.setDisplaySize(width, height);
-    firepower.setPosition(0, 0 - firepower.displayHeight * 0.5);
+    firepower.setPosition(this.player.x, 0 - firepower.displayHeight * 0.5);
+    this.baseScale = firepower.scale;
+
+    firepower.setVelocityY(-(FIREPOWER_SPEED * this.baseDelta) / delta);
+    firepower.setVelocityX(this.player.x * -1 * SCENE_PERSPECTIVE);
     this.add(firepower);
+
+    this.firepowerContainer.push(firepower);
   }
 
-  public update(playerX: number): void {
+  public update(): void {
     if (!this.isStarted) return;
-    this.x = playerX;
+
+    this.firepowerContainer.forEach((firepower, index) => {
+      const scale =
+        this.baseScale -
+        this.baseScale *
+          (1 - SCENE_PERSPECTIVE) *
+          (Math.abs(firepower.y) / this.scene.scale.height);
+
+      firepower.setScale(scale, scale);
+      if (firepower.y < 0 - this.scene.scale.height) {
+        firepower.destroy();
+        this.firepowerContainer.splice(index, 1);
+      }
+    });
   }
 
   public onStart(): void {

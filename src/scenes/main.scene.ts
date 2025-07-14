@@ -52,8 +52,8 @@ export default class MainScene extends Phaser.Scene {
     window.addEventListener("keydown", onUserInput);
   }
 
-  update() {
+  update(time: number, delta: number): void {
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update();
-    this.firepowerEntity?.update();
+    this.firepowerEntity?.update(time, delta);
   }
 }

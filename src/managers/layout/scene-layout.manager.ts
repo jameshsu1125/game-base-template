@@ -37,6 +37,7 @@ export default class SceneLayoutManager {
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
+    // this.scene.matter.world.setFrictionAir(0);
     this.layoutManager = new BaseLayoutManager(scene);
     this.constants = {
       containerWidth: this.scene.scale.width,
@@ -54,9 +55,9 @@ export default class SceneLayoutManager {
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
-      this.layoutContainers.logo,
-      this.layoutContainers.player,
       this.layoutContainers.firepower,
+      this.layoutContainers.player,
+      this.layoutContainers.logo,
     ]);
     return this.layoutContainers;
   }
@@ -118,7 +119,7 @@ export default class SceneLayoutManager {
 
   public update(): void {
     this.layoutContainers.player.update();
-    this.layoutContainers.firepower.update(this.layoutContainers.player.x);
+    this.layoutContainers.firepower.update();
   }
 
   public onStart(): void {

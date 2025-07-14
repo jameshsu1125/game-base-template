@@ -9,6 +9,7 @@ import {
   PLAYER_COMPONENT_HEALTH_BAR_SIZE,
   PLAYER_COMPONENT_SIZE,
 } from "./player.config";
+import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
   public player: Phaser.Physics.Arcade.Sprite | null = null;
@@ -59,6 +60,14 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.add(this.healthBar);
   }
 
+  private setCurrentPositionByUserInput(targetX: number, deltaX: number): void {
+    const minX =
+      -this.scene.scale.width * 0.5 + this.player!.displayWidth * 0.5;
+    const maxX = this.scene.scale.width * 0.5 - this.player!.displayWidth * 0.5;
+    const currentX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
+    this.x = currentX;
+  }
+
   public onStart(): void {
     this.isStarted = true;
     this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -69,7 +78,8 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.scene.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
       if (this.touchState.isDown) {
         const deltaX = pointer.x - this.touchState.pointerX;
-        this.x = this.touchState.playerX + deltaX;
+        const targetX = this.touchState.playerX + deltaX;
+        this.setCurrentPositionByUserInput(targetX, deltaX);
       }
     });
     this.scene.input.on("pointerup", () => {
@@ -79,11 +89,12 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
   update(): void {
     if (!this.cursors || !this.player || !this.isStarted) return;
-
-    if (this.cursors.left.isDown) {
-      this.x -= 5;
-    } else if (this.cursors.right.isDown) {
-      this.x += 5;
-    }
+    const deltaX = this.cursors.left.isDown
+      ? -PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD
+      : this.cursors.right.isDown
+      ? PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD
+      : 0;
+    const targetX = this.x + deltaX;
+    this.setCurrentPositionByUserInput(targetX, deltaX);
   }
 }
