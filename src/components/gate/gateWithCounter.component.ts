@@ -120,16 +120,17 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     });
 
     layoutContainers.player.players.forEach((player) => {
+      if (!player.player) return;
       this.scene.physics.add.collider(
         gate,
-        player,
+        player.player,
         () => this.increasePlayerCount(this.num, gate.name),
         undefined,
         this.scene
       );
       this.scene.physics.add.overlap(
         gate,
-        player,
+        player.player,
         () => this.increasePlayerCount(this.num, gate.name),
         undefined,
         this.scene

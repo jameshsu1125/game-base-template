@@ -11,6 +11,7 @@ import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
 import { GateComponent } from "@/components/gate/gate.component";
+import { EnemyComponent } from "@/components/characters/enemy.component";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -23,6 +24,7 @@ export interface LayoutContainers {
   player: PlayerComponent;
   firepower: FirepowerComponent;
   gate: GateComponent;
+  enemy: EnemyComponent;
 
   endScreenComponent: EndScreenOverlayComponent;
 }
@@ -56,11 +58,13 @@ export default class SceneLayoutManager {
     this.layoutContainers.player = this.createPlayer();
     this.layoutContainers.firepower = this.createFirepower();
     this.layoutContainers.gate = this.createGate();
+    this.layoutContainers.enemy = new EnemyComponent(this.scene);
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
       this.layoutContainers.road,
       this.layoutContainers.gate,
+      this.layoutContainers.enemy,
       this.layoutContainers.firepower,
       this.layoutContainers.player,
       this.layoutContainers.logo,
@@ -154,8 +158,6 @@ export default class SceneLayoutManager {
   ) {
     this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
     this.layoutContainers.gate.increaseGateCountByName(gate.name);
-
-    // increase gate count
   }
 
   public update(time: number): void {

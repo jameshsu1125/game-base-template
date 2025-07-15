@@ -70,8 +70,16 @@ export class GateComponent extends Phaser.GameObjects.Container {
   }
 
   public removeStateByName(name: string): void {
+    const [state] = this.gateState.filter(
+      (state) => state.target.gateName === name
+    );
+
+    if (state) {
+      state.target.destroy();
+    }
+
     this.gateState = this.gateState.filter(
-      (state) => state.target.name !== name
+      (state) => state.target.gateName !== name
     );
   }
 

@@ -54,12 +54,15 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   private build(): void {
     if (this.player && this.player.players.length > 0) {
       const [player] = this.player.players;
-      this.setPosition(
-        getDisplayPositionByBorderAlign(player, this.scene, "LEFT"),
-        getDisplayPositionByBorderAlign(player, this.scene, "TOP") -
-          player.displayHeight * 0.5 +
-          FIREPOWER_OFFSET_Y
-      );
+
+      if (player.player) {
+        this.setPosition(
+          getDisplayPositionByBorderAlign(player.player, this.scene, "LEFT"),
+          getDisplayPositionByBorderAlign(player.player, this.scene, "TOP") -
+            player.displayHeight * 0.5 +
+            FIREPOWER_OFFSET_Y
+        );
+      }
     }
   }
 
@@ -68,10 +71,12 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       return;
 
     this.player.players.forEach((player) => {
+      if (!player.player) return;
+
       const firepower = this.scene.physics.add
         .sprite(
-          player.x,
-          player.y - FIREPOWER_OFFSET_Y,
+          player.player.x,
+          player.player.y - FIREPOWER_OFFSET_Y,
           this.level === 1
             ? GAME_ASSET_KEYS.firepowerLevel1
             : GAME_ASSET_KEYS.firepowerLevel2
@@ -85,20 +90,20 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       );
       firepower.setDisplaySize(width, height);
       firepower.setPosition(
-        player.x - player.displayWidth / 2,
-        player.y - player.displayHeight / 2 + FIREPOWER_OFFSET_Y
+        player.player.x - player.player.displayWidth / 2,
+        player.player.y - player.displayHeight + FIREPOWER_OFFSET_Y - 100
       );
       this.baseScale = firepower.scale;
       firepower.setVelocityY(-(FIREPOWER_SPEED * GAME_DELTA) / delta);
       firepower.setVelocityX(
-        (player.x - this.scene.scale.width / 2) *
+        (player.player.x - this.scene.scale.width / 2) *
           FIREPOWER_PERSPECTIVE *
           -1 *
           SCENE_PERSPECTIVE
       );
       firepower.setRotation(
         Phaser.Math.DegToRad(
-          (player.x - this.scene.scale.width / 2) *
+          (player.player.x - this.scene.scale.width / 2) *
             FIREPOWER_PERSPECTIVE *
             -0.05 *
             SCENE_PERSPECTIVE
@@ -142,33 +147,6 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
         );
       }
     });
-
-    // ServiceLocator.get<SceneLayoutManager>(
-    //   "gameAreaManager"
-    // ).layoutContainers.gate.gateContainer.forEach((gate) => {
-    //   this.scene.physics.add.collider(
-    //     firepower,
-    //     gate,
-    //     () => {
-    //       firepower.destroy();
-    //       gate.destroy();
-    //       this.firepowerContainer.shift();
-    //     },
-    //     () => {},
-    //     this.scene
-    //   );
-    //   this.scene.physics.add.overlap(
-    //     firepower,
-    //     gate,
-    //     () => {
-    //       firepower.destroy();
-    //       gate.destroy();
-    //       this.firepowerContainer.shift();
-    //     },
-    //     () => {},
-    //     this.scene
-    //   );
-    // });
   }
 
   removeFirepowerByName(name: string): void {
