@@ -14,6 +14,7 @@ import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
   private playerName: string;
+  private isDestroyed = false;
   public player: Phaser.Physics.Arcade.Sprite | null = null;
   public healthBarBorder: Phaser.GameObjects.Graphics =
     this.scene.add.graphics();
@@ -127,8 +128,22 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.player = player;
   }
 
+  public destroy(): void {
+    this.isDestroyed = true;
+    this.healthBarBorder.destroy();
+    this.healthBarMask.destroy();
+    this.healthBar.destroy();
+    this.healthText.destroy();
+    this.mask.destroy();
+    if (this.player) {
+      this.player.destroy(true);
+      this.player = null;
+    }
+    super.destroy();
+  }
+
   public setPositionByIndex(index: number, offset: number, total: number) {
-    if (this.player === null) return;
+    if (this.player === null || this.isDestroyed) return;
 
     const { left, top } = getDisplayPositionAlign(this.player, "CENTER_BOTTOM");
     const { displayWidth } = this.player;

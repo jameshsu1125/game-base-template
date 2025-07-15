@@ -46,6 +46,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
   private setCurrentPositionByUserInput(targetX: number, _: number): void {
     const [player] = this.players;
+    if (player.player === null) return;
     const minX =
       -this.scene.scale.width * 0.5 + player.player!.displayWidth * 0.5;
     const maxX =
@@ -64,7 +65,19 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   public increasePlayersCount(count: number = 1): void {
-    this.createPlayer(count);
+    if (count > 0) this.createPlayer(count);
+    else {
+      const currentDiscount = Math.min(
+        this.players.length - 1,
+        Math.abs(count)
+      );
+
+      this.players
+        .splice(-currentDiscount, currentDiscount)
+        .forEach((player) => {
+          player.destroy();
+        });
+    }
   }
 
   public onStart(): void {

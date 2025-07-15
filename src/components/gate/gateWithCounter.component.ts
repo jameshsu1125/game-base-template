@@ -56,7 +56,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     this.num =
       assetsKey === GAME_ASSET_KEYS.gatePositive
         ? 1 + Math.floor(Math.random() * 4)
-        : -1 - Math.floor(Math.random() * 4);
+        : -1 - Math.floor(Math.random() * 30);
 
     this.build(assetsKey);
   }
