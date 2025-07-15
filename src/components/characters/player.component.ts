@@ -5,6 +5,7 @@ import {
 import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
 import Phaser from "phaser";
 import {
+  HEALTH_BAR_OFFSET_Y,
   PLAYER_GROUP_GAP_X,
   PLAYER_OFFSET_Y,
   PLAYER_WIDTH_SCALE_RATIO,
@@ -50,12 +51,22 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     if (currentCount <= 0) return;
 
     [...new Array(currentCount).keys()].forEach(() => {
-      const player = this.group?.create(0, 0, GAME_ASSET_KEYS.player);
+      const player = this.group?.create(0, 0, "playerSheet");
       const { width, height } = getDisplaySizeByWidthPercentage(
         player,
         PLAYER_WIDTH_SCALE_RATIO
       );
       player.setDisplaySize(width, height);
+      player.anims.create({
+        key: "run",
+        frames: this.scene.anims.generateFrameNumbers("playerSheet", {
+          start: 0,
+          end: 9,
+        }),
+        frameRate: 10,
+        repeat: -1,
+      });
+      player.play("run", true);
       this.players.push(player);
     });
     this.calculatePlayersPosition();
@@ -70,10 +81,18 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
     const x = this.scene.scale.width * 0.5 - currentWidth * 0.5 + 2;
     const y =
-      this.scene.scale.height - player.displayHeight + 2 + PLAYER_OFFSET_Y;
+      this.scene.scale.height -
+      player.displayHeight +
+      2 +
+      PLAYER_OFFSET_Y +
+      HEALTH_BAR_OFFSET_Y;
 
     const currentX = -currentWidth * 0.5;
-    const currentY = this.scene.scale.height * 0.5 - height + PLAYER_OFFSET_Y;
+    const currentY =
+      this.scene.scale.height * 0.5 -
+      height +
+      PLAYER_OFFSET_Y +
+      HEALTH_BAR_OFFSET_Y;
     const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
 
     this.healthBarBorder = this.scene.add.graphics();
@@ -109,13 +128,20 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.healthBar.setDisplaySize(currentWidth, currentHeight);
     this.healthBar.setMask(mask);
 
-    this.healthText = this.scene.add.text(currentX, currentY + 2, "100%", {
+    this.healthText = this.scene.add.text(currentX, currentY + 3, "100%", {
       fontSize: "7px",
-      color: "#000000",
+      color: "#ffffff",
       fontFamily: "Arial",
       align: "center",
       fixedWidth: currentWidth - 2,
       fixedHeight: PLAYER_COMPONENT_HEALTH_BAR_SIZE.height - 2,
+      shadow: {
+        fill: true,
+        color: "#000000",
+        offsetX: 0,
+        offsetY: 0,
+        blur: 3,
+      },
     });
 
     this.add(this.healthBarBorder);

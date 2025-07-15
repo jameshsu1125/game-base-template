@@ -10,6 +10,23 @@ export default class PreloadScene extends Phaser.Scene {
 
   preload() {
     loadAssetsFromMap(this, gameAssets.assets);
+    this.load.spritesheet(
+      "playerSheet",
+      "assets/choice-runner/player-sheet.png",
+      {
+        frameWidth: 128,
+        frameHeight: 224,
+      }
+    );
+
+    this.load.spritesheet(
+      "enemySheet",
+      "assets/choice-runner/enemy-sheet.png",
+      {
+        frameWidth: 127,
+        frameHeight: 133,
+      }
+    );
   }
 
   create() {

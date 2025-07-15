@@ -4,6 +4,6 @@ export const PLAYER_COMPONENT_SIZE = {
 };
 
 export const PLAYER_COMPONENT_HEALTH_BAR_SIZE = {
-  width: 64,
-  height: 18,
+  width: 70,
+  height: 25,
 };
