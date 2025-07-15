@@ -32,6 +32,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     gate: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
   ) => void;
+  private increasePlayerCount: (count: number, gateName: string) => void;
 
   constructor(
     scene: Phaser.Scene,
@@ -42,13 +43,15 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     increaseGateCount: (
       gate: Phaser.Physics.Arcade.Sprite,
       firepower: Phaser.Physics.Arcade.Sprite
-    ) => void
+    ) => void,
+    increasePlayerCount: (count: number, gateName: string) => void
   ) {
     super(scene, 0, 0);
     this.gateName = name;
     this.quadrant = quadrant;
     this.removeStateByName = removeStateByName;
     this.increaseGateCount = increaseGateCount;
+    this.increasePlayerCount = increasePlayerCount;
 
     this.num =
       assetsKey === GAME_ASSET_KEYS.gatePositive
@@ -94,9 +97,12 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   }
 
   private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
-    ServiceLocator.get<SceneLayoutManager>(
-      "gameAreaManager"
-    ).layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
+    const layoutContainers =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers;
+
+    layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
       this.scene.physics.add.collider(
         gate,
         firepower,
@@ -108,6 +114,23 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
         gate,
         firepower,
         () => this.increaseGateCount(gate, firepower),
+        undefined,
+        this.scene
+      );
+    });
+
+    layoutContainers.player.players.forEach((player) => {
+      this.scene.physics.add.collider(
+        gate,
+        player,
+        () => this.increasePlayerCount(this.num, gate.name),
+        undefined,
+        this.scene
+      );
+      this.scene.physics.add.overlap(
+        gate,
+        player,
+        () => this.increasePlayerCount(this.num, gate.name),
         undefined,
         this.scene
       );

@@ -97,7 +97,8 @@ export default class SceneLayoutManager {
   private createGate(): GateComponent {
     const gateComponent = new GateComponent(
       this.scene,
-      this.increaseGateCount.bind(this)
+      this.increaseGateCount.bind(this),
+      this.increasePlayerCount.bind(this)
     );
     return gateComponent;
   }
@@ -142,8 +143,9 @@ export default class SceneLayoutManager {
     });
   }
 
-  public increasePlayerCount(count: number = 1): void {
+  public increasePlayerCount(count: number = 1, gateName: string): void {
     this.layoutContainers.player.increasePlayersCount(count);
+    this.layoutContainers.gate.removeStateByName(gateName);
   }
 
   public increaseGateCount(

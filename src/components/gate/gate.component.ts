@@ -12,16 +12,21 @@ export class GateComponent extends Phaser.GameObjects.Container {
     gate: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
   ) => void;
+  private increasePlayerCount: (count: number, gateName: string) => void;
 
   constructor(
     scene: Phaser.Scene,
     increaseGateCount: (
       gate: Phaser.Physics.Arcade.Sprite,
       firepower: Phaser.Physics.Arcade.Sprite
-    ) => void
+    ) => void,
+    increasePlayerCount: (count: number, gateName: string) => void
   ) {
     super(scene, 0, 0);
+
     this.increaseGateCount = increaseGateCount;
+    this.increasePlayerCount = increasePlayerCount;
+
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
@@ -50,7 +55,8 @@ export class GateComponent extends Phaser.GameObjects.Container {
       quadrant[index],
       name,
       this.removeStateByName.bind(this),
-      this.increaseGateCount
+      this.increaseGateCount,
+      this.increasePlayerCount
     );
     this.add(gate);
     this.gateState.push({
