@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import {
+  PLAYER_GROUP_GAP_X,
   PLAYER_OFFSET_Y,
   PLAYER_WIDTH_SCALE_RATIO,
 } from "../../configs/constants/layout.constants";
@@ -7,15 +8,21 @@ import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
   getDisplaySizeByWidthPercentage,
   getDisplayPositionByBorderAlign,
+  getDisplayPositionAlign,
 } from "../../utils/layout.utils";
 import {
   PLAYER_COMPONENT_HEALTH_BAR_SIZE,
   PLAYER_COMPONENT_SIZE,
 } from "./player.config";
 import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
+import {
+  GAME_MECHANIC_CONFIG_SCHEMA,
+  GAME_MECHANIC_CONSTANTS,
+} from "@/configs/constants/game-mechanic/game-mechanic.constants";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
-  public player: Phaser.Physics.Arcade.Sprite | null = null;
+  public group: Phaser.Physics.Arcade.StaticGroup | null = null;
+  public players: Phaser.Physics.Arcade.Sprite[] = [];
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = undefined;
   private healthBarBorder: Phaser.GameObjects.Graphics | null = null;
   private healthBarMask: Phaser.GameObjects.Graphics | null = null;
@@ -24,6 +31,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
   private isStarted = false;
   private touchState = { isDown: false, playerX: 0, pointerX: 0 };
+  public playersCount = GAME_MECHANIC_CONSTANTS.playerReinforce;
 
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
@@ -31,36 +39,42 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   private build(): void {
-    this.player = this.scene.physics.add.sprite(
-      PLAYER_COMPONENT_SIZE.width,
-      PLAYER_COMPONENT_SIZE.height,
-      GAME_ASSET_KEYS.player
-    );
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      this.player,
-      PLAYER_WIDTH_SCALE_RATIO
-    );
-
-    this.player.setDisplaySize(width, height);
-    this.player.setPosition(
-      0,
-      getDisplayPositionByBorderAlign(this.player, this.scene, "BOTTOM") +
-        PLAYER_OFFSET_Y
-    );
-    this.add(this.player);
     this.cursors = this.scene.input.keyboard?.createCursorKeys();
+    this.group = this.scene.physics.add.staticGroup();
+
+    this.createPlayer(this.playersCount);
     this.createHealthBar();
   }
 
+  private createPlayer(count: number): void {
+    const { max } = GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce;
+    const currentCount =
+      this.players.length + count > max ? max - this.players.length : count;
+
+    if (currentCount <= 0) return;
+
+    [...new Array(currentCount).keys()].forEach(() => {
+      const player = this.group?.create(0, 0, GAME_ASSET_KEYS.player);
+      const { width, height } = getDisplaySizeByWidthPercentage(
+        player,
+        PLAYER_WIDTH_SCALE_RATIO
+      );
+      player.setDisplaySize(width, height);
+      this.players.push(player);
+    });
+    this.calculatePlayersPosition();
+  }
+
   private createHealthBar(): void {
-    if (!this.player) return;
-    const { displayHeight: height, scale } = this.player;
+    if (this.players.length === 0) return;
+    const [player] = this.players;
+    const { displayHeight: height, scale } = player;
 
     const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
 
     const x = this.scene.scale.width * 0.5 - currentWidth * 0.5 + 2;
     const y =
-      this.scene.scale.height - this.player.displayHeight + 2 + PLAYER_OFFSET_Y;
+      this.scene.scale.height - player.displayHeight + 2 + PLAYER_OFFSET_Y;
 
     const currentX = -currentWidth * 0.5;
     const currentY = this.scene.scale.height * 0.5 - height + PLAYER_OFFSET_Y;
@@ -114,13 +128,38 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.add(this.healthText);
   }
 
-  private setCurrentPositionByUserInput(targetX: number, deltaX: number): void {
-    const minX =
-      -this.scene.scale.width * 0.5 + this.player!.displayWidth * 0.5;
-    const maxX = this.scene.scale.width * 0.5 - this.player!.displayWidth * 0.5;
+  private setCurrentPositionByUserInput(targetX: number, _: number): void {
+    const [player] = this.players;
+    const minX = -this.scene.scale.width * 0.5 + player!.displayWidth * 0.5;
+    const maxX = this.scene.scale.width * 0.5 - player!.displayWidth * 0.5;
     const currentX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
     this.x = currentX;
+    this.calculatePlayersPosition(currentX);
+
+    this.group?.refresh();
     if (this.healthBarMask) this.healthBarMask.x = currentX;
+  }
+
+  private calculatePlayersPosition(offset: number = 0): void {
+    const total = this.players.length;
+    this.players.forEach((player, index) => {
+      const { left, top } = getDisplayPositionAlign(player, "CENTER_BOTTOM");
+      const maxWidth = player.displayWidth + PLAYER_GROUP_GAP_X * (total - 1);
+
+      const currentX =
+        left -
+        maxWidth / 2 +
+        PLAYER_GROUP_GAP_X * index +
+        player.displayWidth / 2;
+
+      player
+        .setPosition(currentX + offset, top + PLAYER_OFFSET_Y)
+        .refreshBody();
+    });
+  }
+
+  public increasePlayersCount(count: number = 1): void {
+    this.createPlayer(count);
   }
 
   public onStart(): void {
@@ -142,8 +181,8 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     });
   }
 
-  update(): void {
-    if (!this.cursors || !this.player || !this.isStarted) return;
+  public update(): void {
+    if (!this.cursors || this.players.length === 0 || !this.isStarted) return;
     const deltaX = this.cursors.left.isDown
       ? -PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD
       : this.cursors.right.isDown

@@ -95,7 +95,10 @@ export default class SceneLayoutManager {
   }
 
   private createGate(): GateComponent {
-    const gateComponent = new GateComponent(this.scene);
+    const gateComponent = new GateComponent(
+      this.scene,
+      this.increasePlayerCount.bind(this)
+    );
     return gateComponent;
   }
 
@@ -137,6 +140,10 @@ export default class SceneLayoutManager {
       type: endGameResult,
       onRestart,
     });
+  }
+
+  public increasePlayerCount(count: number = 1): void {
+    this.layoutContainers.player.increasePlayersCount(count);
   }
 
   public update(time: number): void {

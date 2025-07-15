@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { game } from "..";
 
 /**
  * Scales a game object to cover the given dimensions while maintaining aspect ratio
@@ -67,16 +68,89 @@ export function getDisplayPositionByBorderAlign(
 
   switch (align) {
     case "LEFT":
-      return -width / 2 + (gameObject.width * gameObject.scale) / 2;
+      return -width / 2 + gameObject.displayWidth / 2;
 
     case "RIGHT":
-      return width / 2 - (gameObject.width * gameObject.scale) / 2;
+      return width / 2 - gameObject.displayWidth / 2;
 
     case "TOP":
-      return -height / 2 + (gameObject.height * gameObject.scale) / 2;
+      return -height / 2 + gameObject.displayHeight / 2;
 
     case "BOTTOM":
-      return height / 2 - (gameObject.height * gameObject.scale) / 2;
+      return height / 2 - gameObject.displayHeight / 2;
   }
   return 0;
+}
+
+export function getDisplayPositionAlign(
+  gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
+  align:
+    | "LEFT_TOP"
+    | "RIGHT_TOP"
+    | "CENTER_TOP"
+    | "LEFT_CENTER"
+    | "CENTER_CENTER"
+    | "RIGHT_CENTER"
+    | "LEFT_BOTTOM"
+    | "CENTER_BOTTOM"
+    | "RIGHT_BOTTOM"
+): { left: number; top: number } {
+  const { width, height } = gameObject.scene.scale;
+
+  switch (align) {
+    case "RIGHT_TOP":
+      return {
+        left: width - gameObject.displayWidth / 2,
+        top: gameObject.displayHeight / 2,
+      };
+
+    case "CENTER_TOP":
+      return {
+        left: width / 2,
+        top: gameObject.displayHeight / 2,
+      };
+
+    case "LEFT_CENTER":
+      return {
+        left: gameObject.displayWidth / 2,
+        top: (height - gameObject.displayHeight / 2) / 2,
+      };
+
+    case "CENTER_CENTER":
+      return {
+        left: width / 2,
+        top: height / 2,
+      };
+
+    case "RIGHT_CENTER":
+      return {
+        left: width - gameObject.displayWidth / 2,
+        top: height / 2,
+      };
+
+    case "LEFT_BOTTOM":
+      return {
+        left: gameObject.displayWidth / 2,
+        top: height - gameObject.displayHeight / 2,
+      };
+
+    case "CENTER_BOTTOM":
+      return {
+        left: width / 2,
+        top: height - gameObject.displayHeight / 2,
+      };
+
+    case "RIGHT_BOTTOM":
+      return {
+        left: width - gameObject.displayWidth / 2,
+        top: height - gameObject.displayHeight / 2,
+      };
+
+    default:
+    case "LEFT_TOP":
+      return {
+        left: gameObject.displayWidth / 2,
+        top: gameObject.displayHeight / 2,
+      };
+  }
 }

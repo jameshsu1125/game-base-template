@@ -1,5 +1,10 @@
+import {
+  GATE_DURATION,
+  STOP_COLLISION,
+} from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
+import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import Phaser from "phaser";
 import {
   GATE_WIDTH_SCALE_RATIO,
@@ -7,29 +12,20 @@ import {
   SCENE_PERSPECTIVE,
 } from "../../configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
-import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import {
-  GAME_DELTA,
-  GATE_DURATION,
-  GATE_SPEED,
-  STOP_COLLISION,
-} from "@/configs/constants/game.constants";
-
-type TGateState = {
-  direction: -1 | 0 | 1;
-  startTime: number;
-  scale: number;
-  target: Phaser.Physics.Arcade.Sprite;
-};
+import { TGateState, TQuadrantX } from "./gate.config";
 
 export class GateComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
+  private quadrantX: TQuadrantX[] = [-1, 0, 1]; // -1: left, 0: center, 1: right
 
-  public gateContainer: Phaser.Physics.Arcade.Sprite[] = [];
-  public gateState: TGateState[] = [];
+  public gateContainer: Phaser.Physics.Arcade.Sprite[] = []; // Array to hold gate sprites
+  public gateState: TGateState[] = []; // Array to hold gate states
 
-  constructor(scene: Phaser.Scene) {
+  private increasePlayerCount: (count: number) => void;
+
+  constructor(scene: Phaser.Scene, increasePlayerCount: () => void) {
     super(scene, 0, 0);
+    this.increasePlayerCount = increasePlayerCount;
     this.build();
   }
 
@@ -38,57 +34,77 @@ export class GateComponent extends Phaser.GameObjects.Container {
   }
 
   public fire(time: number): void {
-    const positionX = [0, -1, 1].sort(() => Math.random() - 0.5);
+    const quadrant = [...this.quadrantX].sort(() => Math.random() - 0.5);
 
     [GAME_ASSET_KEYS.gatePositive, GAME_ASSET_KEYS.gateNegative]
       .sort(() => Math.random() - 0.5)
       .forEach((assetsKey, index) => {
-        const gate = this.scene.physics.add.sprite(0, 0, assetsKey);
-        const { width, height } = getDisplaySizeByWidthPercentage(
-          gate,
-          GATE_WIDTH_SCALE_RATIO
-        );
-        gate.setDisplaySize(width, height);
-        gate.setPosition((positionX[index] * gate.width) / 2, this.y);
-        this.add(gate);
-
-        this.gateState.push({
-          direction: positionX[index] as -1 | 0 | 1,
-          startTime: time,
-          target: gate,
-          scale: gate.scale,
-        });
-
-        this.gateContainer.push(gate);
-        if (!STOP_COLLISION) this.addCollision(gate);
+        this.createGates(assetsKey, quadrant, index, time);
       });
   }
 
-  private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
+  private createGates(
+    assetsKey: string,
+    quadrant: TQuadrantX[],
+    index: number,
+    time: number
+  ): void {
+    const currentQuadrant = quadrant[index];
+    const gate = this.scene.physics.add.sprite(0, 0, assetsKey);
+    gate.setName(`gate-${index}`);
+
+    const { width, height } = getDisplaySizeByWidthPercentage(
+      gate,
+      GATE_WIDTH_SCALE_RATIO
+    );
+    gate.setDisplaySize(width, height);
+    gate.setPosition((currentQuadrant * gate.width) / 2, this.y);
+    this.add(gate);
+
+    this.gateState.push({
+      name: gate.name,
+      direction: currentQuadrant as -1 | 0 | 1,
+      startTime: time,
+      target: gate,
+      scale: gate.scale,
+    });
+
+    this.gateContainer.push(gate);
+    if (!STOP_COLLISION) this.addCollision(gate);
+  }
+
+  private addCollision(gate: Phaser.Physics.Arcade.Sprite): void {
     ServiceLocator.get<SceneLayoutManager>(
       "gameAreaManager"
     ).layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
       this.scene.physics.add.collider(
         gate,
         firepower,
-        () => {
-          gate.destroy();
-          firepower.destroy();
-        },
+        () => this.onCollision(gate, firepower),
         () => {},
         this.scene
       );
       this.scene.physics.add.overlap(
         gate,
         firepower,
-        () => {
-          gate.destroy();
-          firepower.destroy();
-        },
+        () => this.onCollision(gate, firepower),
         () => {},
         this.scene
       );
     });
+  }
+
+  private onCollision(
+    gate: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ): void {
+    this.increasePlayerCount(Math.floor(Math.random() * 2) + 1);
+    gate.destroy();
+    firepower.destroy();
+  }
+
+  public onStart(): void {
+    this.isStarted = true;
   }
 
   public update(time: number): void {
@@ -120,9 +136,5 @@ export class GateComponent extends Phaser.GameObjects.Container {
         this.gateContainer.shift();
       }
     });
-  }
-
-  public onStart(): void {
-    this.isStarted = true;
   }
 }
