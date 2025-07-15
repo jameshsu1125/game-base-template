@@ -139,10 +139,10 @@ export default class SceneLayoutManager {
     });
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number): void {
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
-    this.layoutContainers.gate.update(time, delta);
+    this.layoutContainers.gate.update(time);
   }
 
   public onStart(): void {

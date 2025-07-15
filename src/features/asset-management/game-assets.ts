@@ -19,8 +19,8 @@ export interface GameAssets {
     healthBar: string;
     firepowerLevel1: string;
     firepowerLevel2: string;
-    gateBlue: string;
-    gateRed: string;
+    gatePositive: string;
+    gateNegative: string;
 
     enemyAvatar: string;
     enemyAvatarContainer: string;
@@ -58,8 +58,8 @@ const defaultGameAssets = {
     healthBar: "assets/choice-runner/health-bar.png",
     firepowerLevel1: "assets/choice-runner/firepower-level-1.png",
     firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
-    gateBlue: "assets/choice-runner/gate-blue.png",
-    gateRed: "assets/choice-runner/gate-red.png",
+    gatePositive: "assets/choice-runner/gate-positive.png",
+    gateNegative: "assets/choice-runner/gate-negative.png",
 
     enemyAvatar: "assets/match-fight/enemy-avatar.png",
     enemyAvatarContainer: "assets/match-fight/enemy-avatar-container.svg",

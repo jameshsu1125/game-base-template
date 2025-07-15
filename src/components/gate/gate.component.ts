@@ -17,7 +17,6 @@ import {
 
 type TGateState = {
   direction: -1 | 0 | 1;
-  percent: number;
   startTime: number;
   scale: number;
   target: Phaser.Physics.Arcade.Sprite;
@@ -28,7 +27,6 @@ export class GateComponent extends Phaser.GameObjects.Container {
 
   public gateContainer: Phaser.Physics.Arcade.Sprite[] = [];
   public gateState: TGateState[] = [];
-  private baseScale = 1;
 
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
@@ -42,7 +40,7 @@ export class GateComponent extends Phaser.GameObjects.Container {
   public fire(time: number): void {
     const positionX = [0, -1, 1].sort(() => Math.random() - 0.5);
 
-    [GAME_ASSET_KEYS.gateBlue, GAME_ASSET_KEYS.gateRed]
+    [GAME_ASSET_KEYS.gatePositive, GAME_ASSET_KEYS.gateNegative]
       .sort(() => Math.random() - 0.5)
       .forEach((assetsKey, index) => {
         const gate = this.scene.physics.add.sprite(0, 0, assetsKey);
@@ -56,7 +54,6 @@ export class GateComponent extends Phaser.GameObjects.Container {
 
         this.gateState.push({
           direction: positionX[index] as -1 | 0 | 1,
-          percent: 0,
           startTime: time,
           target: gate,
           scale: gate.scale,
@@ -94,7 +91,7 @@ export class GateComponent extends Phaser.GameObjects.Container {
     });
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number): void {
     if (!this.isStarted) return;
 
     this.gateState.forEach((state) => {
