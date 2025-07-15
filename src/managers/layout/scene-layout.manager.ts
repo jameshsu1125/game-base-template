@@ -95,10 +95,7 @@ export default class SceneLayoutManager {
   }
 
   private createGate(): GateComponent {
-    const gateComponent = new GateComponent(
-      this.scene,
-      this.increasePlayerCount.bind(this)
-    );
+    const gateComponent = new GateComponent(this.scene);
     return gateComponent;
   }
 
@@ -144,6 +141,13 @@ export default class SceneLayoutManager {
 
   public increasePlayerCount(count: number = 1): void {
     this.layoutContainers.player.increasePlayersCount(count);
+  }
+
+  public increaseGateCount(
+    gate: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) {
+    // increase gate count
   }
 
   public update(time: number): void {

@@ -1,11 +1,7 @@
 import {
   FIREPOWER_SPEED,
   GAME_DELTA,
-  STOP_COLLISION,
 } from "@/configs/constants/game.constants";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import Phaser from "phaser";
 import {
   FIREPOWER_OFFSET_Y,
   FIREPOWER_PERSPECTIVE,
@@ -17,6 +13,7 @@ import {
   getDisplayPositionByBorderAlign,
   getDisplaySizeByWidthPercentage,
 } from "@/utils/layout.utils";
+import Phaser from "phaser";
 import { PlayerComponent } from "../characters/player.component";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
@@ -87,38 +84,38 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       );
 
       this.add(firepower);
-      if (!STOP_COLLISION) this.addCollision(firepower);
+      // if (!STOP_COLLISION) this.addCollision(firepower);
       this.firepowerContainer.push(firepower);
     });
   }
 
   private addCollision(firepower: Phaser.Physics.Arcade.Sprite) {
-    ServiceLocator.get<SceneLayoutManager>(
-      "gameAreaManager"
-    ).layoutContainers.gate.gateContainer.forEach((gate) => {
-      this.scene.physics.add.collider(
-        firepower,
-        gate,
-        () => {
-          firepower.destroy();
-          gate.destroy();
-          this.firepowerContainer.shift();
-        },
-        () => {},
-        this.scene
-      );
-      this.scene.physics.add.overlap(
-        firepower,
-        gate,
-        () => {
-          firepower.destroy();
-          gate.destroy();
-          this.firepowerContainer.shift();
-        },
-        () => {},
-        this.scene
-      );
-    });
+    // ServiceLocator.get<SceneLayoutManager>(
+    //   "gameAreaManager"
+    // ).layoutContainers.gate.gateContainer.forEach((gate) => {
+    //   this.scene.physics.add.collider(
+    //     firepower,
+    //     gate,
+    //     () => {
+    //       firepower.destroy();
+    //       gate.destroy();
+    //       this.firepowerContainer.shift();
+    //     },
+    //     () => {},
+    //     this.scene
+    //   );
+    //   this.scene.physics.add.overlap(
+    //     firepower,
+    //     gate,
+    //     () => {
+    //       firepower.destroy();
+    //       gate.destroy();
+    //       this.firepowerContainer.shift();
+    //     },
+    //     () => {},
+    //     this.scene
+    //   );
+    // });
   }
 
   public update(): void {

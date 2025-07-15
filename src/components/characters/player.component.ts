@@ -1,3 +1,8 @@
+import {
+  GAME_MECHANIC_CONFIG_SCHEMA,
+  GAME_MECHANIC_CONSTANTS,
+} from "@/configs/constants/game-mechanic/game-mechanic.constants";
+import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
 import Phaser from "phaser";
 import {
   PLAYER_GROUP_GAP_X,
@@ -6,19 +11,10 @@ import {
 } from "../../configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
-  getDisplaySizeByWidthPercentage,
-  getDisplayPositionByBorderAlign,
   getDisplayPositionAlign,
+  getDisplaySizeByWidthPercentage,
 } from "../../utils/layout.utils";
-import {
-  PLAYER_COMPONENT_HEALTH_BAR_SIZE,
-  PLAYER_COMPONENT_SIZE,
-} from "./player.config";
-import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
-import {
-  GAME_MECHANIC_CONFIG_SCHEMA,
-  GAME_MECHANIC_CONSTANTS,
-} from "@/configs/constants/game-mechanic/game-mechanic.constants";
+import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
   public group: Phaser.Physics.Arcade.StaticGroup | null = null;
