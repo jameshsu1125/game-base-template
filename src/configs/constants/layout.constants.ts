@@ -12,4 +12,4 @@ export const PLAYER_GROUP_GAP_X = 30; // each player x gap
 export const FIREPOWER_OFFSET_Y = -10;
 export const FIREPOWER_WIDTH_SCALE_RATIO = 23 / 320; // float between 0 and 1
 
-export const GATE_WIDTH_SCALE_RATIO = 80 / 320; // float between 0 and 1
+export const GATE_WIDTH_SCALE_RATIO = 160 / 320; // float between 0 and 1

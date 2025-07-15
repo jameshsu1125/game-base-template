@@ -79,7 +79,7 @@ export default class SceneLayoutManager {
   private createFirepower(): FirepowerComponent {
     const firepowerComponent = new FirepowerComponent(
       this.scene,
-      this.layoutContainers.player
+      this.increaseGateCount.bind(this)
     );
     return firepowerComponent;
   }
@@ -95,7 +95,10 @@ export default class SceneLayoutManager {
   }
 
   private createGate(): GateComponent {
-    const gateComponent = new GateComponent(this.scene);
+    const gateComponent = new GateComponent(
+      this.scene,
+      this.increaseGateCount.bind(this)
+    );
     return gateComponent;
   }
 
@@ -147,6 +150,9 @@ export default class SceneLayoutManager {
     gate: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
   ) {
+    this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
+    this.layoutContainers.gate.increaseGateCountByName(gate.name);
+
     // increase gate count
   }
 

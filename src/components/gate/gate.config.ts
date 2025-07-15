@@ -1,11 +1,8 @@
+import GateWithCounterComponent from "./gateWithCounter.component";
+
 export type TGateState = {
-  name: string;
-  quadrant: -1 | 0 | 1;
   startTime: number;
-  scale: number;
-  gate: Phaser.Physics.Arcade.Sprite;
-  text: Phaser.GameObjects.Text;
-  count: number;
+  target: GateWithCounterComponent;
 };
 
 export type TQuadrantX = -1 | 0 | 1;

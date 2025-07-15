@@ -1,6 +1,7 @@
 import {
   FIREPOWER_SPEED,
   GAME_DELTA,
+  STOP_COLLISION,
 } from "@/configs/constants/game.constants";
 import {
   FIREPOWER_OFFSET_Y,
@@ -15,18 +16,38 @@ import {
 } from "@/utils/layout.utils";
 import Phaser from "phaser";
 import { PlayerComponent } from "../characters/player.component";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
   private player: PlayerComponent;
   public firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
+  private increaseGateCount: (
+    gate: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) => void;
 
   private isStarted = false;
   private baseScale = 1;
   public level = 1;
+  private index = 0;
 
-  constructor(scene: Phaser.Scene, player: PlayerComponent) {
+  constructor(
+    scene: Phaser.Scene,
+    increaseGateCount: (
+      gate: Phaser.Physics.Arcade.Sprite,
+      firepower: Phaser.Physics.Arcade.Sprite
+    ) => void
+  ) {
     super(scene, 0, 0);
-    this.player = player;
+
+    this.increaseGateCount = increaseGateCount;
+
+    this.player =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers.player;
+
     this.build();
   }
 
@@ -56,6 +77,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
             : GAME_ASSET_KEYS.firepowerLevel2
         )
         .refreshBody();
+      firepower.setName(`firepower-${this.index++}`);
 
       const { width, height } = getDisplaySizeByWidthPercentage(
         firepower,
@@ -84,12 +106,43 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
       );
 
       this.add(firepower);
-      // if (!STOP_COLLISION) this.addCollision(firepower);
+      if (!STOP_COLLISION) this.addCollision(firepower);
       this.firepowerContainer.push(firepower);
     });
   }
 
   private addCollision(firepower: Phaser.Physics.Arcade.Sprite) {
+    const layoutContainers =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers;
+
+    layoutContainers.gate.gateState.forEach((state) => {
+      if (state.target.gate) {
+        this.scene.physics.add.collider(
+          firepower,
+          state.target.gate,
+          () => {
+            if (!state.target.gate) return;
+            this.increaseGateCount(state.target.gate, firepower);
+          },
+          () => {},
+          this.scene
+        );
+
+        this.scene.physics.add.overlap(
+          firepower,
+          state.target.gate,
+          () => {
+            if (!state.target.gate) return;
+            this.increaseGateCount(state.target.gate, firepower);
+          },
+          () => {},
+          this.scene
+        );
+      }
+    });
+
     // ServiceLocator.get<SceneLayoutManager>(
     //   "gameAreaManager"
     // ).layoutContainers.gate.gateContainer.forEach((gate) => {
@@ -116,6 +169,19 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     //     this.scene
     //   );
     // });
+  }
+
+  removeFirepowerByName(name: string): void {
+    const [firepower] = this.firepowerContainer.filter(
+      (fp) => fp.name === name
+    );
+
+    if (firepower) {
+      firepower.destroy();
+      this.firepowerContainer = this.firepowerContainer.filter(
+        (fp) => fp.name !== name
+      );
+    }
   }
 
   public update(): void {
