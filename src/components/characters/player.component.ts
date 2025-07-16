@@ -16,8 +16,24 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   public playersCount = GAME_MECHANIC_CONSTANTS.playerReinforce;
   private index = 0;
 
-  constructor(scene: Phaser.Scene) {
+  private decreasePlayerBlood: (
+    player: Phaser.Physics.Arcade.Sprite,
+    enemy: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
+  private increasePlayerCount: (count: number, gateName: string) => void;
+
+  constructor(
+    scene: Phaser.Scene,
+    decreasePlayerBlood: (
+      player: Phaser.Physics.Arcade.Sprite,
+      enemy: Phaser.Physics.Arcade.Sprite
+    ) => void,
+    increasePlayerCount: (count: number, gateName: string) => void
+  ) {
     super(scene, 0, 0);
+    this.decreasePlayerBlood = decreasePlayerBlood;
+    this.increasePlayerCount = increasePlayerCount;
     this.build();
   }
 
@@ -36,7 +52,10 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     [...new Array(currentCount).keys()].forEach(() => {
       const player = new PlayerWidthCounterComponent(
         this.scene,
-        `player-${this.index++}`
+        `player-${this.index++}`,
+        this.decreasePlayerBlood,
+        this.increasePlayerCount,
+        this.removePlayerByName.bind(this)
       );
       this.group?.add(player);
       this.players.push(player);
@@ -80,6 +99,16 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     }
   }
 
+  public loseBlood(player: Phaser.Physics.Arcade.Sprite): void {
+    const [playerComponent] = this.players.filter(
+      (p) => p.player?.name === player.name
+    );
+
+    if (playerComponent) {
+      playerComponent.loseBlood();
+    }
+  }
+
   public onStart(): void {
     this.isStarted = true;
     this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -97,6 +126,20 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     this.scene.input.on("pointerup", () => {
       this.touchState.isDown = false;
     });
+  }
+
+  public removePlayerByName(name: string): void {
+    console.log(name, this.players);
+
+    const [player] = this.players.filter((p) => p.playerName === name);
+
+    if (player) {
+      player.destroy();
+      this.players = this.players.filter((p) => p.playerName !== name);
+      if (this.players.length === 0) {
+        console.log("no players left");
+      }
+    }
   }
 
   public update(): void {

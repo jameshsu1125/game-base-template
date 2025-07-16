@@ -14,10 +14,13 @@ import {
   PLAYER_COMPONENT_HEALTH_BAR_SIZE,
   PLAYER_FORMATION,
 } from "./player.config";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import { ENEMY_DAMAGE } from "@/configs/constants/game.constants";
 
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
-  private playerName: string;
+  public playerName: string;
   private isDestroyed = false;
   public player: Phaser.Physics.Arcade.Sprite | null = null;
   public healthBarBorder: Phaser.GameObjects.Graphics =
@@ -58,9 +61,30 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
 
   public blood: number = 100;
 
-  constructor(scene: Phaser.Scene, playerName: string) {
+  private decreasePlayerBlood: (
+    player: Phaser.Physics.Arcade.Sprite,
+    enemy: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
+  private increasePlayerCount: (count: number, gateName: string) => void;
+  private removePlayerByName: (name: string) => void;
+
+  constructor(
+    scene: Phaser.Scene,
+    playerName: string,
+    decreasePlayerBlood: (
+      player: Phaser.Physics.Arcade.Sprite,
+      enemy: Phaser.Physics.Arcade.Sprite
+    ) => void,
+    increasePlayerCount: (count: number, gateName: string) => void,
+    removePlayerByName: (name: string) => void
+  ) {
     super(scene, 0, 0);
     this.playerName = playerName;
+    this.decreasePlayerBlood = decreasePlayerBlood;
+    this.increasePlayerCount = increasePlayerCount;
+    this.removePlayerByName = removePlayerByName;
+
     this.healthBarBorder.setDepth(1);
     this.healthBarMask.setDepth(2);
     this.healthBar.setOrigin(0, 0);
@@ -102,8 +126,9 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
       (currentHeight - 4) * 0.5
     );
 
+    const percent = this.blood / 100;
     this.healthBar.setPosition(currentX, currentY);
-    this.healthBar.setDisplaySize(currentWidth, currentHeight);
+    this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);
 
     this.healthText.setPosition(currentX, currentY + 3);
@@ -130,6 +155,41 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     });
     player.play("run", true);
     this.player = player;
+    this.addCollider(player);
+  }
+
+  private addCollider(player: Phaser.Physics.Arcade.Sprite): void {
+    if (!this.player) return;
+
+    const { layoutContainers } =
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager");
+
+    layoutContainers.enemy.enemyState.forEach((enemyState) => {
+      const { target } = enemyState;
+      if (!target.enemy) {
+        this.scene.physics.add.collider(
+          player,
+          target,
+          () => this.decreasePlayerBlood(player, target.enemy!),
+          () => {},
+          this.scene
+        );
+      }
+    });
+
+    layoutContainers.gate.gateState.forEach((gateState) => {
+      const { target } = gateState;
+      this.scene.physics.add.collider(
+        player,
+        target,
+        () => {
+          this.increasePlayerCount(target.num, target.name);
+          target.destroy();
+        },
+        () => {},
+        this.scene
+      );
+    });
   }
 
   public destroy(): void {
@@ -144,6 +204,15 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
       this.player = null;
     }
     super.destroy();
+  }
+
+  public loseBlood() {
+    this.blood -= ENEMY_DAMAGE;
+
+    if (this.blood <= 0) {
+      if (this.blood < 0) this.blood = 0;
+      this.removePlayerByName(this.playerName);
+    }
   }
 
   public setPositionByIndex(index: number, offset: number, total: number) {

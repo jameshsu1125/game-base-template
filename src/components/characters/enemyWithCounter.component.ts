@@ -12,7 +12,11 @@ import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { GATE_MISS_OFFSET_RATIO } from "../gate/gate.config";
 import { HEALTH_BAR_TEXT_STYLE } from "./enemy.config";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
-import { STOP_COLLISION } from "@/configs/constants/game.constants";
+import {
+  FIREPOWER_DAMAGE_LEVEL_1,
+  FIREPOWER_DAMAGE_LEVEL_2,
+  STOP_COLLISION,
+} from "@/configs/constants/game.constants";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -114,11 +118,12 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
   }
 
   private addCollision(enemy: Phaser.Physics.Arcade.Sprite) {
-    const firepower =
-      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").layoutContainers
-        .firepower;
+    const layoutContainers =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers;
 
-    firepower.firepowerContainer.forEach((firepower) => {
+    layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
       this.scene.physics.add.collider(
         enemy,
         firepower,
@@ -129,29 +134,22 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
       this.scene.physics.add.overlap(
         enemy,
         firepower,
-        () => {},
+        () => this.decreaseEnemyBlood(enemy, firepower),
         undefined,
         this.scene
       );
     });
 
-    // layoutContainers.player.players.forEach((player) => {
-    //   if (!player.player) return;
-    //   this.scene.physics.add.collider(
-    //     gate,
-    //     player.player,
-    //     () => this.increasePlayerCount(this.num, gate.name),
-    //     undefined,
-    //     this.scene
-    //   );
-    //   this.scene.physics.add.overlap(
-    //     gate,
-    //     player.player,
-    //     () => this.increasePlayerCount(this.num, gate.name),
-    //     undefined,
-    //     this.scene
-    //   );
-    // });
+    layoutContainers.player.players.forEach((player) => {
+      if (!player.player) return;
+      this.scene.physics.add.collider(
+        enemy,
+        player.player,
+        () => this.decreasePlayerBlood(player.player!, enemy),
+        undefined,
+        this.scene
+      );
+    });
   }
 
   private setHealthBar(): void {
@@ -234,7 +232,16 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
   public loseBlood(): void {
     if (!this.enemy || this.isDestroyed) return;
 
-    this.blood -= 10;
+    const layoutContainers =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers;
+
+    const damage =
+      layoutContainers.firepower.level === 1
+        ? FIREPOWER_DAMAGE_LEVEL_1
+        : FIREPOWER_DAMAGE_LEVEL_2;
+    this.blood -= damage;
 
     if (this.blood <= 0) {
       this.destroy();

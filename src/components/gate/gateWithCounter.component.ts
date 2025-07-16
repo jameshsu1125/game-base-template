@@ -19,7 +19,7 @@ import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 export default class GateWithCounterComponent extends Phaser.GameObjects
   .Container {
   private isDestroyed = false;
-  private num = 0;
+  public num = 0;
   private defaultScale: number = 1;
   public gateName = "";
 

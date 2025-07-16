@@ -68,6 +68,7 @@ export default class SceneLayoutManager {
       this.layoutContainers.firepower,
       this.layoutContainers.player,
       this.layoutContainers.logo,
+      this.layoutContainers.endScreenComponent,
     ]);
     return this.layoutContainers;
   }
@@ -99,7 +100,11 @@ export default class SceneLayoutManager {
   }
 
   private createPlayer(): PlayerComponent {
-    const playerComponent = new PlayerComponent(this.scene);
+    const playerComponent = new PlayerComponent(
+      this.scene,
+      this.decreasePlayerBlood.bind(this),
+      this.increasePlayerCount.bind(this)
+    );
     return playerComponent;
   }
 
@@ -174,8 +179,8 @@ export default class SceneLayoutManager {
     player: Phaser.Physics.Arcade.Sprite,
     enemy: Phaser.Physics.Arcade.Sprite
   ): void {
-    // this.layoutContainers.player.decreasePlayerBlood(player, blood);
-    // this.layoutContainers.enemy.removeEnemyByName(enemy.name);
+    this.layoutContainers.player.loseBlood(player);
+    this.layoutContainers.enemy.removeStateByName(enemy.name);
   }
 
   public decreaseEnemyBlood(
