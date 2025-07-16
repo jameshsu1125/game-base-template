@@ -8,6 +8,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
   public enemyState: TEnemyState[] = [];
   private index = 0;
+  public startTime = 0;
 
   private decreaseEnemyBlood: (
     enemy: Phaser.Physics.Arcade.Sprite,
@@ -36,6 +37,28 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     this.decreasePlayerBlood = decreasePlayerBlood;
 
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
+
+    requestAnimationFrame(() => {
+      this.build();
+    });
+  }
+
+  private build(): void {
+    this.createEnemy({ x: 50, type: "straight" }, -1000);
+    this.createEnemy({ x: 30, type: "follow" }, -2000);
+    this.createEnemy({ x: 70, type: "follow" }, -4000);
+    this.createEnemy({ x: 20, type: "straight" }, -7000);
+    this.createEnemy({ x: 80, type: "straight" }, -8000);
+    this.createEnemy({ x: 100, type: "straight" }, -9000);
+    this.createEnemy({ x: 0, type: "follow" }, -10000);
+    this.createEnemy({ x: 20, type: "follow" }, -12000);
+
+    this.enemyState.forEach((state) => {
+      const percent = (0 - state.startTime) / GATE_DURATION;
+      const { target } = state;
+      target.setPositionByPercentage(percent);
+      target.enemy?.refreshBody();
+    });
   }
 
   public fire(
@@ -101,10 +124,11 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     }
   }
 
-  public update(time: number): void {
+  public update(time: number, delta: number): void {
     if (!this.isStarted) return;
-    this.enemyState.forEach((state, index) => {
-      const percent = (time - state.startTime) / GATE_DURATION;
+    this.enemyState.forEach((state) => {
+      const percent =
+        (time - state.startTime - this.startTime + 500) / GATE_DURATION;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

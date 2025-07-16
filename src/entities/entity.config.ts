@@ -5,8 +5,8 @@ export const GATE_ENTITY_CONFIG: {
   index: number;
   data: { quadrant: TQuadrantX; count: number }[];
 }[] = [
-  { time: 0, index: 1, data: [{ quadrant: 0, count: -5 }] },
-  { time: 10000, index: 2, data: [{ quadrant: 1, count: -30 }] },
+  { time: 0, index: 1, data: [{ quadrant: 0, count: -12 }] },
+  { time: 10000, index: 2, data: [{ quadrant: 1, count: -130 }] },
   { time: 20000, index: 3, data: [{ quadrant: 1, count: -231 }] },
   { time: 30000, index: 4, data: [{ quadrant: -1, count: -542 }] },
 ];

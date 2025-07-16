@@ -124,33 +124,37 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
         "gameAreaManager"
       ).layoutContainers;
 
-    layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
-      this.scene.physics.add.collider(
-        enemy,
-        firepower,
-        () => this.decreaseEnemyBlood(enemy, firepower),
-        undefined,
-        this.scene
-      );
-      this.scene.physics.add.overlap(
-        enemy,
-        firepower,
-        () => this.decreaseEnemyBlood(enemy, firepower),
-        undefined,
-        this.scene
-      );
-    });
+    if (layoutContainers.firepower) {
+      layoutContainers.firepower?.firepowerContainer.forEach((firepower) => {
+        this.scene.physics.add.collider(
+          enemy,
+          firepower,
+          () => this.decreaseEnemyBlood(enemy, firepower),
+          undefined,
+          this.scene
+        );
+        this.scene.physics.add.overlap(
+          enemy,
+          firepower,
+          () => this.decreaseEnemyBlood(enemy, firepower),
+          undefined,
+          this.scene
+        );
+      });
+    }
 
-    layoutContainers.player.players.forEach((player) => {
-      if (!player.player) return;
-      this.scene.physics.add.collider(
-        enemy,
-        player.player,
-        () => this.decreasePlayerBlood(player.player!, enemy),
-        undefined,
-        this.scene
-      );
-    });
+    if (layoutContainers.player) {
+      layoutContainers.player.players.forEach((player) => {
+        if (!player.player) return;
+        this.scene.physics.add.collider(
+          enemy,
+          player.player,
+          () => this.decreasePlayerBlood(player.player!, enemy),
+          undefined,
+          this.scene
+        );
+      });
+    }
   }
 
   private setHealthBar(): void {

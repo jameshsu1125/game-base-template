@@ -223,12 +223,12 @@ export default class SceneLayoutManager {
     this.layoutContainers.endScreenComponent.show();
   }
 
-  public update(time: number): void {
+  public update(time: number, delta: number): void {
     if (this.isGameOver) return;
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
     this.layoutContainers.gate.update(time);
-    this.layoutContainers.enemy.update(time);
+    this.layoutContainers.enemy.update(time, delta);
     this.layoutContainers.logo.update();
     this.layoutContainers.supplement.update(time);
   }

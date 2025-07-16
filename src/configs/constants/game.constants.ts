@@ -3,8 +3,8 @@ export const PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD = 5;
 
 export const FIREPOWER_SPEED = 800;
 export const FIREPOWER_RELOAD_TIME = 500;
-export const FIREPOWER_DAMAGE_LEVEL_1 = 10;
-export const FIREPOWER_DAMAGE_LEVEL_2 = 25;
+export const FIREPOWER_DAMAGE_LEVEL_1 = 50;
+export const FIREPOWER_DAMAGE_LEVEL_2 = 100;
 
 export const GATE_FIRE_RATE = 10000;
 export const GATE_DURATION = 20000;

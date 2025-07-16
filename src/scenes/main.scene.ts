@@ -16,6 +16,7 @@ export default class MainScene extends Phaser.Scene {
   private supplementEntity?: SupplementEntity = undefined;
 
   private isGameOver = false;
+  private updateTime: number = 0;
 
   constructor() {
     super("MainScene");
@@ -60,7 +61,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.firepowerEntity?.onStart();
       this.gateEntity?.onStart();
-      this.enemyEntity?.onStart();
+      this.enemyEntity?.onStart(this.updateTime);
       this.supplementEntity?.onStart();
 
       window.removeEventListener("pointerdown", onUserInput);
@@ -75,8 +76,12 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number): void {
+    this.updateTime = time;
     if (this.isGameOver) return;
-    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
+    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(
+      time,
+      delta
+    );
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time);
     this.enemyEntity?.update(time, delta);
