@@ -13,6 +13,8 @@ export default class MainScene extends Phaser.Scene {
   private gateEntity?: GateEntity = undefined;
   private enemyEntity?: EnemyEntity = undefined;
 
+  private isGameOver = false;
+
   constructor() {
     super("MainScene");
   }
@@ -49,7 +51,9 @@ export default class MainScene extends Phaser.Scene {
 
   private addOnStartListener(): void {
     const onUserInput = () => {
-      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart();
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart(
+        this.onGameOver.bind(this)
+      );
 
       this.firepowerEntity?.onStart();
       this.gateEntity?.onStart();
@@ -62,7 +66,12 @@ export default class MainScene extends Phaser.Scene {
     window.addEventListener("keydown", onUserInput);
   }
 
+  private onGameOver(): void {
+    this.isGameOver = true;
+  }
+
   update(time: number, delta: number): void {
+    if (this.isGameOver) return;
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time, delta);

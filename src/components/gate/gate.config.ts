@@ -17,6 +17,6 @@ export const GATE_MISS_OFFSET_RATIO = 1.8; // Ratio to adjust the position of th
 export const GATE_TEXT_STYLE = {
   fontSize: "44px",
   color: "#ffffff",
-  fontFamily: "Arial",
+  fontFamily: "monospace",
   align: "center",
 };

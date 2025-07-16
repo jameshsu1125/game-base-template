@@ -39,10 +39,10 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     "100%",
     {
       fontSize: "7px",
-      color: "#ffffff",
-      fontFamily: "Arial",
+      color: "transparent",
+      fontFamily: "monospace",
       align: "center",
-      fixedWidth: 32,
+      fixedWidth: 20,
       fixedHeight: PLAYER_COMPONENT_HEALTH_BAR_SIZE.height - 2,
       shadow: {
         fill: true,
@@ -131,8 +131,7 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);
 
-    this.healthText.setPosition(currentX, currentY + 3);
-    this.healthText.width = currentWidth - 2;
+    this.healthText.setPosition(currentX, currentY + 1);
   }
 
   private addPlayer(): void {

@@ -31,7 +31,7 @@ export class EndScreenOverlayComponent extends Phaser.GameObjects.Container {
         color: "#FFFFFF",
         backgroundColor: "#000000",
         fontStyle: "bold",
-        fontFamily: "Arial",
+        fontFamily: "monospace",
       })
       .setOrigin(0.5);
 

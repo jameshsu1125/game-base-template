@@ -9,7 +9,7 @@ export type TEnemyState = {
 export const HEALTH_BAR_TEXT_STYLE = {
   fontSize: "7px",
   color: "rgba(0,0,0,0)",
-  fontFamily: "Arial",
+  fontFamily: "monospace",
   align: "center",
   fixedWidth: 20,
   fixedHeight: PLAYER_COMPONENT_HEALTH_BAR_SIZE.height - 2,

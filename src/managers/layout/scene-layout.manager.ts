@@ -42,6 +42,7 @@ export default class SceneLayoutManager {
   private layoutManager: BaseLayoutManager;
   public layoutContainers!: LayoutContainers;
   public isGameOver = false;
+  private gameOverCallback: () => void = () => {};
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -194,6 +195,7 @@ export default class SceneLayoutManager {
 
   public onGameOver(): void {
     this.isGameOver = true;
+    this.gameOverCallback();
 
     Object.entries(this.layoutContainers).forEach(([key, container]) => {
       if (key === "sceneContainer") return;
@@ -213,7 +215,8 @@ export default class SceneLayoutManager {
     this.layoutContainers.logo.update();
   }
 
-  public onStart(): void {
+  public onStart(gameOver: () => void): void {
+    this.gameOverCallback = gameOver;
     this.layoutContainers.player.onStart();
     this.layoutContainers.firepower.onStart();
     this.layoutContainers.gate.onStart();
