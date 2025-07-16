@@ -150,7 +150,6 @@ export default class SceneLayoutManager {
   public increasePlayerCount(count: number = 1, gateName: string): void {
     this.layoutContainers.player.increasePlayersCount(count);
     this.layoutContainers.gate.removeStateByName(gateName);
-    console.log(count);
   }
 
   public increaseGateCount(

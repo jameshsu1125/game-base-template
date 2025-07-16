@@ -8,8 +8,12 @@ import {
   getDisplayPositionAlign,
   getDisplaySizeByWidthPercentage,
 } from "@/utils/layout.utils";
-import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
+import {
+  PLAYER_COMPONENT_HEALTH_BAR_SIZE,
+  PLAYER_FORMATION,
+} from "./player.config";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
@@ -145,14 +149,18 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   public setPositionByIndex(index: number, offset: number, total: number) {
     if (this.player === null || this.isDestroyed) return;
 
+    const currentTotal = Math.max(
+      1,
+      Math.min(total, GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce.max)
+    ) as keyof typeof PLAYER_FORMATION;
+
+    const formation = PLAYER_FORMATION[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getDisplayPositionAlign(this.player, "CENTER_BOTTOM");
-    const { displayWidth } = this.player;
 
-    const maxWidth = displayWidth + PLAYER_GROUP_GAP_X * (total - 1);
-    const currentX =
-      left - maxWidth / 2 + PLAYER_GROUP_GAP_X * index + displayWidth / 2;
+    const currentX = left + formation.x * PLAYER_GROUP_GAP_X;
+    const currentY = top + formation.y * PLAYER_GROUP_GAP_X;
 
-    this.player.setPosition(currentX + offset, top + PLAYER_OFFSET_Y);
-    this.addHealthBar(currentX + offset, top + PLAYER_OFFSET_Y);
+    this.player.setPosition(currentX + offset, currentY + PLAYER_OFFSET_Y);
+    this.addHealthBar(currentX + offset, currentY + PLAYER_OFFSET_Y);
   }
 }
