@@ -98,4 +98,12 @@ export class GateComponent extends Phaser.GameObjects.Container {
       target.setPositionByPercentage(percent);
     });
   }
+
+  public destroy(): void {
+    this.gateState.forEach((state) => {
+      state.target.destroy();
+    });
+    this.gateState = [];
+    super.destroy();
+  }
 }

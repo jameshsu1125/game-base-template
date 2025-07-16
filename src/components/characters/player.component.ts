@@ -22,6 +22,7 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   ) => void;
 
   private increasePlayerCount: (count: number, gateName: string) => void;
+  private onGameOver: () => void;
 
   constructor(
     scene: Phaser.Scene,
@@ -29,11 +30,13 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
       player: Phaser.Physics.Arcade.Sprite,
       enemy: Phaser.Physics.Arcade.Sprite
     ) => void,
-    increasePlayerCount: (count: number, gateName: string) => void
+    increasePlayerCount: (count: number, gateName: string) => void,
+    onGameOver: () => void
   ) {
     super(scene, 0, 0);
     this.decreasePlayerBlood = decreasePlayerBlood;
     this.increasePlayerCount = increasePlayerCount;
+    this.onGameOver = onGameOver;
     this.build();
   }
 
@@ -129,16 +132,14 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   public removePlayerByName(name: string): void {
-    console.log(name, this.players);
-
     const [player] = this.players.filter((p) => p.playerName === name);
 
     if (player) {
       player.destroy();
       this.players = this.players.filter((p) => p.playerName !== name);
-      if (this.players.length === 0) {
-        console.log("no players left");
-      }
+
+      // no player left, it's over
+      if (this.players.length === 0) this.onGameOver();
     }
   }
 
@@ -151,5 +152,17 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
       : 0;
     const targetX = this.x + deltaX;
     this.setCurrentPositionByUserInput(targetX, deltaX);
+  }
+
+  public destroy(): void {
+    this.isStarted = false;
+    this.cursors = undefined;
+    this.players.forEach((player) => player.destroy());
+    this.players = [];
+    if (this.group) {
+      this.group.clear(true, true);
+      this.group = null;
+    }
+    super.destroy();
   }
 }

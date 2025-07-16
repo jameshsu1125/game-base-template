@@ -39,6 +39,7 @@ export default class SceneLayoutManager {
   private constants: Required<GameAreaConfig>;
   private layoutManager: BaseLayoutManager;
   public layoutContainers!: LayoutContainers;
+  public isGameOver = false;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -103,7 +104,8 @@ export default class SceneLayoutManager {
     const playerComponent = new PlayerComponent(
       this.scene,
       this.decreasePlayerBlood.bind(this),
-      this.increasePlayerCount.bind(this)
+      this.increasePlayerCount.bind(this),
+      this.onGameOver.bind(this)
     );
     return playerComponent;
   }
@@ -152,16 +154,6 @@ export default class SceneLayoutManager {
     return endScreenOverlay;
   }
 
-  public showResultOverlay(
-    endGameResult: EndGameResult,
-    onRestart?: () => void
-  ): void {
-    this.layoutContainers.endScreenComponent.show({
-      type: endGameResult,
-      onRestart,
-    });
-  }
-
   public increasePlayerCount(count: number = 1, gateName: string): void {
     this.layoutContainers.player.increasePlayersCount(count);
     this.layoutContainers.gate.removeStateByName(gateName);
@@ -191,7 +183,20 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
   }
 
+  public onGameOver(): void {
+    this.isGameOver = true;
+
+    Object.entries(this.layoutContainers).forEach(([key, container]) => {
+      if (key === "sceneContainer") return;
+      if (key === "endScreenComponent") container.show();
+      else container.destroy();
+    });
+
+    this.layoutContainers.endScreenComponent.show();
+  }
+
   public update(time: number): void {
+    if (this.isGameOver) return;
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
     this.layoutContainers.gate.update(time);

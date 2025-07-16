@@ -44,7 +44,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   public fire(time: number): void {
     if (!this.isStarted) return;
 
-    const increaseCount = this.fireTime > 3 ? 5 : 10;
+    const increaseCount = this.fireTime > 3 ? 5 : 1;
     const count =
       increaseCount + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
 
@@ -111,5 +111,13 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
       const { target } = state;
       target.setPositionByPercentage(percent);
     });
+  }
+
+  public destroy(): void {
+    this.enemyState.forEach((state) => {
+      state.target.destroy();
+    });
+    this.enemyState = [];
+    super.destroy();
   }
 }

@@ -215,4 +215,12 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   public onStart(): void {
     this.isStarted = true;
   }
+
+  public destroy(): void {
+    this.firepowerContainer.forEach((firepower) => {
+      firepower.destroy();
+    });
+    this.firepowerContainer = [];
+    super.destroy();
+  }
 }
