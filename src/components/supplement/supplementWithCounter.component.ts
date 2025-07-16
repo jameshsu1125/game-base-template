@@ -1,13 +1,12 @@
 import {
-  SUPPLEMENT_MAX_NUM,
-  SUPPLEMENT_MIN_NUM,
-} from "@/configs/constants/game.constants";
-import {
+  Easing,
   PLAYER_OFFSET_Y,
   SCENE_PERSPECTIVE,
   SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO,
 } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { GATE_TEXT_STYLE } from "../gate/gate.config";
 import {
@@ -15,40 +14,41 @@ import {
   TQuadrantX,
   TSupplementType,
 } from "./supplement.config";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 
 export default class SupplementWithCounterComponent extends Phaser.GameObjects
   .Container {
   public isDestroyed = false;
-
   public supplementName: string;
-  public type: TSupplementType = "ARMY";
-  public quadrant: TQuadrantX = 0;
 
   private defaultScale = 1;
 
   public bucket?: Phaser.Physics.Arcade.Sprite;
   private text?: Phaser.GameObjects.Text;
-
-  public num =
-    SUPPLEMENT_MIN_NUM + Math.floor(Math.random() * SUPPLEMENT_MAX_NUM);
+  private num = 0;
 
   private removeStateByName: (name: string) => void;
+  private config?: {
+    type: TSupplementType;
+    count: number;
+    quadrant: TQuadrantX;
+  };
 
   constructor(
     scene: Phaser.Scene,
-    type: TSupplementType,
-    quadrant: TQuadrantX,
+    config: {
+      type: TSupplementType;
+      count: number;
+      quadrant: TQuadrantX;
+    },
     name: string,
     removeStateByName: (name: string) => void
   ) {
     super(scene, 0, 0);
 
     this.supplementName = name;
-    this.type = type;
-    this.quadrant = quadrant;
+    this.config = config;
     this.removeStateByName = removeStateByName;
+    this.num = this.config?.count || 0;
 
     this.build();
   }
@@ -60,8 +60,8 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   private createBucket(): void {
     this.bucket = this.scene.physics.add.staticSprite(
       0,
-      0,
-      this.type === "ARMY" ? GAME_ASSET_KEYS.army : GAME_ASSET_KEYS.gun1
+      -200,
+      this.config?.type === "ARMY" ? GAME_ASSET_KEYS.army : GAME_ASSET_KEYS.gun1
     );
     this.bucket.setName(this.supplementName);
     this.add(this.bucket);
@@ -89,6 +89,8 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
       }
     );
     this.text.setOrigin(0.5, 0.5);
+    this.add(this.bucket);
+    this.add(this.text);
 
     this.addCollision(this.bucket);
   }
@@ -112,7 +114,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     });
   }
 
-  public setPxy(x: number, y: number, percentage: number): void {
+  public setPxy(x: number, y: number): void {
     this.bucket?.setPosition(x, y);
     this.text?.setPosition(x, y);
     this.bucket?.refreshBody();
@@ -135,19 +137,29 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     }
   }
 
+  setVisibility(value: boolean) {
+    this.bucket?.setVisible(value);
+    this.text?.setVisible(value);
+  }
+
   public update(percentage: number): void {
     const { defaultScale: scale, bucket, text } = this;
     if (!bucket || !text || this.isDestroyed) return;
 
+    const easingPercentage = Easing(percentage);
+
     const currentScale =
-      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - percentage);
+      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - easingPercentage);
     bucket.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
 
-    const x = this.scene.scale.width / 2 + this.quadrant * bucket.displayWidth;
-    const y = (this.scene.scale.height + bucket.displayHeight) * percentage;
+    const x =
+      this.scene.scale.width / 2 +
+      (this.config?.quadrant || 0) * bucket.displayWidth;
+    const y =
+      (this.scene.scale.height + bucket.displayHeight) * easingPercentage;
 
-    this.setPxy(x, y, percentage);
+    this.setPxy(x, y);
 
     const missPositionY =
       this.scene.scale.height -

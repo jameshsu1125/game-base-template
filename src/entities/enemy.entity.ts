@@ -5,6 +5,7 @@ import {
 } from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
+import { ENEMY_ENTITY_CONFIG } from "./entity.config";
 
 /**
  * FirepowerEntity class representing the firepower component in the game.
@@ -21,21 +22,21 @@ export default class EnemyEntity {
 
   public update(time: number, delta: number): void {
     if (!this.isStarted) return;
-
-    const enemy =
-      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").layoutContainers
-        .enemy;
-
     if (this.state.startTime === 0) {
       this.state.startTime = time;
+      return;
     }
 
-    const index = Math.floor(
-      (time - this.state.startTime - ENEMY_FIRE_DELAY) / ENEMY_FIRE_RATE
-    );
-    if (index !== this.state.index && index > this.state.index) {
-      this.state.index = index;
-      enemy.fire(time);
+    const currentTime = time - this.state.startTime;
+    const [config] = ENEMY_ENTITY_CONFIG.filter(
+      (config) => currentTime >= config.time
+    ).reverse();
+
+    if (config && this.state.index !== config?.index) {
+      this.state.index = config?.index || 0;
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers.enemy.fire(time, config);
     }
   }
 }

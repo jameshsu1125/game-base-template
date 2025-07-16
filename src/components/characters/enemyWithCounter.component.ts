@@ -1,31 +1,28 @@
 import {
+  FIREPOWER_DAMAGE_LEVEL_1,
+  FIREPOWER_DAMAGE_LEVEL_2,
+  STOP_COLLISION,
+} from "@/configs/constants/game.constants";
+import {
+  Easing,
   ENEMY_FAR_RANDOM_WIDTH,
   ENEMY_HEALTH_BAR_OFFSET_Y,
   ENEMY_WIDTH_SCALE_RATIO,
-  PLAYER_OFFSET_Y,
   SCENE_PERSPECTIVE,
 } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import { GATE_MISS_OFFSET_RATIO } from "../gate/gate.config";
 import { HEALTH_BAR_TEXT_STYLE } from "./enemy.config";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
-import {
-  FIREPOWER_DAMAGE_LEVEL_1,
-  FIREPOWER_DAMAGE_LEVEL_2,
-  STOP_COLLISION,
-} from "@/configs/constants/game.constants";
+import { log } from "console";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
   private isDestroyed = false;
   private defaultScale = 1;
   private defaultX = 0;
-  private defaultY = 0;
-  private defaultHealthBarScaleX = 1;
-  private defaultHealthBarScaleY = 1;
   public enemyName = "";
 
   public enemy: Phaser.Physics.Arcade.Sprite | null = null;
@@ -52,11 +49,19 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     enemy: Phaser.Physics.Arcade.Sprite
   ) => void;
 
+  private config?: {
+    x: number;
+    type: "follow" | "straight";
+  };
+
   constructor(
     scene: Phaser.Scene,
     name: string,
+    config: {
+      x: number;
+      type: "follow" | "straight";
+    },
     removeStateByName: (name: string) => void,
-    randomY: number,
     decreaseEnemyBlood: (
       enemy: Phaser.Physics.Arcade.Sprite,
       firepower: Phaser.Physics.Arcade.Sprite
@@ -72,7 +77,7 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.decreaseEnemyBlood = decreaseEnemyBlood;
     this.decreasePlayerBlood = decreasePlayerBlood;
 
-    this.defaultY = randomY;
+    this.config = config;
 
     this.healthBarBorder.setDepth(1);
     this.healthBarMask.setDepth(3);
@@ -93,12 +98,11 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     );
     const randomX =
       (this.scene.scale.width - ENEMY_FAR_RANDOM_WIDTH) / 2 +
-      Math.random() * ENEMY_FAR_RANDOM_WIDTH;
-
+      (this.config?.x || 0);
     this.enemy.setName(this.enemyName);
     this.enemy.setDisplaySize(width, height);
     this.enemy.setOrigin(0.5, 0.5);
-    this.enemy.setPosition(randomX, this.defaultY);
+    this.enemy.setPosition(randomX, -height / 2);
 
     this.defaultScale = this.enemy.scale;
     this.defaultX = randomX;
@@ -199,7 +203,7 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.setHealthBar();
   }
 
-  public update(): void {
+  public update(percent: number): void {
     if (!this.enemy || this.isDestroyed) return;
     const scale =
       this.defaultScale -
@@ -269,14 +273,27 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     const { enemy } = this;
     if (!enemy || this.isDestroyed) return;
 
+    const easingPercentage = Easing(percentage);
+
+    const { player } =
+      ServiceLocator.get<SceneLayoutManager>(
+        "gameAreaManager"
+      ).layoutContainers;
+
+    // const x =
+    //   this.defaultX +
+    //   (this.defaultX > this.scene.scale.width / 2 ? 1 : -1) * percentage * 300;
+
     const x =
-      this.defaultX +
-      (this.defaultX > this.scene.scale.width / 2 ? 1 : -1) * percentage * 20;
+      this.config?.type === "follow"
+        ? this.enemy!.x +
+          ((player.players[0].player?.x || 0) - this.enemy!.x) / 500
+        : this.enemy!.x;
+
     const y =
-      this.defaultY +
-      (this.scene.scale.height + enemy.displayHeight) * percentage;
+      (this.scene.scale.height + enemy.displayHeight) * easingPercentage;
 
     this.setPxy(x, y);
-    this.update();
+    this.update(easingPercentage);
   }
 }

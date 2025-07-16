@@ -3,16 +3,17 @@ import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { TGateState, TQuadrantX } from "./gate.config";
 import GateWithCounterComponent from "./gateWithCounter.component";
 import { GATE_DURATION } from "@/configs/constants/game.constants";
+import { GATE_ENTITY_CONFIG } from "@/entities/entity.config";
 
 export class GateComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
-  private quadrantX: TQuadrantX[] = [-1, 0, 1]; // -1: left, 0: center, 1: right
   public gateState: TGateState[] = [];
   private increaseGateCount: (
     gate: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
   ) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
+  private index = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -30,29 +31,22 @@ export class GateComponent extends Phaser.GameObjects.Container {
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
-  public fire(time: number): void {
+  public fire(time: number, config: (typeof GATE_ENTITY_CONFIG)[number]): void {
     if (!this.isStarted) return;
 
-    const quadrant = [...this.quadrantX].sort(() => Math.random() - 0.5);
-
-    [GAME_ASSET_KEYS.gatePositive, GAME_ASSET_KEYS.gateNegative]
-      .sort(() => Math.random() - 0.5)
-      .forEach((assetsKey, index) => {
-        this.createGate(assetsKey, index, quadrant, time);
-      });
+    [...config.data].forEach((cfg) => {
+      this.createGate(cfg, time);
+    });
   }
 
   private createGate(
-    assetsKey: string,
-    index: number,
-    quadrant: TQuadrantX[],
+    config: { quadrant: TQuadrantX; count: number },
     time: number
   ): void {
-    const name = `${time}-${index}`;
+    const name = `${time}-${this.index++}`;
     const gate = new GateWithCounterComponent(
       this.scene,
-      assetsKey,
-      quadrant[index],
+      config,
       name,
       this.removeStateByName.bind(this),
       this.increaseGateCount,

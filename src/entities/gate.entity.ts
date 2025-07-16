@@ -1,6 +1,6 @@
-import { GATE_FIRE_RATE } from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
+import { GATE_ENTITY_CONFIG } from "./entity.config";
 
 export default class GateEntity {
   private isStarted = false;
@@ -11,18 +11,23 @@ export default class GateEntity {
     this.isStarted = true;
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number): void {
     if (!this.isStarted) return;
     if (this.state.startTime === 0) {
       this.state.startTime = time;
+      return;
     }
 
-    const index = Math.floor((time - this.state.startTime) / GATE_FIRE_RATE);
-    if (index !== this.state.index && index > this.state.index) {
-      this.state.index = index;
+    const currentTime = time - this.state.startTime;
+    const [config] = GATE_ENTITY_CONFIG.filter(
+      (config) => currentTime >= config.time
+    ).reverse();
+
+    if (config && this.state.index !== config?.index) {
+      this.state.index = config?.index || 0;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.gate.fire(time);
+      ).layoutContainers.gate.fire(time, config);
     }
   }
 }

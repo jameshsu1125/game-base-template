@@ -6,6 +6,6 @@ export type TSupplementState = {
   target: SupplementWithCounterComponent;
 };
 
-export const SUPPLEMENT_MISS_OFFSET_RATIO = 2.8; // Ratio to adjust the position of the gate when it is missed
+export const SUPPLEMENT_MISS_OFFSET_RATIO = 1.8; // Ratio to adjust the position of the gate when it is missed
 
 export type TSupplementType = "GUN" | "ARMY";

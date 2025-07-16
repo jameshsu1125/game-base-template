@@ -1,3 +1,5 @@
+import BezierEasing from "bezier-easing";
+
 export const VICTORY_OFFSET_Y = -0.1;
 
 export const LANDING_FINGER_WIDTH_SCALE_RATIO = 61 / 320;
@@ -25,5 +27,7 @@ export const FIREPOWER_WIDTH_SCALE_RATIO = 23 / 320;
 
 export const GATE_WIDTH_SCALE_RATIO = 160 / 320;
 
-export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 80 / 320;
+export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 180 / 320;
 export const SUPPLEMENT_TEXT_OFFSET_Y = -60;
+
+export const Easing = BezierEasing(0.55, 0.085, 0.68, 0.53);

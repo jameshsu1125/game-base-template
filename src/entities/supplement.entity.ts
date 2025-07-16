@@ -1,9 +1,6 @@
-import {
-  SUPPLEMENT_FIRE_DELAY,
-  SUPPLEMENT_FIRE_RATE,
-} from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
+import { SUPPLEMENT_ENTITY_CONFIG } from "./entity.config";
 
 export default class SupplementEntity {
   private isStarted = false;
@@ -18,18 +15,19 @@ export default class SupplementEntity {
     if (!this.isStarted) return;
     if (this.state.startTime === 0) {
       this.state.startTime = time;
+      return;
     }
 
-    const index = Math.floor(
-      (time - this.state.startTime - SUPPLEMENT_FIRE_DELAY) /
-        SUPPLEMENT_FIRE_RATE
-    );
+    const currentTime = time - this.state.startTime;
+    const [config] = SUPPLEMENT_ENTITY_CONFIG.filter(
+      (config) => currentTime >= config.time
+    ).reverse();
 
-    if (index !== this.state.index && index > this.state.index) {
-      this.state.index = index;
+    if (config && this.state.index !== config?.index) {
+      this.state.index = config?.index || 0;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.supplement.fire(time);
+      ).layoutContainers.supplement.fire(time, config);
     }
   }
 }

@@ -82,11 +82,7 @@ export default class SceneLayoutManager {
   }
 
   private createSupplement(): SupplementComponent {
-    const firepowerSupplement = new SupplementComponent(
-      this.scene,
-      this.increaseGateCount.bind(this),
-      this.increasePlayerCount.bind(this)
-    );
+    const firepowerSupplement = new SupplementComponent(this.scene);
     return firepowerSupplement;
   }
 

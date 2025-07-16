@@ -9,12 +9,14 @@ import {
   getDisplaySizeByWidthPercentage,
 } from "@/utils/layout.utils";
 import {
+  Easing,
   GATE_WIDTH_SCALE_RATIO,
   PLAYER_OFFSET_Y,
   SCENE_PERSPECTIVE,
 } from "@/configs/constants/layout.constants";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import BezierEasing from "bezier-easing";
 
 export default class GateWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -34,10 +36,11 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   ) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
 
+  private config: { quadrant: TQuadrantX; count: number } | null = null;
+
   constructor(
     scene: Phaser.Scene,
-    assetsKey: string,
-    quadrant: TQuadrantX,
+    config: { quadrant: TQuadrantX; count: number },
     name: string,
     removeStateByName: (name: string) => void,
     increaseGateCount: (
@@ -48,21 +51,24 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   ) {
     super(scene, 0, 0);
     this.gateName = name;
-    this.quadrant = quadrant;
+    this.quadrant = config.quadrant;
     this.removeStateByName = removeStateByName;
     this.increaseGateCount = increaseGateCount;
     this.increasePlayerCount = increasePlayerCount;
 
-    this.num =
-      assetsKey === GAME_ASSET_KEYS.gatePositive
-        ? 1 + Math.floor(Math.random() * 4)
-        : -1 - Math.floor(Math.random() * 30);
-
-    this.build(assetsKey);
+    this.num = config.count;
+    this.config = config;
+    this.build();
   }
 
-  private build(assetsKey: string): void {
-    this.gate = this.scene.physics.add.staticSprite(0, 0, assetsKey);
+  private build(): void {
+    this.gate = this.scene.physics.add.staticSprite(
+      0,
+      0,
+      this.num >= 0
+        ? GAME_ASSET_KEYS.gatePositive
+        : GAME_ASSET_KEYS.gateNegative
+    );
     this.gate.setName(this.gateName);
 
     const { width, height } = getDisplaySizeByWidthPercentage(
@@ -155,13 +161,15 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     const { defaultScale: scale, gate, text } = this;
     if (!gate || !text || this.isDestroyed) return;
 
+    const easingPercentage = Easing(percentage);
+
     const currentScale =
-      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - percentage);
+      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - easingPercentage);
     gate.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
 
     const x = this.scene.scale.width / 2 + this.quadrant * gate.displayWidth;
-    const y = (this.scene.scale.height + gate.displayHeight) * percentage;
+    const y = (this.scene.scale.height + gate.displayHeight) * easingPercentage;
 
     this.setPxy(x, y);
 

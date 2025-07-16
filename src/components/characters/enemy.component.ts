@@ -5,6 +5,7 @@ import {
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
+import { ENEMY_ENTITY_CONFIG } from "@/entities/entity.config";
 
 export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
@@ -43,27 +44,30 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
-  public fire(time: number): void {
+  public fire(
+    time: number,
+    config: (typeof ENEMY_ENTITY_CONFIG)[number]
+  ): void {
     if (!this.isStarted) return;
 
-    const count = 1 + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
-    const randomY = [...new Array(count).keys()]
-      .map(() => -Math.random() * 30)
-      .sort((a, b) => a - b);
-
-    [...new Array(count).keys()].forEach((index) => {
-      this.createEnemy(index, time, randomY);
+    [...config.data].forEach((cfg) => {
+      this.createEnemy(cfg, time);
     });
-    this.fireTime += 1;
   }
 
-  private createEnemy(index: number, time: number, randomY: number[]): void {
+  private createEnemy(
+    config: {
+      x: number;
+      type: "follow" | "straight";
+    },
+    time: number
+  ): void {
     const name = `enemy-${this.index++}`;
     const enemy = new EnemyWidthCounterComponent(
       this.scene,
       name,
+      config,
       this.removeStateByName.bind(this),
-      randomY[index],
       this.decreaseEnemyBlood,
       this.decreasePlayerBlood
     );

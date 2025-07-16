@@ -78,7 +78,7 @@ export default class MainScene extends Phaser.Scene {
     if (this.isGameOver) return;
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
-    this.gateEntity?.update(time, delta);
+    this.gateEntity?.update(time);
     this.enemyEntity?.update(time, delta);
     this.supplementEntity?.update(time);
   }
