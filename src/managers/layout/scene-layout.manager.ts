@@ -81,14 +81,19 @@ export default class SceneLayoutManager {
   }
 
   private createEnemy(): EnemyComponent {
-    const enemyComponent = new EnemyComponent(this.scene);
+    const enemyComponent = new EnemyComponent(
+      this.scene,
+      this.decreaseEnemyBlood.bind(this),
+      this.decreasePlayerBlood.bind(this)
+    );
     return enemyComponent;
   }
 
   private createFirepower(): FirepowerComponent {
     const firepowerComponent = new FirepowerComponent(
       this.scene,
-      this.increaseGateCount.bind(this)
+      this.increaseGateCount.bind(this),
+      this.decreaseEnemyBlood.bind(this)
     );
     return firepowerComponent;
   }
@@ -177,8 +182,8 @@ export default class SceneLayoutManager {
     enemy: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
   ): void {
-    // this.layoutContainers.enemy.decreaseEnemyBlood(enemy, blood);
-    // this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
+    this.layoutContainers.enemy.loseBlood(enemy);
+    this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
   }
 
   public update(time: number): void {

@@ -12,6 +12,7 @@ import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { GATE_MISS_OFFSET_RATIO } from "../gate/gate.config";
 import { HEALTH_BAR_TEXT_STYLE } from "./enemy.config";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -19,6 +20,8 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
   private defaultScale = 1;
   private defaultX = 0;
   private defaultY = 0;
+  private defaultHealthBarScaleX = 1;
+  private defaultHealthBarScaleY = 1;
   public enemyName = "";
 
   public enemy: Phaser.Physics.Arcade.Sprite | null = null;
@@ -35,19 +38,40 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
   private removeStateByName: (name: string) => void;
 
+  private decreaseEnemyBlood: (
+    enemy: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
+  private decreasePlayerBlood: (
+    player: Phaser.Physics.Arcade.Sprite,
+    enemy: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
   constructor(
     scene: Phaser.Scene,
     name: string,
     removeStateByName: (name: string) => void,
-    randomY: number
+    randomY: number,
+    decreaseEnemyBlood: (
+      enemy: Phaser.Physics.Arcade.Sprite,
+      firepower: Phaser.Physics.Arcade.Sprite
+    ) => void,
+    decreasePlayerBlood: (
+      player: Phaser.Physics.Arcade.Sprite,
+      enemy: Phaser.Physics.Arcade.Sprite
+    ) => void
   ) {
     super(scene, 0, 0);
     this.enemyName = name;
     this.removeStateByName = removeStateByName;
+    this.decreaseEnemyBlood = decreaseEnemyBlood;
+    this.decreasePlayerBlood = decreasePlayerBlood;
+
     this.defaultY = randomY;
 
     this.healthBarBorder.setDepth(1);
-    this.healthBarMask.setDepth(2);
+    this.healthBarMask.setDepth(3);
     this.healthBar.setOrigin(0, 0);
     this.healthBar.setDepth(2);
     this.healthText.setDepth(3);
@@ -86,31 +110,30 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     });
     this.enemy.play("run", true);
 
-    this.addCollision(this.enemy);
+    if (!STOP_COLLISION) this.addCollision(this.enemy);
   }
 
-  private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
-    const layoutContainers =
-      ServiceLocator.get<SceneLayoutManager>(
-        "gameAreaManager"
-      ).layoutContainers;
+  private addCollision(enemy: Phaser.Physics.Arcade.Sprite) {
+    const firepower =
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager").layoutContainers
+        .firepower;
 
-    // layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
-    //   this.scene.physics.add.collider(
-    //     gate,
-    //     firepower,
-    //     () => {},
-    //     undefined,
-    //     this.scene
-    //   );
-    //   this.scene.physics.add.overlap(
-    //     gate,
-    //     firepower,
-    //     () => {},
-    //     undefined,
-    //     this.scene
-    //   );
-    // });
+    firepower.firepowerContainer.forEach((firepower) => {
+      this.scene.physics.add.collider(
+        enemy,
+        firepower,
+        () => this.decreaseEnemyBlood(enemy, firepower),
+        undefined,
+        this.scene
+      );
+      this.scene.physics.add.overlap(
+        enemy,
+        firepower,
+        () => {},
+        undefined,
+        this.scene
+      );
+    });
 
     // layoutContainers.player.players.forEach((player) => {
     //   if (!player.player) return;
@@ -163,8 +186,9 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
       (currentHeight - 4) * 0.5
     );
 
+    const percent = this.blood / 100;
     this.healthBar.setPosition(currentX, currentY);
-    this.healthBar.setDisplaySize(currentWidth, currentHeight);
+    this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);
 
     this.healthText.setPosition(currentX, currentY + 3);
@@ -205,6 +229,19 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBarMask.setVisible(value);
     this.healthBar.setVisible(value);
     this.healthText.setVisible(value);
+  }
+
+  public loseBlood(): void {
+    if (!this.enemy || this.isDestroyed) return;
+
+    this.blood -= 10;
+
+    if (this.blood <= 0) {
+      this.destroy();
+      this.removeStateByName(this.enemyName);
+    } else {
+      this.healthText.setText(`${this.blood}%`);
+    }
   }
 
   public destroy(): void {

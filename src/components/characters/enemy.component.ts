@@ -10,16 +10,43 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
   public enemyState: TEnemyState[] = [];
   private index = 0;
+  private fireTime = 0;
 
-  constructor(scene: Phaser.Scene) {
+  private decreaseEnemyBlood: (
+    enemy: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
+  private decreasePlayerBlood: (
+    player: Phaser.Physics.Arcade.Sprite,
+    enemy: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
+  constructor(
+    scene: Phaser.Scene,
+    decreaseEnemyBlood: (
+      enemy: Phaser.Physics.Arcade.Sprite,
+      firepower: Phaser.Physics.Arcade.Sprite
+    ) => void,
+    decreasePlayerBlood: (
+      player: Phaser.Physics.Arcade.Sprite,
+      enemy: Phaser.Physics.Arcade.Sprite
+    ) => void
+  ) {
     super(scene, 0, 0);
+
+    this.decreaseEnemyBlood = decreaseEnemyBlood;
+    this.decreasePlayerBlood = decreasePlayerBlood;
+
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
   public fire(time: number): void {
     if (!this.isStarted) return;
 
-    const count = 5 + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
+    const increaseCount = this.fireTime > 3 ? 5 : 1;
+    const count =
+      increaseCount + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
 
     const randomY = [...new Array(count).keys()]
       .map(() => -Math.random() * 30)
@@ -28,6 +55,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     [...new Array(count).keys()].forEach((index) => {
       this.createEnemy(index, time, randomY);
     });
+    this.fireTime += 1;
   }
 
   private createEnemy(index: number, time: number, randomY: number[]): void {
@@ -36,7 +64,9 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
       this.scene,
       name,
       this.removeStateByName.bind(this),
-      randomY[index]
+      randomY[index],
+      this.decreaseEnemyBlood,
+      this.decreasePlayerBlood
     );
     this.add(enemy);
 
@@ -62,6 +92,16 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     this.enemyState = this.enemyState.filter(
       (state) => state.target.enemyName !== name
     );
+  }
+
+  public loseBlood(enemy: Phaser.Physics.Arcade.Sprite) {
+    const [state] = this.enemyState.filter(
+      (state) => state.target.enemyName === enemy.name
+    );
+
+    if (state) {
+      state.target.loseBlood();
+    }
   }
 
   public update(time: number): void {

@@ -13,7 +13,9 @@ export default class GateEntity {
 
   public update(time: number, delta: number): void {
     if (!this.isStarted) return;
-    if (this.state.startTime === 0) this.state.startTime = time;
+    if (this.state.startTime === 0) {
+      this.state.startTime = time;
+    }
 
     const index = Math.floor((time - this.state.startTime) / GATE_FIRE_RATE);
     if (index !== this.state.index && index > this.state.index) {

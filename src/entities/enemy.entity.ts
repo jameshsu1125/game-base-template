@@ -28,9 +28,13 @@ export default class EnemyEntity {
 
     if (this.state.startTime === 0) {
       this.state.startTime = time;
+      enemy.fire(time);
+      return;
     }
 
-    const index = Math.floor((time - this.state.startTime) / ENEMY_FIRE_RATE);
+    const index = Math.floor(
+      (time - this.state.startTime - ENEMY_FIRE_DELAY) / ENEMY_FIRE_RATE
+    );
     if (index !== this.state.index && index > this.state.index) {
       this.state.index = index;
       enemy.fire(time);
