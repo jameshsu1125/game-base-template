@@ -12,12 +12,14 @@ import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
 import { GateComponent } from "@/components/gate/gate.component";
 import { EnemyComponent } from "@/components/characters/enemy.component";
+import { LandingComponent } from "@/components/landing.component";
 
 type Background = Phaser.GameObjects.Image;
 
 export interface LayoutContainers {
   sceneContainer: Phaser.GameObjects.Container;
 
+  landing: LandingComponent;
   background: Background;
   road: Phaser.GameObjects.Image;
   logo: LogoComponent;
@@ -60,6 +62,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower = this.createFirepower();
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
+    this.layoutContainers.landing = this.createLanding();
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
@@ -69,6 +72,7 @@ export default class SceneLayoutManager {
       this.layoutContainers.firepower,
       this.layoutContainers.player,
       this.layoutContainers.logo,
+      this.layoutContainers.landing,
       this.layoutContainers.endScreenComponent,
     ]);
     return this.layoutContainers;
@@ -80,6 +84,11 @@ export default class SceneLayoutManager {
     this.layoutContainers = {
       sceneContainer: sceneContainer,
     } as LayoutContainers;
+  }
+
+  private createLanding(): LandingComponent {
+    const landingComponent = new LandingComponent(this.scene);
+    return landingComponent;
   }
 
   private createEnemy(): EnemyComponent {
@@ -209,5 +218,6 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower.onStart();
     this.layoutContainers.gate.onStart();
     this.layoutContainers.enemy.onStart();
+    this.layoutContainers.landing.destroy();
   }
 }

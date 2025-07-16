@@ -1,6 +1,6 @@
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import {
-  PLAYER_GROUP_GAP_X,
+  PLAYER_GROUP_GAP,
   PLAYER_HEALTH_BAR_OFFSET_Y,
   PLAYER_OFFSET_Y,
   PLAYER_WIDTH_SCALE_RATIO,
@@ -226,8 +226,8 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     const formation = PLAYER_FORMATION[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getDisplayPositionAlign(this.player, "CENTER_BOTTOM");
 
-    const currentX = left + formation.x * PLAYER_GROUP_GAP_X;
-    const currentY = top + formation.y * PLAYER_GROUP_GAP_X;
+    const currentX = left + formation.x * PLAYER_GROUP_GAP;
+    const currentY = top + formation.y * PLAYER_GROUP_GAP;
 
     this.player.setPosition(currentX + offset, currentY + PLAYER_OFFSET_Y);
     this.addHealthBar(currentX + offset, currentY + PLAYER_OFFSET_Y);

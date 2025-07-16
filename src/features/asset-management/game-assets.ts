@@ -21,22 +21,9 @@ export interface GameAssets {
     firepowerLevel2: string;
     gatePositive: string;
     gateNegative: string;
-
-    enemyAvatar: string;
-    enemyAvatarContainer: string;
-    enemyAvatarContainerOuterShadow: string;
-    enemyAvatarContainerInnerShadow: string;
-    enemyAvatarContainerWithShadow: string;
-    gameBoardContainer: string;
-    enemy: string;
-    archEnemy: string;
-    healthBarContainer: string;
-    gameLogo: string;
-    ctaButtonFrame: string;
-    moveContainer: string;
-    victoryFrame: string;
-    defeatFrame: string;
-    winSound: string;
+    arrowLeft: string;
+    arrowRight: string;
+    finger: string;
   };
   text: {
     restartButton: string;
@@ -60,25 +47,9 @@ const defaultGameAssets = {
     firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
     gatePositive: "assets/choice-runner/gate-positive.png",
     gateNegative: "assets/choice-runner/gate-negative.png",
-
-    enemyAvatar: "assets/match-fight/enemy-avatar.png",
-    enemyAvatarContainer: "assets/match-fight/enemy-avatar-container.svg",
-    enemyAvatarContainerOuterShadow:
-      "assets/match-fight/enemy-avatar-container-outer-shadow.svg",
-    enemyAvatarContainerInnerShadow:
-      "assets/match-fight/enemy-avatar-container-inner-shadow.svg",
-    enemyAvatarContainerWithShadow:
-      "assets/match-fight/enemy-avatar-container-with-shadow.svg",
-    gameBoardContainer: "assets/match-fight/game-board-container.svg",
-    enemy: "assets/match-fight/enemy.png",
-    archEnemy: "assets/match-fight/arch-enemy.png", // Will be rendered as emoji/shape in code
-    healthBarContainer: "assets/match-fight/health-bar-container.png", // Will be rendered as emoji/shape in code
-    gameLogo: "assets/match-fight/game-logo.png", // Will be rendered as emoji/shape in code
-    ctaButtonFrame: "assets/match-fight/cta-button-frame.png", // Will be rendered as emoji/shape in code
-    moveContainer: "assets/match-fight/moves-container.png",
-    victoryFrame: "assets/match-fight/victory-frame.png",
-    defeatFrame: "assets/match-fight/defeat-frame.png",
-    winSound: "assets/match-fight/sound/win.mp3",
+    arrowLeft: "assets/choice-runner/arrow-left.png",
+    arrowRight: "assets/choice-runner/arrow-right.png",
+    finger: "assets/choice-runner/finger.png",
   },
   text: {
     restartButton: "Restart",

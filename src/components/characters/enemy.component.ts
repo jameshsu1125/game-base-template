@@ -12,6 +12,8 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   private index = 0;
   private fireTime = 0;
 
+  private numberOfEnemies = [1, 2, 3];
+
   private decreaseEnemyBlood: (
     enemy: Phaser.Physics.Arcade.Sprite,
     firepower: Phaser.Physics.Arcade.Sprite
@@ -44,10 +46,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   public fire(time: number): void {
     if (!this.isStarted) return;
 
-    const increaseCount = this.fireTime > 3 ? 5 : 1;
-    const count =
-      increaseCount + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
-
+    const count = 1 + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
     const randomY = [...new Array(count).keys()]
       .map(() => -Math.random() * 30)
       .sort((a, b) => a - b);

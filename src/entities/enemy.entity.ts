@@ -29,6 +29,7 @@ export default class EnemyEntity {
     if (this.state.startTime === 0) {
       this.state.startTime = time;
       enemy.fire(time);
+
       return;
     }
 
