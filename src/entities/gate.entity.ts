@@ -12,8 +12,6 @@ export default class GateEntity {
   }
 
   public update(time: number, delta: number): void {
-    console.log("a");
-
     if (!this.isStarted) return;
     if (this.state.startTime === 0) {
       this.state.startTime = time;
