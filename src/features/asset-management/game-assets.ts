@@ -24,6 +24,10 @@ export interface GameAssets {
     arrowLeft: string;
     arrowRight: string;
     finger: string;
+    bucket: string;
+    gun1: string;
+    gun2: string;
+    army: string;
   };
   text: {
     restartButton: string;
@@ -50,6 +54,10 @@ const defaultGameAssets = {
     arrowLeft: "assets/choice-runner/arrow-left.png",
     arrowRight: "assets/choice-runner/arrow-right.png",
     finger: "assets/choice-runner/finger.png",
+    bucket: "assets/choice-runner/supplement-shipment.png",
+    gun1: "assets/choice-runner/supplement-item-firepower-1.png",
+    gun2: "assets/choice-runner/supplement-item-firepower-2.png",
+    army: "assets/choice-runner/supplement-item-army.png",
   },
   text: {
     restartButton: "Restart",

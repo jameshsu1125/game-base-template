@@ -33,6 +33,11 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     firepower: Phaser.Physics.Arcade.Sprite
   ) => void;
 
+  private decreaseSupplementCount: (
+    supplementName: string,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
   private isStarted = false;
   private baseScale = 1;
   public level = 1;
@@ -47,12 +52,17 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     decreaseEnemyBlood: (
       enemy: Phaser.Physics.Arcade.Sprite,
       firepower: Phaser.Physics.Arcade.Sprite
+    ) => void,
+    decreaseSupplementCount: (
+      supplementName: string,
+      firepower: Phaser.Physics.Arcade.Sprite
     ) => void
   ) {
     super(scene, 0, 0);
 
     this.increaseGateCount = increaseGateCount;
     this.decreaseEnemyBlood = decreaseEnemyBlood;
+    this.decreaseSupplementCount = decreaseSupplementCount;
 
     this.player =
       ServiceLocator.get<SceneLayoutManager>(
@@ -173,6 +183,34 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
           firepower,
           state.target.enemy,
           () => this.decreaseEnemyBlood(state.target.enemy!, firepower),
+          undefined,
+          this.scene
+        );
+      }
+    });
+
+    layoutContainers.supplement.supplementState.forEach((state) => {
+      if (state.target.bucket) {
+        this.scene.physics.add.collider(
+          firepower,
+          state.target.bucket,
+          () =>
+            this.decreaseSupplementCount(
+              state.target.supplementName,
+              firepower
+            ),
+          undefined,
+          this.scene
+        );
+
+        this.scene.physics.add.overlap(
+          firepower,
+          state.target.bucket,
+          () =>
+            this.decreaseSupplementCount(
+              state.target.supplementName,
+              firepower
+            ),
           undefined,
           this.scene
         );

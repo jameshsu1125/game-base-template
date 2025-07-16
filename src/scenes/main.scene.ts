@@ -1,17 +1,19 @@
+import EnemyEntity from "@/entities/enemy.entity";
+import FirepowerEntity from "@/entities/firepower.entity";
+import GateEntity from "@/entities/gate.entity";
+import SupplementEntity from "@/entities/supplement.entity";
 import Phaser from "phaser";
 import SceneLayoutManager from "../managers/layout/scene-layout.manager";
 import ServiceLocator from "../services/service-locator/service-locator.service";
 import ServiceRegistry from "../services/service-registry.service";
 import EndScreenSystem from "../systems/end-screen.system";
-import FirepowerEntity from "@/entities/firepower.entity";
-import GateEntity from "@/entities/gate.entity";
-import EnemyEntity from "@/entities/enemy.entity";
 // import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
   private firepowerEntity?: FirepowerEntity = undefined;
   private gateEntity?: GateEntity = undefined;
   private enemyEntity?: EnemyEntity = undefined;
+  private supplementEntity?: SupplementEntity = undefined;
 
   private isGameOver = false;
 
@@ -47,6 +49,7 @@ export default class MainScene extends Phaser.Scene {
     this.firepowerEntity = new FirepowerEntity();
     this.gateEntity = new GateEntity();
     this.enemyEntity = new EnemyEntity();
+    this.supplementEntity = new SupplementEntity();
   }
 
   private addOnStartListener(): void {
@@ -58,6 +61,7 @@ export default class MainScene extends Phaser.Scene {
       this.firepowerEntity?.onStart();
       this.gateEntity?.onStart();
       this.enemyEntity?.onStart();
+      this.supplementEntity?.onStart();
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
@@ -76,5 +80,6 @@ export default class MainScene extends Phaser.Scene {
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time, delta);
     this.enemyEntity?.update(time, delta);
+    this.supplementEntity?.update(time);
   }
 }

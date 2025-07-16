@@ -1,18 +1,16 @@
+import { EnemyComponent } from "@/components/characters/enemy.component";
+import { GateComponent } from "@/components/gate/gate.component";
+import { LandingComponent } from "@/components/landing.component";
+import { SupplementComponent } from "@/components/supplement/supplement.component";
 import Phaser from "phaser";
 import { PlayerComponent } from "../../components/characters/player.component";
-import {
-  EndGameResult,
-  EndScreenOverlayComponent,
-} from "../../components/end-screen.component";
+import { EndScreenOverlayComponent } from "../../components/end-screen.component";
 import { FirepowerComponent } from "../../components/firepower/firepower.component";
 import { LogoComponent } from "../../components/logo/logo.component";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
-import { GateComponent } from "@/components/gate/gate.component";
-import { EnemyComponent } from "@/components/characters/enemy.component";
-import { LandingComponent } from "@/components/landing.component";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -26,6 +24,7 @@ export interface LayoutContainers {
   player: PlayerComponent;
   firepower: FirepowerComponent;
   gate: GateComponent;
+  supplement: SupplementComponent;
   enemy: EnemyComponent;
 
   endScreenComponent: EndScreenOverlayComponent;
@@ -55,10 +54,12 @@ export default class SceneLayoutManager {
 
   public createGameAreas(): LayoutContainers {
     this.createMainContainer();
+
     this.layoutContainers.background = this.createBackground();
     this.layoutContainers.road = this.createRoad();
     this.layoutContainers.gate = this.createGate();
     this.layoutContainers.enemy = this.createEnemy();
+    this.layoutContainers.supplement = this.createSupplement();
     this.layoutContainers.player = this.createPlayer();
     this.layoutContainers.firepower = this.createFirepower();
     this.layoutContainers.logo = this.createLogo();
@@ -69,6 +70,7 @@ export default class SceneLayoutManager {
       this.layoutContainers.background,
       this.layoutContainers.road,
       this.layoutContainers.gate,
+      this.layoutContainers.supplement,
       this.layoutContainers.enemy,
       this.layoutContainers.firepower,
       this.layoutContainers.player,
@@ -77,6 +79,15 @@ export default class SceneLayoutManager {
       this.layoutContainers.endScreenComponent,
     ]);
     return this.layoutContainers;
+  }
+
+  private createSupplement(): SupplementComponent {
+    const firepowerSupplement = new SupplementComponent(
+      this.scene,
+      this.increaseGateCount.bind(this),
+      this.increasePlayerCount.bind(this)
+    );
+    return firepowerSupplement;
   }
 
   private createMainContainer(): void {
@@ -105,7 +116,8 @@ export default class SceneLayoutManager {
     const firepowerComponent = new FirepowerComponent(
       this.scene,
       this.increaseGateCount.bind(this),
-      this.decreaseEnemyBlood.bind(this)
+      this.decreaseEnemyBlood.bind(this),
+      this.decreaseSupplementCount.bind(this)
     );
     return firepowerComponent;
   }
@@ -193,6 +205,15 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
   }
 
+  public decreaseSupplementCount(
+    supplementName: string,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ): void {
+    console.log("a");
+    this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
+    this.layoutContainers.supplement.decreaseSupplementCount(supplementName);
+  }
+
   public onGameOver(): void {
     this.isGameOver = true;
     this.gameOverCallback();
@@ -213,6 +234,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.gate.update(time);
     this.layoutContainers.enemy.update(time);
     this.layoutContainers.logo.update();
+    this.layoutContainers.supplement.update(time);
   }
 
   public onStart(gameOver: () => void): void {
@@ -221,6 +243,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower.onStart();
     this.layoutContainers.gate.onStart();
     this.layoutContainers.enemy.onStart();
+    this.layoutContainers.supplement.onStart();
     this.layoutContainers.landing.destroy();
   }
 }
