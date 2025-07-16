@@ -1,9 +1,11 @@
+import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import {
-  HEALTH_BAR_OFFSET_Y,
   PLAYER_GROUP_GAP_X,
+  PLAYER_HEALTH_BAR_OFFSET_Y,
   PLAYER_OFFSET_Y,
   PLAYER_WIDTH_SCALE_RATIO,
 } from "@/configs/constants/layout.constants";
+import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
   getDisplayPositionAlign,
   getDisplaySizeByWidthPercentage,
@@ -12,8 +14,6 @@ import {
   PLAYER_COMPONENT_HEALTH_BAR_SIZE,
   PLAYER_FORMATION,
 } from "./player.config";
-import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
-import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
@@ -80,7 +80,7 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
 
     const currentX = x - (displayWidth - currentWidth) / 2;
-    const currentY = y - displayHeight / 2 + HEALTH_BAR_OFFSET_Y;
+    const currentY = y - displayHeight / 2 + PLAYER_HEALTH_BAR_OFFSET_Y;
 
     this.healthBarBorder.clear();
     this.healthBarBorder.fillStyle(0xffffff, 1);

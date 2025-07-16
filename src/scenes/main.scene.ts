@@ -5,11 +5,13 @@ import ServiceRegistry from "../services/service-registry.service";
 import EndScreenSystem from "../systems/end-screen.system";
 import FirepowerEntity from "@/entities/firepower.entity";
 import GateEntity from "@/entities/gate.entity";
+import EnemyEntity from "@/entities/enemy.entity";
 // import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
   private firepowerEntity?: FirepowerEntity = undefined;
   private gateEntity?: GateEntity = undefined;
+  private enemyEntity?: EnemyEntity = undefined;
 
   constructor() {
     super("MainScene");
@@ -42,6 +44,7 @@ export default class MainScene extends Phaser.Scene {
   private addEntityListener(): void {
     this.firepowerEntity = new FirepowerEntity();
     this.gateEntity = new GateEntity();
+    this.enemyEntity = new EnemyEntity();
   }
 
   private addOnStartListener(): void {
@@ -50,6 +53,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.firepowerEntity?.onStart();
       this.gateEntity?.onStart();
+      this.enemyEntity?.onStart();
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
@@ -62,5 +66,6 @@ export default class MainScene extends Phaser.Scene {
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time, delta);
+    this.enemyEntity?.update(time, delta);
   }
 }

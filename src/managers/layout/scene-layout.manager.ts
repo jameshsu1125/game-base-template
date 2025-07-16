@@ -53,12 +53,12 @@ export default class SceneLayoutManager {
     this.createMainContainer();
     this.layoutContainers.background = this.createBackground();
     this.layoutContainers.road = this.createRoad();
-    this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
-    this.layoutContainers.logo = this.createLogo();
+    this.layoutContainers.gate = this.createGate();
+    this.layoutContainers.enemy = this.createEnemy();
     this.layoutContainers.player = this.createPlayer();
     this.layoutContainers.firepower = this.createFirepower();
-    this.layoutContainers.gate = this.createGate();
-    this.layoutContainers.enemy = new EnemyComponent(this.scene);
+    this.layoutContainers.logo = this.createLogo();
+    this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
@@ -78,6 +78,11 @@ export default class SceneLayoutManager {
     this.layoutContainers = {
       sceneContainer: sceneContainer,
     } as LayoutContainers;
+  }
+
+  private createEnemy(): EnemyComponent {
+    const enemyComponent = new EnemyComponent(this.scene);
+    return enemyComponent;
   }
 
   private createFirepower(): FirepowerComponent {
@@ -160,15 +165,34 @@ export default class SceneLayoutManager {
     this.layoutContainers.gate.increaseGateCountByName(gate.name);
   }
 
+  public decreasePlayerBlood(
+    player: Phaser.Physics.Arcade.Sprite,
+    enemy: Phaser.Physics.Arcade.Sprite
+  ): void {
+    // this.layoutContainers.player.decreasePlayerBlood(player, blood);
+    // this.layoutContainers.enemy.removeEnemyByName(enemy.name);
+  }
+
+  public decreaseEnemyBlood(
+    enemy: Phaser.Physics.Arcade.Sprite,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ): void {
+    // this.layoutContainers.enemy.decreaseEnemyBlood(enemy, blood);
+    // this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
+  }
+
   public update(time: number): void {
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
     this.layoutContainers.gate.update(time);
+    this.layoutContainers.enemy.update(time);
+    this.layoutContainers.logo.update();
   }
 
   public onStart(): void {
     this.layoutContainers.player.onStart();
     this.layoutContainers.firepower.onStart();
     this.layoutContainers.gate.onStart();
+    this.layoutContainers.enemy.onStart();
   }
 }

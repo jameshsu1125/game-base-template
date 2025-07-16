@@ -20,7 +20,7 @@ export default class FirepowerEntity {
     if (this.state.startTime === 0) this.state.startTime = time;
 
     const index = Math.floor(
-      (time - this.state.startTime) / (FIREPOWER_RELOAD_TIME * 1000)
+      (time - this.state.startTime) / FIREPOWER_RELOAD_TIME
     );
     if (index !== this.state.index && index > this.state.index) {
       this.state.index = index;

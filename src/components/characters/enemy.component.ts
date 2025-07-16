@@ -1,32 +1,75 @@
 import {
-  LOGO_WIDTH_SCALE_RATIO,
-  PLAYER_WIDTH_SCALE_RATIO,
-} from "../../configs/constants/layout.constants";
+  ENEMY_MAX_COUNT_ONCE,
+  GATE_DURATION,
+} from "@/configs/constants/game.constants";
 import Phaser from "phaser";
-import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
-import {
-  getDisplayPositionByBorderAlign,
-  getDisplaySizeByWidthPercentage,
-} from "../../utils/layout.utils";
+import { TEnemyState } from "./enemy.config";
+import EnemyWidthCounterComponent from "./enemyWithCounter.component";
 
 export class EnemyComponent extends Phaser.GameObjects.Container {
+  private isStarted = false;
+  public enemyState: TEnemyState[] = [];
+  private index = 0;
+
   constructor(scene: Phaser.Scene) {
     super(scene, 0, 0);
-    this.build();
+    this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
-  private build(): void {
-    const image = this.scene.add.sprite(0, 0, "enemySheet");
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      image,
-      PLAYER_WIDTH_SCALE_RATIO
+  public fire(time: number): void {
+    if (!this.isStarted) return;
+
+    const count = 5 + Math.floor(Math.random() * ENEMY_MAX_COUNT_ONCE);
+
+    const randomY = [...new Array(count).keys()]
+      .map(() => -Math.random() * 30)
+      .sort((a, b) => a - b);
+
+    [...new Array(count).keys()].forEach((index) => {
+      this.createEnemy(index, time, randomY);
+    });
+  }
+
+  private createEnemy(index: number, time: number, randomY: number[]): void {
+    const name = `enemy-${this.index++}`;
+    const enemy = new EnemyWidthCounterComponent(
+      this.scene,
+      name,
+      this.removeStateByName.bind(this),
+      randomY[index]
     );
-    image.setDisplaySize(width, height);
-    image.setPosition(
-      0,
-      getDisplayPositionByBorderAlign(image, this.scene, "TOP")
+    this.add(enemy);
+
+    this.enemyState.push({
+      startTime: time,
+      target: enemy,
+    });
+  }
+
+  public onStart(): void {
+    this.isStarted = true;
+  }
+
+  public removeStateByName(name: string): void {
+    const [state] = this.enemyState.filter(
+      (state) => state.target.enemyName === name
     );
 
-    this.add(image);
+    if (state) {
+      state.target.destroy();
+    }
+
+    this.enemyState = this.enemyState.filter(
+      (state) => state.target.enemyName !== name
+    );
+  }
+
+  public update(time: number): void {
+    if (!this.isStarted) return;
+    this.enemyState.forEach((state, index) => {
+      const percent = (time - state.startTime) / GATE_DURATION;
+      const { target } = state;
+      target.setPositionByPercentage(percent);
+    });
   }
 }
