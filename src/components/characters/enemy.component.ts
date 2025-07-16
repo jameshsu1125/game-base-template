@@ -1,19 +1,13 @@
-import {
-  ENEMY_MAX_COUNT_ONCE,
-  GATE_DURATION,
-} from "@/configs/constants/game.constants";
+import { GATE_DURATION } from "@/configs/constants/game.constants";
+import { ENEMY_ENTITY_CONFIG } from "@/entities/entity.config";
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
-import { ENEMY_ENTITY_CONFIG } from "@/entities/entity.config";
 
 export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
   public enemyState: TEnemyState[] = [];
   private index = 0;
-  private fireTime = 0;
-
-  private numberOfEnemies = [1, 2, 3];
 
   private decreaseEnemyBlood: (
     enemy: Phaser.Physics.Arcade.Sprite,

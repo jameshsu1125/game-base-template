@@ -16,13 +16,11 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { HEALTH_BAR_TEXT_STYLE } from "./enemy.config";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
-import { log } from "console";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
   private isDestroyed = false;
   private defaultScale = 1;
-  private defaultX = 0;
   public enemyName = "";
 
   public enemy: Phaser.Physics.Arcade.Sprite | null = null;
@@ -105,7 +103,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.enemy.setPosition(randomX, -height / 2);
 
     this.defaultScale = this.enemy.scale;
-    this.defaultX = randomX;
 
     this.enemy.anims.create({
       key: "run",
@@ -279,10 +276,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
-
-    // const x =
-    //   this.defaultX +
-    //   (this.defaultX > this.scene.scale.width / 2 ? 1 : -1) * percentage * 300;
 
     const x =
       this.config?.type === "follow"
