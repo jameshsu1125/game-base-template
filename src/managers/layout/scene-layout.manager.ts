@@ -82,7 +82,10 @@ export default class SceneLayoutManager {
   }
 
   private createSupplement(): SupplementComponent {
-    const firepowerSupplement = new SupplementComponent(this.scene);
+    const firepowerSupplement = new SupplementComponent(
+      this.scene,
+      this.increaseSupplementCountByType.bind(this)
+    );
     return firepowerSupplement;
   }
 
@@ -207,6 +210,14 @@ export default class SceneLayoutManager {
   ): void {
     this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
     this.layoutContainers.supplement.decreaseSupplementCount(supplementName);
+  }
+
+  public increaseSupplementCountByType(
+    type: "ARMY" | "GUN",
+    supplementName: string
+  ) {
+    console.log(type);
+    this.layoutContainers.supplement.removeStateByName(supplementName);
   }
 
   public onGameOver(): void {

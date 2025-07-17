@@ -27,6 +27,11 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   private num = 0;
 
   private removeStateByName: (name: string) => void;
+  private increaseSupplementCountByType: (
+    type: "ARMY" | "GUN",
+    supplementName: string
+  ) => void;
+
   private config?: {
     type: TSupplementType;
     count: number;
@@ -41,14 +46,20 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
       quadrant: TQuadrantX;
     },
     name: string,
-    removeStateByName: (name: string) => void
+    removeStateByName: (name: string) => void,
+    increaseSupplementCountByType: (
+      type: "ARMY" | "GUN",
+      supplementName: string
+    ) => void
   ) {
     super(scene, 0, 0);
 
     this.supplementName = name;
     this.config = config;
-    this.removeStateByName = removeStateByName;
     this.num = this.config?.count || 0;
+
+    this.removeStateByName = removeStateByName;
+    this.increaseSupplementCountByType = increaseSupplementCountByType;
 
     this.build();
   }
@@ -101,17 +112,19 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
         "gameAreaManager"
       ).layoutContainers;
 
-    firepower.firepowerContainer.forEach((firepower) => {
-      this.scene.physics.add.collider(
-        bucket,
-        firepower,
-        () => {
-          // console.log("a");
-        },
-        undefined,
-        this
-      );
-    });
+    if (firepower) {
+      firepower.firepowerContainer.forEach((firepower) => {
+        this.scene.physics.add.collider(
+          bucket,
+          firepower,
+          () => {
+            // console.log("a");
+          },
+          undefined,
+          this
+        );
+      });
+    }
   }
 
   public setPxy(x: number, y: number): void {
@@ -130,7 +143,13 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   public decreaseNum() {
     this.num -= 1;
     if (this.num <= 0) {
+      this.num = 0;
+      this.text?.setText(`${this.num}`);
       // TODO handle supplement collection
+      this.increaseSupplementCountByType(
+        this.config?.type || "ARMY",
+        this.supplementName
+      );
     } else {
       this.text?.setText(`${this.num}`);
     }

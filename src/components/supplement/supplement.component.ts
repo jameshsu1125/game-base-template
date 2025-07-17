@@ -13,9 +13,34 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
   public supplementState: TSupplementState[] = [];
 
-  constructor(scene: Phaser.Scene) {
+  private increaseSupplementCountByType: (
+    type: "ARMY" | "GUN",
+    supplementName: string
+  ) => void;
+
+  constructor(
+    scene: Phaser.Scene,
+    increaseSupplementCountByType: (
+      type: "ARMY" | "GUN",
+      supplementName: string
+    ) => void
+  ) {
     super(scene, 0, 0);
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
+
+    this.increaseSupplementCountByType = increaseSupplementCountByType;
+
+    this.build();
+  }
+
+  private build(): void {
+    this.createSupplement({ count: 2, type: "ARMY", quadrant: 1 }, -7000);
+
+    this.supplementState.forEach((state) => {
+      const percent = (0 - state.startTime) / GATE_DURATION;
+      const { target } = state;
+      target.update(percent);
+    });
   }
 
   public fire(
@@ -42,7 +67,8 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
       this.scene,
       config,
       name,
-      this.removeStateByName.bind(this)
+      this.removeStateByName.bind(this),
+      this.increaseSupplementCountByType
     );
 
     this.add(supplement);
@@ -68,13 +94,6 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
     this.supplementState = this.supplementState.filter(
       (state) => state.target.supplementName !== name
     );
-  }
-
-  public increaseGateCountByName(name: string): void {
-    const [state] = this.supplementState.filter(
-      (state) => state.target.supplementName === name
-    );
-    //if (state.target) state.target.increaseNum();
   }
 
   public update(time: number): void {
