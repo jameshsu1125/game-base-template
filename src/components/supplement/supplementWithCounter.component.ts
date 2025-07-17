@@ -106,7 +106,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
         bucket,
         firepower,
         () => {
-          console.log("a");
+          // console.log("a");
         },
         undefined,
         this
@@ -128,7 +128,6 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   }
 
   public decreaseNum() {
-    console.log(this.num);
     this.num -= 1;
     if (this.num <= 0) {
       // TODO handle supplement collection

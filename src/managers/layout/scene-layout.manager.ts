@@ -205,7 +205,6 @@ export default class SceneLayoutManager {
     supplementName: string,
     firepower: Phaser.Physics.Arcade.Sprite
   ): void {
-    console.log("a");
     this.layoutContainers.firepower.removeFirepowerByName(firepower.name);
     this.layoutContainers.supplement.decreaseSupplementCount(supplementName);
   }

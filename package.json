@@ -1,24 +1,25 @@
 {
-    "name": "merge-game",
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "preview": "vite preview",
-        "type-check": "tsc --noEmit",
-        "find-deadcode": "ts-prune | grep -v '(used in module)'"
-    },
-    "devDependencies": {
-        "@types/node": "^24.0.0",
-        "rollup-plugin-visualizer": "^6.0.3",
-        "ts-prune": "^0.10.3",
-        "typescript": "^5.8.3",
-        "vite": "^5.4.19"
-    },
-    "dependencies": {
-        "bezier-easing": "^2.1.0",
-        "phaser": "^3.90.0"
-    },
-    "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
+  "name": "merge-game",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "find-deadcode": "ts-prune | grep -v '(used in module)'",
+    "deploy:prod": "NODE_ENV=production netlify deploy --dir=dist --prod"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "ts-prune": "^0.10.3",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.19"
+  },
+  "dependencies": {
+    "bezier-easing": "^2.1.0",
+    "phaser": "^3.90.0"
+  },
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
