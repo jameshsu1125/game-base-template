@@ -61,7 +61,7 @@ const defaultGameAssets = {
     gun1: "assets/choice-runner/supplement-item-firepower-1.png",
     gun2: "assets/choice-runner/supplement-item-firepower-2.png",
     army: "assets/choice-runner/supplement-item-army.png",
-    endCardDefeat: "assets/choice-runner/end-card-defeat.png",
+    endCardDefeat: "assets/choice-runner/endCard-defeat.png",
     endCardVictory: "assets/choice-runner/end-card-victory.png",
     endCardPlayAgain: "assets/choice-runner/end-card-play-again.png",
   },

@@ -168,10 +168,6 @@ export default class SceneLayoutManager {
 
   private createEndScreenOverlay(): EndScreenOverlayComponent {
     const endScreenOverlay = new EndScreenOverlayComponent(this.scene);
-
-    const overlayContainer = this.scene.add.container(0, 0);
-    overlayContainer.add(endScreenOverlay);
-    this.layoutManager.placeAt(overlayContainer, ANCHORS.CENTER);
     return endScreenOverlay;
   }
 

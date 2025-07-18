@@ -36,7 +36,6 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     ) => void
   ) {
     super(scene, 0, 0);
-
     this.decreaseEnemyBlood = decreaseEnemyBlood;
     this.decreasePlayerBlood = decreasePlayerBlood;
 
