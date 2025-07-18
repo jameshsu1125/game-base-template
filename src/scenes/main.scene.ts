@@ -62,7 +62,7 @@ export default class MainScene extends Phaser.Scene {
       this.firepowerEntity?.onStart();
       this.gateEntity?.onStart();
       this.enemyEntity?.onStart(this.updateTime);
-      this.supplementEntity?.onStart();
+      this.supplementEntity?.onStart(this.updateTime);
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);

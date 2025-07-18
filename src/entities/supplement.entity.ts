@@ -5,10 +5,16 @@ import { SUPPLEMENT_ENTITY_CONFIG } from "./entity.config";
 export default class SupplementEntity {
   private isStarted = false;
   private state = { startTime: 0, index: -1 };
+
   constructor() {}
 
-  public onStart(): void {
+  public onStart(time: number): void {
     this.isStarted = true;
+    this.state.startTime = time;
+
+    ServiceLocator.get<SceneLayoutManager>(
+      "gameAreaManager"
+    ).layoutContainers.supplement.offsetTime = time;
   }
 
   public update(time: number): void {

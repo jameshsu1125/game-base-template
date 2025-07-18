@@ -1,5 +1,9 @@
 import { GATE_DURATION } from "@/configs/constants/game.constants";
-import { ENEMY_ENTITY_CONFIG } from "@/entities/entity.config";
+import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
+import {
+  ENEMY_ENTITY_BEFORE_START_CONFIG,
+  ENEMY_ENTITY_CONFIG,
+} from "@/entities/entity.config";
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
@@ -8,7 +12,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
   public enemyState: TEnemyState[] = [];
   private index = 0;
-  public startTime = 0;
+  public offsetTime = 0;
 
   private decreaseEnemyBlood: (
     enemy: Phaser.Physics.Arcade.Sprite,
@@ -38,20 +42,17 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
 
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
 
-    requestAnimationFrame(() => {
-      this.build();
-    });
+    requestAnimationFrame(() => this.buildBeforeStart());
   }
 
-  private build(): void {
-    this.createEnemy({ x: 50, type: "straight" }, -1000);
-    this.createEnemy({ x: 30, type: "follow" }, -2000);
-    this.createEnemy({ x: 70, type: "follow" }, -4000);
-    this.createEnemy({ x: 20, type: "straight" }, -7000);
-    this.createEnemy({ x: 80, type: "straight" }, -8000);
-    this.createEnemy({ x: 100, type: "straight" }, -9000);
-    this.createEnemy({ x: 0, type: "follow" }, -10000);
-    this.createEnemy({ x: 20, type: "follow" }, -12000);
+  public buildBeforeStart(): void {
+    ENEMY_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
+      const currentConfig = {
+        x: cfg.data.x,
+        type: cfg.data.type,
+      };
+      this.createEnemy(currentConfig, cfg.time);
+    });
 
     this.enemyState.forEach((state) => {
       const percent = (0 - state.startTime) / GATE_DURATION;
@@ -128,7 +129,8 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     if (!this.isStarted) return;
     this.enemyState.forEach((state) => {
       const percent =
-        (time - state.startTime - this.startTime + 500) / GATE_DURATION;
+        (time - state.startTime - this.offsetTime + adjustmentOffsetTime) /
+        GATE_DURATION;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

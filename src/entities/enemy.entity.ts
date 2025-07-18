@@ -21,7 +21,7 @@ export default class EnemyEntity {
     this.state.startTime = time;
     ServiceLocator.get<SceneLayoutManager>(
       "gameAreaManager"
-    ).layoutContainers.enemy.startTime = time;
+    ).layoutContainers.enemy.offsetTime = time;
   }
 
   public update(time: number, delta: number): void {

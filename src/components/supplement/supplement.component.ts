@@ -1,5 +1,9 @@
 import { GATE_DURATION } from "@/configs/constants/game.constants";
-import { SUPPLEMENT_ENTITY_CONFIG } from "@/entities/entity.config";
+import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
+import {
+  SUPPLEMENT_ENTITY_BEFORE_START_CONFIG,
+  SUPPLEMENT_ENTITY_CONFIG,
+} from "@/entities/entity.config";
 import Phaser from "phaser";
 import {
   TQuadrantX,
@@ -12,6 +16,7 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   private index = 0;
   private isStarted = false;
   public supplementState: TSupplementState[] = [];
+  public offsetTime = 0;
 
   private increaseSupplementCountByType: (
     type: "ARMY" | "GUN",
@@ -27,14 +32,19 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   ) {
     super(scene, 0, 0);
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
-
     this.increaseSupplementCountByType = increaseSupplementCountByType;
-
-    this.build();
+    requestAnimationFrame(() => this.buildBeforeStart());
   }
 
-  private build(): void {
-    this.createSupplement({ count: 2, type: "ARMY", quadrant: 1 }, -7000);
+  private buildBeforeStart(): void {
+    SUPPLEMENT_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
+      const currentConfig = {
+        quadrant: cfg.data.quadrant,
+        count: cfg.data.count,
+        type: cfg.data.type,
+      };
+      this.createSupplement(currentConfig, cfg.time);
+    });
 
     this.supplementState.forEach((state) => {
       const percent = (0 - state.startTime) / GATE_DURATION;
@@ -99,7 +109,8 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   public update(time: number): void {
     if (!this.isStarted) return;
     this.supplementState.forEach((state) => {
-      const percent = (time - state.startTime) / GATE_DURATION;
+      const percent =
+        (time - state.startTime - this.offsetTime) / GATE_DURATION;
       const { target } = state;
       target.update(percent);
     });

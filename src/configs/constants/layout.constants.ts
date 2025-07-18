@@ -31,3 +31,5 @@ export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 180 / 320;
 export const SUPPLEMENT_TEXT_OFFSET_Y = -60;
 
 export const Easing = BezierEasing(0.55, 0.085, 0.68, 0.53);
+
+export const adjustmentOffsetTime = 500; // 開始遊戲後，補給出現的時間延遲

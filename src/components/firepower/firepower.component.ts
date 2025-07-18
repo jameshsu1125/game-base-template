@@ -218,6 +218,19 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     });
   }
 
+  public increaseFirepowerLevel(): void {
+    this.level += 1;
+    if (this.level > 2) this.level = 2;
+
+    this.firepowerContainer.forEach((firepower) => {
+      firepower.setTexture(
+        this.level === 1
+          ? GAME_ASSET_KEYS.firepowerLevel1
+          : GAME_ASSET_KEYS.firepowerLevel2
+      );
+    });
+  }
+
   removeFirepowerByName(name: string): void {
     const [firepower] = this.firepowerContainer.filter(
       (fp) => fp.name === name

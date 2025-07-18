@@ -216,8 +216,9 @@ export default class SceneLayoutManager {
     type: "ARMY" | "GUN",
     supplementName: string
   ) {
-    console.log(type);
     this.layoutContainers.supplement.removeStateByName(supplementName);
+    if (type === "ARMY") this.layoutContainers.player.increasePlayersCount(1);
+    else this.layoutContainers.firepower.increaseFirepowerLevel();
   }
 
   public onGameOver(): void {

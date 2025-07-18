@@ -36,3 +36,25 @@ export const ENEMY_ENTITY_CONFIG: {
   { time: 32500, index: 7, data: [{ x: 0, type: "follow" }] },
   { time: 33500, index: 8, data: [{ x: 20, type: "straight" }] },
 ];
+
+export const ENEMY_ENTITY_BEFORE_START_CONFIG: {
+  time: number;
+  data: { x: number; type: "follow" | "straight" };
+}[] = [
+  { time: -1000, data: { x: 50, type: "straight" } },
+  { time: -2000, data: { x: 30, type: "follow" } },
+  { time: -4000, data: { x: 70, type: "follow" } },
+  { time: -7000, data: { x: 20, type: "straight" } },
+  { time: -8000, data: { x: 80, type: "straight" } },
+  { time: -9000, data: { x: 100, type: "straight" } },
+  { time: -10000, data: { x: 0, type: "follow" } },
+  { time: -12000, data: { x: 20, type: "follow" } },
+];
+
+export const SUPPLEMENT_ENTITY_BEFORE_START_CONFIG: {
+  time: number;
+  data: { quadrant: TQuadrantX; count: number; type: "ARMY" | "GUN" };
+}[] = [
+  { time: -10000, data: { quadrant: -1, count: 1, type: "GUN" } },
+  { time: -5000, data: { quadrant: 1, count: 20, type: "ARMY" } },
+];
