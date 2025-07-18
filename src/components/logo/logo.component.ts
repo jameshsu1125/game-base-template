@@ -20,7 +20,7 @@ export class LogoComponent extends Phaser.GameObjects.Container {
     );
     image.setDisplaySize(width, height);
     image.setPosition(
-      0,
+      getDisplayPositionByBorderAlign(image, this.scene, "LEFT"),
       getDisplayPositionByBorderAlign(image, this.scene, "TOP")
     );
     this.add(image);

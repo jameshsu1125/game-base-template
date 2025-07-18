@@ -11,7 +11,7 @@ export const SCENE_PERSPECTIVE = 0.1; // float between 0 and 1
 export const FIREPOWER_PERSPECTIVE = 12;
 export const ENEMY_PERSPECTIVE = 5;
 
-export const LOGO_WIDTH_SCALE_RATIO = 320 / 320;
+export const LOGO_WIDTH_SCALE_RATIO = 99 / 320;
 
 export const PLAYER_WIDTH_SCALE_RATIO = 30 / 320;
 export const PLAYER_OFFSET_Y = -100;
@@ -27,8 +27,9 @@ export const FIREPOWER_WIDTH_SCALE_RATIO = 23 / 320;
 
 export const GATE_WIDTH_SCALE_RATIO = 160 / 320;
 
-export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 180 / 320;
+export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 120 / 320;
 export const SUPPLEMENT_TEXT_OFFSET_Y = -60;
+export const SUPPLEMENT_BUCKET_GAP = 20;
 
 export const Easing = BezierEasing(0.55, 0.085, 0.68, 0.53);
 

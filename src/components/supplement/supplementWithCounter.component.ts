@@ -2,6 +2,7 @@ import {
   Easing,
   PLAYER_OFFSET_Y,
   SCENE_PERSPECTIVE,
+  SUPPLEMENT_BUCKET_GAP,
   SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO,
 } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
@@ -32,6 +33,11 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     supplementName: string
   ) => void;
 
+  private decreaseSupplementCount: (
+    supplementName: string,
+    firepower: Phaser.Physics.Arcade.Sprite
+  ) => void;
+
   private config?: {
     type: TSupplementType;
     count: number;
@@ -50,6 +56,10 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     increaseSupplementCountByType: (
       type: "ARMY" | "GUN",
       supplementName: string
+    ) => void,
+    decreaseSupplementCount: (
+      supplementName: string,
+      firepower: Phaser.Physics.Arcade.Sprite
     ) => void
   ) {
     super(scene, 0, 0);
@@ -60,6 +70,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
     this.removeStateByName = removeStateByName;
     this.increaseSupplementCountByType = increaseSupplementCountByType;
+    this.decreaseSupplementCount = decreaseSupplementCount;
 
     this.build();
   }
@@ -118,7 +129,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
           bucket,
           firepower,
           () => {
-            // console.log("a");
+            this.decreaseSupplementCount(this.supplementName, firepower);
           },
           undefined,
           this
@@ -145,7 +156,6 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     if (this.num <= 0) {
       this.num = 0;
       this.text?.setText(`${this.num}`);
-      // TODO handle supplement collection
       this.increaseSupplementCountByType(
         this.config?.type || "ARMY",
         this.supplementName
@@ -173,7 +183,8 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
     const x =
       this.scene.scale.width / 2 +
-      (this.config?.quadrant || 0) * bucket.displayWidth;
+      (this.config?.quadrant || 0) *
+        (bucket.displayWidth + SUPPLEMENT_BUCKET_GAP);
     const y =
       (this.scene.scale.height + bucket.displayHeight) * easingPercentage;
 

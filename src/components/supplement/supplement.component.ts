@@ -78,7 +78,8 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
       config,
       name,
       this.removeStateByName.bind(this),
-      this.increaseSupplementCountByType
+      this.increaseSupplementCountByType,
+      this.decreaseSupplementCount
     );
 
     this.add(supplement);

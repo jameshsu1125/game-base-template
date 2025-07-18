@@ -56,5 +56,7 @@ export const SUPPLEMENT_ENTITY_BEFORE_START_CONFIG: {
   data: { quadrant: TQuadrantX; count: number; type: "ARMY" | "GUN" };
 }[] = [
   { time: -10000, data: { quadrant: -1, count: 1, type: "GUN" } },
+  { time: -10000, data: { quadrant: 0, count: 1, type: "GUN" } },
+  { time: -10000, data: { quadrant: 1, count: 1, type: "GUN" } },
   { time: -5000, data: { quadrant: 1, count: 20, type: "ARMY" } },
 ];
