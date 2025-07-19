@@ -1,16 +1,13 @@
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
+import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
 import {
   getDisplayPositionAlign,
   getDisplaySizeByWidthPercentage,
 } from "@/utils/layout.utils";
-import {
-  PLAYER_COMPONENT_HEALTH_BAR_SIZE,
-  PLAYER_FORMATION,
-} from "./player.config";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
+import { PLAYER_FORMATION } from "./player.config";
 
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
@@ -37,7 +34,7 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
       fontFamily: "monospace",
       align: "center",
       fixedWidth: 20,
-      fixedHeight: PLAYER_COMPONENT_HEALTH_BAR_SIZE.height - 2,
+      fixedHeight: enemyPreset.healthBar.height - 2,
       shadow: {
         fill: true,
         color: "#000000",
@@ -93,11 +90,11 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
 
   private addHealthBar(x: number, y: number): void {
     if (!this.player) return;
-    const { offsetY } = playerPreset.healthBar;
+    const { offsetY, width, height } = playerPreset.healthBar;
 
     const { scale, displayWidth, displayHeight } = this.player;
-    const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
-    const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
+    const currentWidth = width * scale;
+    const currentHeight = height * scale;
 
     const currentX = x - (displayWidth - currentWidth) / 2;
     const currentY = y - displayHeight / 2 + offsetY;

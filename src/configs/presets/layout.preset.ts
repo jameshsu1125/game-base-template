@@ -40,6 +40,8 @@ export const playerPreset = {
   gap: 20,
   healthBar: {
     offsetY: 10,
+    width: 70,
+    height: 25,
   },
 };
 
@@ -50,6 +52,8 @@ export const enemyPreset = {
   randomWidth: 100,
   healthBar: {
     offsetY: -7,
+    width: 70,
+    height: 25,
   },
 };
 

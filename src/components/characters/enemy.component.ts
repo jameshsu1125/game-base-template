@@ -1,4 +1,6 @@
+import { Container, Sprite } from "@/configs/constants/constants";
 import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
+import { gatePreset } from "@/configs/presets/layout.preset";
 import {
   ENEMY_ENTITY_BEFORE_START_CONFIG,
   ENEMY_ENTITY_CONFIG,
@@ -6,39 +8,25 @@ import {
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
-import { gatePreset } from "@/configs/presets/layout.preset";
 
-export class EnemyComponent extends Phaser.GameObjects.Container {
+export class EnemyComponent extends Container {
   private isStarted = false;
   public enemyState: TEnemyState[] = [];
   private index = 0;
   public offsetTime = 0;
 
-  private decreaseEnemyBlood: (
-    enemy: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
-  private decreasePlayerBlood: (
-    player: Phaser.Physics.Arcade.Sprite,
-    enemy: Phaser.Physics.Arcade.Sprite
-  ) => void;
+  private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
+  private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
 
   constructor(
     scene: Phaser.Scene,
-    decreaseEnemyBlood: (
-      enemy: Phaser.Physics.Arcade.Sprite,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void,
-    decreasePlayerBlood: (
-      player: Phaser.Physics.Arcade.Sprite,
-      enemy: Phaser.Physics.Arcade.Sprite
-    ) => void
+    decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void,
+    decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void
   ) {
     super(scene, 0, 0);
+
     this.decreaseEnemyBlood = decreaseEnemyBlood;
     this.decreasePlayerBlood = decreasePlayerBlood;
-
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
 
     requestAnimationFrame(() => this.buildBeforeStart());
@@ -67,17 +55,11 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     config: (typeof ENEMY_ENTITY_CONFIG)[number]
   ): void {
     if (!this.isStarted) return;
-
-    [...config.data].forEach((cfg) => {
-      this.createEnemy(cfg, time);
-    });
+    [...config.data].forEach((cfg) => this.createEnemy(cfg, time));
   }
 
   private createEnemy(
-    config: {
-      x: number;
-      type: "follow" | "straight";
-    },
+    config: (typeof ENEMY_ENTITY_CONFIG)[number]["data"][number],
     time: number
   ): void {
     const name = `enemy-${this.index++}`;
@@ -115,17 +97,14 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     );
   }
 
-  public loseBlood(enemy: Phaser.Physics.Arcade.Sprite) {
+  public loseBlood(enemy: Sprite) {
     const [state] = this.enemyState.filter(
       (state) => state.target.enemyName === enemy.name
     );
-
-    if (state) {
-      state.target.loseBlood();
-    }
+    if (state) state.target.loseBlood();
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number): void {
     if (!this.isStarted) return;
     const { duration } = gatePreset;
     this.enemyState.forEach((state) => {

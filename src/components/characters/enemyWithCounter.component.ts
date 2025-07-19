@@ -1,44 +1,32 @@
+import { BitmapMask, Container, Sprite } from "@/configs/constants/constants";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
-import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
 import {
   enemyPreset,
   firepowerPreset,
   gamePreset,
 } from "@/configs/presets/layout.preset";
+import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 
-export default class EnemyWithCounterComponent extends Phaser.GameObjects
-  .Container {
+export default class EnemyWithCounterComponent extends Container {
   private isDestroyed = false;
   private defaultScale = 1;
   public enemyName = "";
 
-  public enemy: Phaser.Physics.Arcade.Sprite | null = null;
+  public enemy: Sprite | null = null;
   public blood: number = 100;
 
   public healthBarBorder = this.scene.add.graphics();
   public healthBarMask = this.scene.make.graphics({});
   public healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
-  public mask = new Phaser.Display.Masks.BitmapMask(
-    this.scene,
-    this.healthBarMask
-  );
+  public mask = new BitmapMask(this.scene, this.healthBarMask);
 
   private removeStateByName: (name: string) => void;
-
-  private decreaseEnemyBlood: (
-    enemy: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
-  private decreasePlayerBlood: (
-    player: Phaser.Physics.Arcade.Sprite,
-    enemy: Phaser.Physics.Arcade.Sprite
-  ) => void;
+  private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
+  private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
 
   private config?: {
     x: number;
@@ -150,11 +138,11 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
   private setHealthBar(): void {
     if (!this.enemy) return;
-    const { offsetY } = enemyPreset.healthBar;
+    const { offsetY, width, height } = enemyPreset.healthBar;
 
     const { scale, displayWidth, displayHeight } = this.enemy;
-    const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
-    const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
+    const currentWidth = width * scale;
+    const currentHeight = height * scale;
 
     const x = this.enemy.x;
     const y = this.enemy.y;
@@ -204,9 +192,7 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
         (1 - perspective) *
         (Math.abs(this.scene.scale.height - this.enemy.y) /
           this.scene.scale.height);
-
     this.enemy.setScale(scale, scale);
-
     this.setHealthBar();
 
     if (this.enemy.y > this.scene.scale.height - 150) {
@@ -258,23 +244,21 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     const { enemy } = this;
     if (!enemy || this.isDestroyed) return;
 
-    const easingPercentage = Easing(percentage);
-
     const { player } =
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
 
+    const currentPercent = Easing(percentage);
     const x =
       this.config?.type === "follow"
         ? this.enemy!.x +
           ((player.players[0].player?.x || 0) - this.enemy!.x) / 500
         : this.enemy!.x;
 
-    const y =
-      (this.scene.scale.height + enemy.displayHeight) * easingPercentage;
+    const y = (this.scene.scale.height + enemy.displayHeight) * currentPercent;
 
     this.setPxy(x, y);
-    this.update(easingPercentage);
+    this.update(currentPercent);
   }
 }

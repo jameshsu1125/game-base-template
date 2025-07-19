@@ -1,53 +1,35 @@
+import { Container, Scene, Sprite } from "@/configs/constants/constants";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
+import { firepowerPreset, gamePreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
 import {
-  getDisplayPositionByBorderAlign,
-  getDisplaySizeByWidthPercentage,
+  getDisplayPositionByBorderAlign as getAlign,
+  getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
 import Phaser from "phaser";
 import { PlayerComponent } from "../characters/player.component";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import { firepowerPreset, gamePreset } from "@/configs/presets/layout.preset";
 
-export class FirepowerComponent extends Phaser.GameObjects.Container {
-  private player: PlayerComponent;
-  public firepowerContainer: Phaser.Physics.Arcade.Sprite[] = [];
-
-  private increaseGateCount: (
-    gate: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
-  private decreaseEnemyBlood: (
-    enemy: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
-  private decreaseSupplementCount: (
-    supplementName: string,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
+export class FirepowerComponent extends Container {
   private isStarted = false;
   private baseScale = 1;
-  public level = 1;
   private index = 0;
 
+  public level = 1;
+
+  private player: PlayerComponent;
+  public firepowerContainer: Sprite[] = [];
+
+  private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
+  private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
+  private decreaseSupplementCount: (name: string, firepower: Sprite) => void;
+
   constructor(
-    scene: Phaser.Scene,
-    increaseGateCount: (
-      gate: Phaser.Physics.Arcade.Sprite,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void,
-    decreaseEnemyBlood: (
-      enemy: Phaser.Physics.Arcade.Sprite,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void,
-    decreaseSupplementCount: (
-      supplementName: string,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void
+    scene: Scene,
+    increaseGateCount: (gate: Sprite, firepower: Sprite) => void,
+    decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void,
+    decreaseSupplementCount: (name: string, firepower: Sprite) => void
   ) {
     super(scene, 0, 0);
 
@@ -70,8 +52,8 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
 
       if (player.player) {
         this.setPosition(
-          getDisplayPositionByBorderAlign(player.player, this.scene, "LEFT"),
-          getDisplayPositionByBorderAlign(player.player, this.scene, "TOP") -
+          getAlign(player.player, this.scene, "LEFT"),
+          getAlign(player.player, this.scene, "TOP") -
             player.displayHeight * 0.5 +
             offsetY
         );
@@ -101,10 +83,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
         .refreshBody();
       firepower.setName(`firepower-${this.index++}`);
 
-      const { width, height } = getDisplaySizeByWidthPercentage(
-        firepower,
-        ratio
-      );
+      const { width, height } = getSize(firepower, ratio);
       firepower.setDisplaySize(width, height);
       firepower.setPosition(
         player.player.x - player.player.displayWidth / 2,
@@ -126,18 +105,16 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
             perspective
         )
       );
-
       this.add(firepower);
+
       if (!STOP_COLLISION) this.addCollision(firepower);
       this.firepowerContainer.push(firepower);
     });
   }
 
-  private addCollision(firepower: Phaser.Physics.Arcade.Sprite) {
-    const layoutContainers =
-      ServiceLocator.get<SceneLayoutManager>(
-        "gameAreaManager"
-      ).layoutContainers;
+  private addCollision(firepower: Sprite) {
+    const { layoutContainers } =
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager");
 
     layoutContainers.gate.gateState.forEach((state) => {
       if (state.target.gate) {
@@ -151,7 +128,6 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
           () => {},
           this.scene
         );
-
         this.scene.physics.add.overlap(
           firepower,
           state.target.gate,
@@ -174,7 +150,6 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
           undefined,
           this.scene
         );
-
         this.scene.physics.add.overlap(
           firepower,
           state.target.enemy,
@@ -215,8 +190,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   }
 
   public increaseFirepowerLevel(): void {
-    this.level += 1;
-    if (this.level > 2) this.level = 2;
+    this.level = Math.min(this.level + 1, 2);
 
     this.firepowerContainer.forEach((firepower) => {
       firepower.setTexture(
