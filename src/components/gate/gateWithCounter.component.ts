@@ -1,8 +1,4 @@
-import {
-  Easing,
-  GATE_WIDTH_SCALE_RATIO,
-  PLAYER_OFFSET_Y,
-} from "@/configs/constants/layout.constants";
+import { Easing } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
@@ -15,7 +11,11 @@ import {
   GATE_TEXT_STYLE,
   TQuadrantX,
 } from "./gate.config";
-import { gamePreset } from "@/configs/presets/layout.preset";
+import {
+  gamePreset,
+  gatePreset,
+  playerPreset,
+} from "@/configs/presets/layout.preset";
 
 export default class GateWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -58,6 +58,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   }
 
   private build(): void {
+    const { ratio } = gatePreset;
     this.gate = this.scene.physics.add.staticSprite(
       0,
       0,
@@ -67,10 +68,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     );
     this.gate.setName(this.gateName);
 
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      this.gate,
-      GATE_WIDTH_SCALE_RATIO
-    );
+    const { width, height } = getDisplaySizeByWidthPercentage(this.gate, ratio);
     this.gate.setDisplaySize(width, height);
 
     this.gate.setOrigin(0.5, 0.5);
@@ -156,6 +154,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     const { defaultScale: scale, gate, text } = this;
     if (!gate || !text || this.isDestroyed) return;
     const { perspective } = gamePreset;
+    const { offsetY } = playerPreset;
 
     const easingPercentage = Easing(percentage);
     const currentScale =
@@ -171,7 +170,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     const missPositionY =
       this.scene.scale.height -
       gate.displayHeight * (GATE_MISS_OFFSET_RATIO + perspective) -
-      PLAYER_OFFSET_Y;
+      offsetY;
 
     if (y > missPositionY) {
       this.isDestroyed = true;

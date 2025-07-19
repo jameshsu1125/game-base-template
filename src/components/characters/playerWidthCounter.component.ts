@@ -1,10 +1,4 @@
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
-import {
-  PLAYER_GROUP_GAP,
-  PLAYER_HEALTH_BAR_OFFSET_Y,
-  PLAYER_OFFSET_Y,
-  PLAYER_WIDTH_SCALE_RATIO,
-} from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
   getDisplayPositionAlign,
@@ -16,7 +10,7 @@ import {
 } from "./player.config";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import { ENEMY_DAMAGE } from "@/configs/constants/game.constants";
+import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
 
 export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   .Container {
@@ -99,12 +93,14 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
 
   private addHealthBar(x: number, y: number): void {
     if (!this.player) return;
+    const { offsetY } = playerPreset.healthBar;
+
     const { scale, displayWidth, displayHeight } = this.player;
     const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
     const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
 
     const currentX = x - (displayWidth - currentWidth) / 2;
-    const currentY = y - displayHeight / 2 + PLAYER_HEALTH_BAR_OFFSET_Y;
+    const currentY = y - displayHeight / 2 + offsetY;
 
     this.healthBarBorder.clear();
     this.healthBarBorder.fillStyle(0xffffff, 1);
@@ -135,11 +131,9 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   }
 
   private addPlayer(): void {
+    const { ratio } = playerPreset;
     const player = this.scene.physics.add.sprite(0, 0, "playerSheet");
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      player,
-      PLAYER_WIDTH_SCALE_RATIO
-    );
+    const { width, height } = getDisplaySizeByWidthPercentage(player, ratio);
     player.setName(this.playerName);
     player.setDisplaySize(width, height);
 
@@ -206,7 +200,8 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   }
 
   public loseBlood() {
-    this.blood -= ENEMY_DAMAGE;
+    const { damage } = enemyPreset;
+    this.blood -= damage;
 
     if (this.blood <= 0) {
       if (this.blood < 0) this.blood = 0;
@@ -216,6 +211,7 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
 
   public setPositionByIndex(index: number, offset: number, total: number) {
     if (this.player === null || this.isDestroyed) return;
+    const { gap, offsetY } = playerPreset;
 
     const currentTotal = Math.max(
       1,
@@ -225,10 +221,10 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     const formation = PLAYER_FORMATION[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getDisplayPositionAlign(this.player, "CENTER_BOTTOM");
 
-    const currentX = left + formation.x * PLAYER_GROUP_GAP;
-    const currentY = top + formation.y * PLAYER_GROUP_GAP;
+    const currentX = left + formation.x * gap;
+    const currentY = top + formation.y * gap;
 
-    this.player.setPosition(currentX + offset, currentY + PLAYER_OFFSET_Y);
-    this.addHealthBar(currentX + offset, currentY + PLAYER_OFFSET_Y);
+    this.player.setPosition(currentX + offset, currentY + offsetY);
+    this.addHealthBar(currentX + offset, currentY + offsetY);
   }
 }

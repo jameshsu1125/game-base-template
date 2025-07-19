@@ -2,9 +2,9 @@ import {
   GAME_MECHANIC_CONFIG_SCHEMA,
   GAME_MECHANIC_CONSTANTS,
 } from "@/configs/constants/game-mechanic/game-mechanic.constants";
-import { PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD } from "@/configs/constants/game.constants";
 import Phaser from "phaser";
 import PlayerWidthCounterComponent from "./playerWidthCounter.component";
+import { playerPreset } from "@/configs/presets/layout.preset";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
   public group: Phaser.Physics.Arcade.StaticGroup | null = null;
@@ -144,11 +144,12 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   public update(): void {
+    const { speedByInput } = playerPreset;
     if (!this.cursors || this.players.length === 0 || !this.isStarted) return;
     const deltaX = this.cursors.left.isDown
-      ? -PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD
+      ? -speedByInput
       : this.cursors.right.isDown
-      ? PLAYER_MOVE_SPEED_BY_INPUT_KEYBOARD
+      ? speedByInput
       : 0;
     const targetX = this.x + deltaX;
     this.setCurrentPositionByUserInput(targetX, deltaX);

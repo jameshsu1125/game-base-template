@@ -1,19 +1,17 @@
 import BezierEasing from "bezier-easing";
 
-export const ENEMY_PERSPECTIVE = 5;
+//export const ENEMY_PERSPECTIVE = 5;
 
-export const LOGO_WIDTH_SCALE_RATIO = 99 / 320;
+// export const PLAYER_WIDTH_SCALE_RATIO = 30 / 320;
+// export const PLAYER_OFFSET_Y = -100;
+// export const PLAYER_GROUP_GAP = 20; // each player gap
+// export const PLAYER_HEALTH_BAR_OFFSET_Y = 10;
 
-export const PLAYER_WIDTH_SCALE_RATIO = 30 / 320;
-export const PLAYER_OFFSET_Y = -100;
-export const PLAYER_GROUP_GAP = 20; // each player gap
-export const PLAYER_HEALTH_BAR_OFFSET_Y = 10;
+// export const ENEMY_WIDTH_SCALE_RATIO = 80 / 320;
+// export const ENEMY_HEALTH_BAR_OFFSET_Y = -7;
+// export const ENEMY_FAR_RANDOM_WIDTH = 100;
 
-export const ENEMY_WIDTH_SCALE_RATIO = 80 / 320;
-export const ENEMY_HEALTH_BAR_OFFSET_Y = -7;
-export const ENEMY_FAR_RANDOM_WIDTH = 100;
-
-export const GATE_WIDTH_SCALE_RATIO = 160 / 320;
+// export const GATE_WIDTH_SCALE_RATIO = 160 / 320;
 
 export const SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO = 120 / 320;
 export const SUPPLEMENT_TEXT_OFFSET_Y = -60;

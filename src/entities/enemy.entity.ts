@@ -1,8 +1,3 @@
-import {
-  ENEMY_FIRE_DELAY,
-  ENEMY_FIRE_RATE,
-  FIREPOWER_RELOAD_TIME,
-} from "@/configs/constants/game.constants";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { ENEMY_ENTITY_CONFIG } from "./entity.config";

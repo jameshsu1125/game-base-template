@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { TGateState, TQuadrantX } from "./gate.config";
 import GateWithCounterComponent from "./gateWithCounter.component";
-import { GATE_DURATION } from "@/configs/constants/game.constants";
 import { GATE_ENTITY_CONFIG } from "@/entities/entity.config";
+import { gatePreset } from "@/configs/presets/layout.preset";
 
 export class GateComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
@@ -86,8 +86,9 @@ export class GateComponent extends Phaser.GameObjects.Container {
 
   public update(time: number): void {
     if (!this.isStarted) return;
+    const { duration } = gatePreset;
     this.gateState.forEach((state) => {
-      const percent = (time - state.startTime) / GATE_DURATION;
+      const percent = (time - state.startTime) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

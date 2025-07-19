@@ -1,4 +1,3 @@
-import { GATE_DURATION } from "@/configs/constants/game.constants";
 import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
 import {
   ENEMY_ENTITY_BEFORE_START_CONFIG,
@@ -7,6 +6,7 @@ import {
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
+import { gatePreset } from "@/configs/presets/layout.preset";
 
 export class EnemyComponent extends Phaser.GameObjects.Container {
   private isStarted = false;
@@ -45,6 +45,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
   }
 
   public buildBeforeStart(): void {
+    const { duration } = gatePreset;
     ENEMY_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
       const currentConfig = {
         x: cfg.data.x,
@@ -54,7 +55,7 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
     });
 
     this.enemyState.forEach((state) => {
-      const percent = (0 - state.startTime) / GATE_DURATION;
+      const percent = (0 - state.startTime) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
       target.enemy?.refreshBody();
@@ -126,10 +127,11 @@ export class EnemyComponent extends Phaser.GameObjects.Container {
 
   public update(time: number, delta: number): void {
     if (!this.isStarted) return;
+    const { duration } = gatePreset;
     this.enemyState.forEach((state) => {
       const percent =
         (time - state.startTime - this.offsetTime + adjustmentOffsetTime) /
-        GATE_DURATION;
+        duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

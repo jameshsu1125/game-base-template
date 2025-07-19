@@ -1,6 +1,5 @@
 import {
   FIREPOWER_SPEED,
-  GAME_DELTA,
   STOP_COLLISION,
 } from "@/configs/constants/game.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
@@ -87,7 +86,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     if (!this.isStarted || !this.player || this.player.players.length === 0)
       return;
 
-    const { perspective } = gamePreset;
+    const { perspective, delta: gameDelta } = gamePreset;
     const { perspective: firePerspective, offsetY, ratio } = firepowerPreset;
 
     this.player.players.forEach((player) => {
@@ -114,7 +113,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
         player.player.y - player.displayHeight + offsetY - 100
       );
       this.baseScale = firepower.scale;
-      firepower.setVelocityY(-(FIREPOWER_SPEED * GAME_DELTA) / delta);
+      firepower.setVelocityY(-(FIREPOWER_SPEED * gameDelta) / delta);
       firepower.setVelocityX(
         (player.player.x - this.scene.scale.width / 2) *
           firePerspective *

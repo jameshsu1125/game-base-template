@@ -1,10 +1,10 @@
-import { LOGO_WIDTH_SCALE_RATIO } from "../../configs/constants/layout.constants";
 import Phaser from "phaser";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import {
   getDisplayPositionByBorderAlign,
   getDisplaySizeByWidthPercentage,
 } from "../../utils/layout.utils";
+import { logoPreset } from "@/configs/presets/layout.preset";
 
 export class LogoComponent extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene) {
@@ -13,11 +13,10 @@ export class LogoComponent extends Phaser.GameObjects.Container {
   }
 
   private build(): void {
+    const { ratio } = logoPreset;
+
     const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.logo);
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      image,
-      LOGO_WIDTH_SCALE_RATIO
-    );
+    const { width, height } = getDisplaySizeByWidthPercentage(image, ratio);
     image.setDisplaySize(width, height);
     image.setPosition(
       getDisplayPositionByBorderAlign(image, this.scene, "LEFT"),

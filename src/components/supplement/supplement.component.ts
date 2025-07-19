@@ -1,4 +1,3 @@
-import { GATE_DURATION } from "@/configs/constants/game.constants";
 import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
 import {
   SUPPLEMENT_ENTITY_BEFORE_START_CONFIG,
@@ -11,6 +10,7 @@ import {
   TSupplementType,
 } from "./supplement.config";
 import SupplementWithCounterComponent from "./supplementWithCounter.component";
+import { gatePreset } from "@/configs/presets/layout.preset";
 
 export class SupplementComponent extends Phaser.GameObjects.Container {
   private index = 0;
@@ -37,6 +37,7 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   }
 
   private buildBeforeStart(): void {
+    const { duration } = gatePreset;
     SUPPLEMENT_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
       const currentConfig = {
         quadrant: cfg.data.quadrant,
@@ -47,7 +48,7 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
     });
 
     this.supplementState.forEach((state) => {
-      const percent = (0 - state.startTime) / GATE_DURATION;
+      const percent = (0 - state.startTime) / duration;
       const { target } = state;
       target.update(percent);
     });
@@ -109,9 +110,9 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
 
   public update(time: number): void {
     if (!this.isStarted) return;
+    const { duration } = gatePreset;
     this.supplementState.forEach((state) => {
-      const percent =
-        (time - state.startTime - this.offsetTime) / GATE_DURATION;
+      const percent = (time - state.startTime - this.offsetTime) / duration;
       const { target } = state;
       target.update(percent);
     });
@@ -126,7 +127,7 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   }
 
   public decreaseSupplementCount(supplementName: string): void {
-    const [state] = this.supplementState.filter(
+    const [state] = this.supplementState?.filter(
       (state) => state.target.supplementName === supplementName
     );
     if (state) {

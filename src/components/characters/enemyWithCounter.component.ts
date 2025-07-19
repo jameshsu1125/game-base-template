@@ -3,18 +3,13 @@ import {
   FIREPOWER_DAMAGE_LEVEL_2,
   STOP_COLLISION,
 } from "@/configs/constants/game.constants";
-import {
-  Easing,
-  ENEMY_FAR_RANDOM_WIDTH,
-  ENEMY_HEALTH_BAR_OFFSET_Y,
-  ENEMY_WIDTH_SCALE_RATIO,
-} from "@/configs/constants/layout.constants";
+import { Easing } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
-import { gamePreset } from "@/configs/presets/layout.preset";
+import { enemyPreset, gamePreset } from "@/configs/presets/layout.preset";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -85,15 +80,15 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
   }
 
   private build(): void {
+    const { ratio, randomWidth } = enemyPreset;
     this.enemy = this.scene.physics.add.staticSprite(0, 0, "enemySheet");
 
     const { width, height } = getDisplaySizeByWidthPercentage(
       this.enemy,
-      ENEMY_WIDTH_SCALE_RATIO
+      ratio
     );
     const randomX =
-      (this.scene.scale.width - ENEMY_FAR_RANDOM_WIDTH) / 2 +
-      (this.config?.x || 0);
+      (this.scene.scale.width - randomWidth) / 2 + (this.config?.x || 0);
     this.enemy.setName(this.enemyName);
     this.enemy.setDisplaySize(width, height);
     this.enemy.setOrigin(0.5, 0.5);
@@ -156,6 +151,8 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
   private setHealthBar(): void {
     if (!this.enemy) return;
+    const { offsetY } = enemyPreset.healthBar;
+
     const { scale, displayWidth, displayHeight } = this.enemy;
     const currentWidth = PLAYER_COMPONENT_HEALTH_BAR_SIZE.width * scale;
     const currentHeight = PLAYER_COMPONENT_HEALTH_BAR_SIZE.height * scale;
@@ -164,7 +161,7 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     const y = this.enemy.y;
 
     const currentX = x - (displayWidth - currentWidth) / 2;
-    const currentY = y - displayHeight / 2 + ENEMY_HEALTH_BAR_OFFSET_Y;
+    const currentY = y - displayHeight / 2 + offsetY;
 
     this.healthBarBorder.clear();
     this.healthBarBorder.fillStyle(0xffffff, 1);
