@@ -36,8 +36,6 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   ) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
 
-  private config: { quadrant: TQuadrantX; count: number } | null = null;
-
   constructor(
     scene: Phaser.Scene,
     config: { quadrant: TQuadrantX; count: number },
@@ -57,7 +55,6 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     this.increasePlayerCount = increasePlayerCount;
 
     this.num = config.count;
-    this.config = config;
     this.build();
   }
 
@@ -92,7 +89,6 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
       {
         ...GATE_TEXT_STYLE,
         fixedWidth: this.gate.displayWidth,
-        fixedHeight: 44,
       }
     );
     this.text.setOrigin(0.5, 0.5);

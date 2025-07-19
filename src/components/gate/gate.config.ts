@@ -14,4 +14,5 @@ export const GATE_TEXT_STYLE = {
   color: "#ffffff",
   fontFamily: "monospace",
   align: "center",
+  fixedHeight: 44,
 };
