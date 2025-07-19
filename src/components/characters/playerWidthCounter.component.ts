@@ -1,49 +1,30 @@
+import {
+  Container,
+  Graphics,
+  Image,
+  Sprite,
+} from "@/configs/constants/constants";
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import {
-  getDisplayPositionAlign,
-  getDisplaySizeByWidthPercentage,
+  getDisplayPositionAlign as getAlign,
+  getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
 import { PLAYER_FORMATION } from "./player.config";
 
-export default class PlayerWidthCounterComponent extends Phaser.GameObjects
-  .Container {
+export default class PlayerWidthCounterComponent extends Container {
   public playerName: string;
   private isDestroyed = false;
-  public player: Phaser.Physics.Arcade.Sprite | null = null;
-  public healthBarBorder: Phaser.GameObjects.Graphics =
-    this.scene.add.graphics();
-  public healthBarMask: Phaser.GameObjects.Graphics = this.scene.make.graphics(
-    {}
-  );
-  public healthBar: Phaser.GameObjects.Image = this.scene.add.image(
+  public player?: Sprite;
+  public healthBarBorder: Graphics = this.scene.add.graphics();
+  public healthBarMask: Graphics = this.scene.make.graphics({});
+  public healthBar: Image = this.scene.add.image(
     0,
     0,
     GAME_ASSET_KEYS.healthBar
-  );
-  public healthText: Phaser.GameObjects.Text = this.scene.add.text(
-    0,
-    0,
-    "100%",
-    {
-      fontSize: "7px",
-      color: "transparent",
-      fontFamily: "monospace",
-      align: "center",
-      fixedWidth: 20,
-      fixedHeight: enemyPreset.healthBar.height - 2,
-      shadow: {
-        fill: true,
-        color: "#000000",
-        offsetX: 1,
-        offsetY: 1,
-        blur: 2,
-        stroke: true,
-      },
-    }
   );
   public mask = new Phaser.Display.Masks.BitmapMask(
     this.scene,
@@ -80,7 +61,6 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.healthBarMask.setDepth(2);
     this.healthBar.setOrigin(0, 0);
     this.healthBar.setDepth(2);
-    this.healthText.setDepth(3);
     this.build();
   }
 
@@ -91,11 +71,10 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
   private addHealthBar(x: number, y: number): void {
     if (!this.player) return;
     const { offsetY, width, height } = playerPreset.healthBar;
-
     const { scale, displayWidth, displayHeight } = this.player;
+
     const currentWidth = width * scale;
     const currentHeight = height * scale;
-
     const currentX = x - (displayWidth - currentWidth) / 2;
     const currentY = y - displayHeight / 2 + offsetY;
 
@@ -123,14 +102,12 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.healthBar.setPosition(currentX, currentY);
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);
-
-    this.healthText.setPosition(currentX, currentY + 1);
   }
 
   private addPlayer(): void {
     const { ratio } = playerPreset;
     const player = this.scene.physics.add.sprite(0, 0, "playerSheet");
-    const { width, height } = getDisplaySizeByWidthPercentage(player, ratio);
+    const { width, height } = getSize(player, ratio);
     player.setName(this.playerName);
     player.setDisplaySize(width, height);
 
@@ -148,7 +125,7 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.addCollider(player);
   }
 
-  private addCollider(player: Phaser.Physics.Arcade.Sprite): void {
+  private addCollider(player: Sprite): void {
     if (!this.player) return;
 
     const { layoutContainers } =
@@ -187,11 +164,10 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     this.healthBarBorder.destroy();
     this.healthBarMask.destroy();
     this.healthBar.destroy();
-    this.healthText.destroy();
     this.mask.destroy();
     if (this.player) {
       this.player.destroy(true);
-      this.player = null;
+      this.player = undefined;
     }
     super.destroy();
   }
@@ -216,12 +192,12 @@ export default class PlayerWidthCounterComponent extends Phaser.GameObjects
     ) as keyof typeof PLAYER_FORMATION;
 
     const formation = PLAYER_FORMATION[currentTotal][index] || { x: 0, y: 0 };
-    const { left, top } = getDisplayPositionAlign(this.player, "CENTER_BOTTOM");
+    const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
     const currentX = left + formation.x * gap;
     const currentY = top + formation.y * gap;
 
-    this.player.setPosition(currentX + offset, currentY + offsetY);
+    this.player!.setPosition(currentX + offset, currentY + offsetY);
     this.addHealthBar(currentX + offset, currentY + offsetY);
   }
 }
