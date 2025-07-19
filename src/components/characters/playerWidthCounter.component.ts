@@ -7,7 +7,7 @@ import {
 } from "@/configs/constants/constants";
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
-import { formation } from "@/configs/presets/player.formation.preset";
+import { playerFormation } from "@/configs/presets/player.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
@@ -186,9 +186,9 @@ export default class PlayerWidthCounterComponent extends Container {
     const currentTotal = Math.max(
       1,
       Math.min(total, max)
-    ) as keyof typeof formation;
+    ) as keyof typeof playerFormation;
 
-    const position = formation[currentTotal][index] || { x: 0, y: 0 };
+    const position = playerFormation[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
     const currentX = left + position.x * gap + this.randomOffset.x;

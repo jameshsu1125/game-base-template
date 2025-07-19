@@ -62,6 +62,7 @@ export const gatePreset = {
   miss: 1.8, // Ratio to adjust the position of the gate when it is missed
   ratio: 160 / 320,
   duration: 20000,
+  maxCount: 5,
   fontStyle: {
     fontSize: "44px",
     color: "#ffffff",

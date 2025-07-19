@@ -150,7 +150,9 @@ export default class GateWithCounterComponent extends Container {
   }
 
   public increaseNum(): void {
-    this.num += 1;
+    const { maxCount } = gatePreset;
+
+    this.num = Math.min(this.num + 1, maxCount);
     this.updateText();
   }
 

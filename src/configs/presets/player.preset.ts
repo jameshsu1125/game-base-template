@@ -1,4 +1,4 @@
-export const formation = {
+export const playerFormation = {
   1: [{ x: 0, y: 0 }],
   2: [
     { x: -0.5, y: 0 },
