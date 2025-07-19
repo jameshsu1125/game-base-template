@@ -1,7 +1,4 @@
-import {
-  FIREPOWER_SPEED,
-  STOP_COLLISION,
-} from "@/configs/constants/game.constants";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
   getDisplayPositionByBorderAlign,
@@ -88,6 +85,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
 
     const { perspective, delta: gameDelta } = gamePreset;
     const { perspective: firePerspective, offsetY, ratio } = firepowerPreset;
+    const { speed } = firepowerPreset;
 
     this.player.players.forEach((player) => {
       if (!player.player) return;
@@ -113,7 +111,7 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
         player.player.y - player.displayHeight + offsetY - 100
       );
       this.baseScale = firepower.scale;
-      firepower.setVelocityY(-(FIREPOWER_SPEED * gameDelta) / delta);
+      firepower.setVelocityY(-(speed * gameDelta) / delta);
       firepower.setVelocityX(
         (player.player.x - this.scene.scale.width / 2) *
           firePerspective *

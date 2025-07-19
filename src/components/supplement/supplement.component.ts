@@ -1,4 +1,4 @@
-import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
+import { gatePreset } from "@/configs/presets/layout.preset";
 import {
   SUPPLEMENT_ENTITY_BEFORE_START_CONFIG,
   SUPPLEMENT_ENTITY_CONFIG,
@@ -10,7 +10,6 @@ import {
   TSupplementType,
 } from "./supplement.config";
 import SupplementWithCounterComponent from "./supplementWithCounter.component";
-import { gatePreset } from "@/configs/presets/layout.preset";
 
 export class SupplementComponent extends Phaser.GameObjects.Container {
   private index = 0;
@@ -127,9 +126,12 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
   }
 
   public decreaseSupplementCount(supplementName: string): void {
+    console.log(this, this.supplementState, supplementName);
+
     const [state] = this.supplementState?.filter(
       (state) => state.target.supplementName === supplementName
     );
+
     if (state) {
       state.target.decreaseNum();
     }

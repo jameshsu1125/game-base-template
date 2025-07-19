@@ -25,6 +25,12 @@ export const firepowerPreset = {
   perspective: 12,
   offsetY: -10,
   ratio: 23 / 320,
+  speed: 800,
+  reload: 500, // time ms
+  damage: {
+    level1: 50,
+    level2: 100,
+  },
 };
 
 export const playerPreset = {
@@ -59,5 +65,22 @@ export const gatePreset = {
     padding: {
       top: 145,
     },
+  },
+};
+
+export const supplementPreset = {
+  ratio: 120 / 320,
+  offsetY: -60,
+  gap: 20,
+};
+
+export const endPreset = {
+  banner: {
+    ratio: 300 / 320,
+    offsetY: -50,
+  },
+  button: {
+    ratio: 200 / 320,
+    offsetY: 150,
   },
 };

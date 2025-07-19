@@ -1,12 +1,9 @@
-import {
-  Easing,
-  SUPPLEMENT_BUCKET_GAP,
-  SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO,
-} from "@/configs/constants/layout.constants";
+import { Easing } from "@/configs/constants/layout.constants";
 import {
   gamePreset,
   gatePreset,
   playerPreset,
+  supplementPreset,
 } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
@@ -83,6 +80,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
   private createBucket(): void {
     const { fontStyle } = gatePreset;
+    const { ratio } = supplementPreset;
     this.bucket = this.scene.physics.add.staticSprite(
       0,
       -200,
@@ -94,7 +92,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
     const { width, height } = getDisplaySizeByWidthPercentage(
       this.bucket,
-      SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO
+      ratio
     );
 
     this.bucket.setDisplaySize(width, height);
@@ -178,6 +176,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     if (!bucket || !text || this.isDestroyed) return;
     const { offsetY } = playerPreset;
     const { perspective } = gamePreset;
+    const { gap } = supplementPreset;
 
     const easingPercentage = Easing(percentage);
 
@@ -188,8 +187,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
     const x =
       this.scene.scale.width / 2 +
-      (this.config?.quadrant || 0) *
-        (bucket.displayWidth + SUPPLEMENT_BUCKET_GAP);
+      (this.config?.quadrant || 0) * (bucket.displayWidth + gap);
     const y =
       (this.scene.scale.height + bucket.displayHeight) * easingPercentage;
 

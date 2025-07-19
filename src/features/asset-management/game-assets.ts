@@ -28,9 +28,9 @@ export interface GameAssets {
     gun1: string;
     gun2: string;
     army: string;
-    endCardDefeat: string;
-    endCardVictory: string;
-    endCardPlayAgain: string;
+    endBannerDefeat: string;
+    endBannerVictory: string;
+    endButton: string;
   };
   text: {
     restartButton: string;
@@ -61,9 +61,9 @@ const defaultGameAssets = {
     gun1: "assets/choice-runner/supplement-item-firepower-1.png",
     gun2: "assets/choice-runner/supplement-item-firepower-2.png",
     army: "assets/choice-runner/supplement-item-army.png",
-    endCardDefeat: "assets/choice-runner/endCard-defeat.png",
-    endCardVictory: "assets/choice-runner/end-card-victory.png",
-    endCardPlayAgain: "assets/choice-runner/end-card-play-again.png",
+    endBannerDefeat: "assets/choice-runner/end-banner-defeat.png",
+    endBannerVictory: "assets/choice-runner/end-banner-victory.png",
+    endButton: "assets/choice-runner/end-button.png",
   },
   text: {
     restartButton: "Restart",

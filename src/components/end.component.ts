@@ -1,9 +1,4 @@
-import {
-  END_CARD_BUTTON_OFFSET_Y,
-  END_CARD_BUTTON_WIDTH_SCALE_RATIO,
-  END_CARD_RESULT_OFFSET_Y,
-  END_CARD_RESULT_WIDTH_SCALE_RATIO,
-} from "@/configs/constants/layout.constants";
+import { endPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
   getDisplayPositionAlign,
@@ -17,7 +12,7 @@ export interface ResultComponentConfig {
   onRestart?: () => void;
 }
 
-export class EndScreenOverlayComponent extends Phaser.GameObjects.Container {
+export class EndComponent extends Phaser.GameObjects.Container {
   public gameResult: EndGameResult = "VICTORY";
   public elements: (Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image)[] =
     [];
@@ -32,7 +27,7 @@ export class EndScreenOverlayComponent extends Phaser.GameObjects.Container {
 
   private build(): void {
     this.createDarkScreen();
-    this.createResultCard();
+    this.createBanner();
     this.createButton();
   }
 
@@ -50,34 +45,30 @@ export class EndScreenOverlayComponent extends Phaser.GameObjects.Container {
     this.elements.push(darkScreen);
   }
 
-  private createResultCard(): void {
+  private createBanner(): void {
+    const { ratio, offsetY } = endPreset.banner;
     const assets =
       this.gameResult === "VICTORY"
-        ? GAME_ASSET_KEYS.endCardVictory
-        : GAME_ASSET_KEYS.endCardDefeat;
+        ? GAME_ASSET_KEYS.endBannerVictory
+        : GAME_ASSET_KEYS.endBannerDefeat;
 
     const image = this.scene.add.image(0, 0, assets);
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      image,
-      END_CARD_RESULT_WIDTH_SCALE_RATIO
-    );
+    const { width, height } = getDisplaySizeByWidthPercentage(image, ratio);
     image.setDisplaySize(width, height);
     const { left, top } = getDisplayPositionAlign(image, "CENTER_CENTER");
-    image.setPosition(left, top + END_CARD_RESULT_OFFSET_Y);
+    image.setPosition(left, top + offsetY);
     image.setDepth(4);
     this.card = image;
     this.elements.push(image);
   }
 
   private createButton(): void {
-    const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endCardPlayAgain);
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      image,
-      END_CARD_BUTTON_WIDTH_SCALE_RATIO
-    );
+    const { ratio, offsetY } = endPreset.button;
+    const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endButton);
+    const { width, height } = getDisplaySizeByWidthPercentage(image, ratio);
     image.setDisplaySize(width, height);
     const { left, top } = getDisplayPositionAlign(image, "CENTER_CENTER");
-    image.setPosition(left, top + END_CARD_BUTTON_OFFSET_Y);
+    image.setPosition(left, top + offsetY);
     image.setDepth(4);
 
     image.setInteractive();
@@ -93,8 +84,8 @@ export class EndScreenOverlayComponent extends Phaser.GameObjects.Container {
       if (visible && this.card) {
         this.card.setTexture(
           this.gameResult === "VICTORY"
-            ? GAME_ASSET_KEYS.endCardVictory
-            : GAME_ASSET_KEYS.endCardDefeat
+            ? GAME_ASSET_KEYS.endBannerVictory
+            : GAME_ASSET_KEYS.endBannerDefeat
         );
       }
       element.setVisible(visible);

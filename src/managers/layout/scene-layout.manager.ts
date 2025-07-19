@@ -4,7 +4,7 @@ import { LandingComponent } from "@/components/landing.component";
 import { SupplementComponent } from "@/components/supplement/supplement.component";
 import Phaser from "phaser";
 import { PlayerComponent } from "../../components/characters/player.component";
-import { EndScreenOverlayComponent } from "../../components/end-screen.component";
+import { EndComponent } from "../../components/end.component";
 import { FirepowerComponent } from "../../components/firepower/firepower.component";
 import { LogoComponent } from "../../components/logo/logo.component";
 import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
@@ -27,7 +27,7 @@ export interface LayoutContainers {
   supplement: SupplementComponent;
   enemy: EnemyComponent;
 
-  endScreenComponent: EndScreenOverlayComponent;
+  endScreenComponent: EndComponent;
 }
 
 export interface GameAreaConfig {
@@ -166,8 +166,8 @@ export default class SceneLayoutManager {
     return road;
   }
 
-  private createEndScreenOverlay(): EndScreenOverlayComponent {
-    const endScreenOverlay = new EndScreenOverlayComponent(this.scene);
+  private createEndScreenOverlay(): EndComponent {
+    const endScreenOverlay = new EndComponent(this.scene);
     return endScreenOverlay;
   }
 

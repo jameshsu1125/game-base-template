@@ -1,15 +1,15 @@
-import {
-  FIREPOWER_DAMAGE_LEVEL_1,
-  FIREPOWER_DAMAGE_LEVEL_2,
-  STOP_COLLISION,
-} from "@/configs/constants/game.constants";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
-import { enemyPreset, gamePreset } from "@/configs/presets/layout.preset";
+import {
+  enemyPreset,
+  firepowerPreset,
+  gamePreset,
+} from "@/configs/presets/layout.preset";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -76,7 +76,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBar.setDepth(2);
     this.build();
     this.setHealthBar();
-    this.setVisibility(false);
   }
 
   private build(): void {
@@ -208,9 +207,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
     this.enemy.setScale(scale, scale);
 
-    if (this.enemy.y > 50) {
-      if (!this.enemy.visible) this.setVisibility(true);
-    }
     this.setHealthBar();
 
     if (this.enemy.y > this.scene.scale.height - 150) {
@@ -228,17 +224,16 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
   public loseBlood(): void {
     if (!this.enemy || this.isDestroyed) return;
+    const { damage } = firepowerPreset;
 
     const layoutContainers =
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
 
-    const damage =
-      layoutContainers.firepower.level === 1
-        ? FIREPOWER_DAMAGE_LEVEL_1
-        : FIREPOWER_DAMAGE_LEVEL_2;
-    this.blood -= damage;
+    const currentDamage =
+      layoutContainers.firepower.level === 1 ? damage.level1 : damage.level2;
+    this.blood -= currentDamage;
 
     if (this.blood <= 0) {
       this.destroy();

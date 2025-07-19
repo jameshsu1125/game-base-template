@@ -1,4 +1,4 @@
-import { FIREPOWER_RELOAD_TIME } from "@/configs/constants/game.constants";
+import { firepowerPreset } from "@/configs/presets/layout.preset";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 
@@ -19,9 +19,9 @@ export default class FirepowerEntity {
     if (!this.isStarted) return;
     if (this.state.startTime === 0) this.state.startTime = time;
 
-    const index = Math.floor(
-      (time - this.state.startTime) / FIREPOWER_RELOAD_TIME
-    );
+    const { reload } = firepowerPreset;
+
+    const index = Math.floor((time - this.state.startTime) / reload);
     if (index !== this.state.index && index > this.state.index) {
       this.state.index = index;
       ServiceLocator.get<SceneLayoutManager>(
