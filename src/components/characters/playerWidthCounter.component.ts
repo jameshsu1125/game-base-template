@@ -178,17 +178,11 @@ export default class PlayerWidthCounterComponent extends Container {
     }
   }
 
-  public setPositionByIndex(index: number, offset: number, total: number) {
+  public setPositionByIndex(index: number, offset: number) {
     if (this.player === null || this.isDestroyed) return;
     const { gap, offsetY } = playerPreset;
-    const { max } = GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce;
 
-    const currentTotal = Math.max(
-      1,
-      Math.min(total, max)
-    ) as keyof typeof playerFormation;
-
-    const position = playerFormation[currentTotal][index] || { x: 0, y: 0 };
+    const position = playerFormation[index] || { x: 0, y: 0 };
     const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
     const currentX = left + position.x * gap + this.randomOffset.x;

@@ -79,10 +79,9 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   private calculatePlayersPosition(offset: number = 0): void {
-    const total = this.players.length;
     this.players.forEach((player, index) => {
       if (!player.player) return;
-      player.setPositionByIndex(index, offset, total);
+      player.setPositionByIndex(index, offset);
     });
   }
 
