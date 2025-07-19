@@ -5,6 +5,7 @@ import {
 import Phaser from "phaser";
 import PlayerWidthCounterComponent from "./playerWidthCounter.component";
 import { playerPreset } from "@/configs/presets/layout.preset";
+import { playerFormation } from "@/configs/presets/player.preset";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
   public group: Phaser.Physics.Arcade.StaticGroup | null = null;
@@ -69,11 +70,18 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   private setCurrentPositionByUserInput(targetX: number, _: number): void {
     const [player] = this.players;
     if (player.player === null) return;
-    const minX =
-      -this.scene.scale.width * 0.5 + player.player!.displayWidth * 0.5;
-    const maxX =
-      this.scene.scale.width * 0.5 - player.player!.displayWidth * 0.5;
-    const currentX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
+
+    const currentFormation = playerFormation.slice(0, this.players.length);
+    const xs = currentFormation.map((f) => f.x);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+
+    const halfWidth = this.scene.scale.width * 0.5;
+    const playerWidth = player.player!.displayWidth;
+    const minimumX = -halfWidth - playerWidth * minX;
+    const maximumX = halfWidth - playerWidth * maxX;
+    const currentX = Phaser.Math.Clamp(targetX, minimumX, maximumX);
+
     this.x = currentX;
     this.calculatePlayersPosition(currentX);
   }
