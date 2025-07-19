@@ -15,8 +15,8 @@ export const supplementEntityPresetConfig: {
   time: number;
   data: { quadrant: TQuadrant; count: number; type: "ARMY" | "GUN" };
 }[] = [
-  { time: -10000, data: { quadrant: -1, count: 1, type: "GUN" } },
-  { time: -10000, data: { quadrant: 0, count: 1, type: "GUN" } },
-  { time: -10000, data: { quadrant: 1, count: 1, type: "GUN" } },
+  { time: -10000, data: { quadrant: -1, count: 1, type: "ARMY" } },
+  { time: -10000, data: { quadrant: 0, count: 1, type: "ARMY" } },
+  { time: -10000, data: { quadrant: 1, count: 1, type: "ARMY" } },
   { time: -5000, data: { quadrant: 1, count: 20, type: "ARMY" } },
 ];

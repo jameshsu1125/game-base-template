@@ -85,6 +85,7 @@ export class FirepowerComponent extends Container {
 
       const { width, height } = getSize(firepower, ratio);
       firepower.setDisplaySize(width, height);
+
       firepower.setPosition(
         player.player.x - player.player.displayWidth / 2,
         player.player.y - player.displayHeight + offsetY - 100

@@ -1,4 +1,5 @@
 import {
+  BitmapMask,
   Container,
   Graphics,
   Image,
@@ -16,8 +17,9 @@ import {
 } from "@/utils/layout.utils";
 
 export default class PlayerWidthCounterComponent extends Container {
-  public playerName: string;
   private isDestroyed = false;
+
+  public playerName: string;
   public player?: Sprite;
   public healthBarBorder: Graphics = this.scene.add.graphics();
   public healthBarMask: Graphics = this.scene.make.graphics({});
@@ -26,28 +28,18 @@ export default class PlayerWidthCounterComponent extends Container {
     0,
     GAME_ASSET_KEYS.healthBar
   );
-  public mask = new Phaser.Display.Masks.BitmapMask(
-    this.scene,
-    this.healthBarMask
-  );
+  public mask = new BitmapMask(this.scene, this.healthBarMask);
 
   public blood: number = 100;
 
-  private decreasePlayerBlood: (
-    player: Phaser.Physics.Arcade.Sprite,
-    enemy: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
   private increasePlayerCount: (count: number, gateName: string) => void;
   private removePlayerByName: (name: string) => void;
+  private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
 
   constructor(
     scene: Phaser.Scene,
     playerName: string,
-    decreasePlayerBlood: (
-      player: Phaser.Physics.Arcade.Sprite,
-      enemy: Phaser.Physics.Arcade.Sprite
-    ) => void,
+    decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void,
     increasePlayerCount: (count: number, gateName: string) => void,
     removePlayerByName: (name: string) => void
   ) {
