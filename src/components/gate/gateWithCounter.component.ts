@@ -1,50 +1,41 @@
+import { Container, Scene, Sprite, Text } from "@/configs/constants/constants";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
-import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import {
-  getDisplayPositionAlign,
-  getDisplaySizeByWidthPercentage,
-} from "@/utils/layout.utils";
-import {
-  GATE_MISS_OFFSET_RATIO,
-  GATE_TEXT_STYLE,
-  TQuadrantX,
-} from "./gate.config";
 import {
   gamePreset,
   gatePreset,
   playerPreset,
 } from "@/configs/presets/layout.preset";
-import { STOP_COLLISION } from "@/configs/constants/game.constants";
+import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
+import {
+  getDisplayPositionAlign as getAlign,
+  getDisplaySizeByWidthPercentage as getSize,
+} from "@/utils/layout.utils";
+import { TQuadrantX } from "./gate.config";
 
-export default class GateWithCounterComponent extends Phaser.GameObjects
-  .Container {
+export default class GateWithCounterComponent extends Container {
   private isDestroyed = false;
-  public num = 0;
   private defaultScale: number = 1;
-  public gateName = "";
-
-  public gate: Phaser.Physics.Arcade.Sprite | null = null;
-  private text: Phaser.GameObjects.Text | null = null;
   private quadrant: TQuadrantX = 0;
 
+  public gateName = "";
+  public num = 0;
+
+  public gate?: Sprite;
+  private text?: Text;
+
   private removeStateByName: (name: string) => void;
-  private increaseGateCount: (
-    gate: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
+  private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
 
   constructor(
-    scene: Phaser.Scene,
+    scene: Scene,
     config: { quadrant: TQuadrantX; count: number },
     name: string,
     removeStateByName: (name: string) => void,
-    increaseGateCount: (
-      gate: Phaser.Physics.Arcade.Sprite,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void,
+    increaseGateCount: (gate: Sprite, firepower: Sprite) => void,
     increasePlayerCount: (count: number, gateName: string) => void
   ) {
     super(scene, 0, 0);
@@ -58,7 +49,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
     this.build();
   }
 
-  private build(): void {
+  private createGate(): void {
     const { ratio } = gatePreset;
     this.gate = this.scene.physics.add.staticSprite(
       0,
@@ -67,40 +58,47 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
         ? GAME_ASSET_KEYS.gatePositive
         : GAME_ASSET_KEYS.gateNegative
     );
-    this.gate.setName(this.gateName);
 
-    const { width, height } = getDisplaySizeByWidthPercentage(this.gate, ratio);
+    this.gate.setName(this.gateName);
+    this.gate.setOrigin(0.5, 0.5);
+
+    const { width, height } = getSize(this.gate, ratio);
     this.gate.setDisplaySize(width, height);
 
-    this.gate.setOrigin(0.5, 0.5);
-    const { left, top } = getDisplayPositionAlign(this.gate, "CENTER_TOP");
+    const { left, top } = getAlign(this.gate, "CENTER_TOP");
     this.gate.setPosition(
       left + this.quadrant * width,
       top - this.gate.displayHeight
     );
-    this.defaultScale = this.gate.scale;
 
+    this.defaultScale = this.gate.scale;
+    this.add(this.gate);
+  }
+
+  private createText(): void {
+    const { fontStyle } = gatePreset;
     this.text = this.scene.add.text(
-      this.gate.x,
-      this.gate.y,
+      this.gate!.x,
+      this.gate!.y,
       `${this.num > 0 ? "+" : this.num < 0 ? "-" : ""}${Math.abs(this.num)}`,
       {
-        ...GATE_TEXT_STYLE,
-        fixedWidth: this.gate.displayWidth,
+        ...fontStyle,
+        fixedWidth: this.gate!.displayWidth,
       }
     );
     this.text.setOrigin(0.5, 0.5);
-
-    this.add(this.gate);
     this.add(this.text);
-    if (!STOP_COLLISION) this.addCollision(this.gate);
   }
 
-  private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
-    const layoutContainers =
-      ServiceLocator.get<SceneLayoutManager>(
-        "gameAreaManager"
-      ).layoutContainers;
+  private build(): void {
+    this.createGate();
+    this.createText();
+    if (!STOP_COLLISION) this.addCollision(this.gate!);
+  }
+
+  private addCollision(gate: Sprite) {
+    const { layoutContainers } =
+      ServiceLocator.get<SceneLayoutManager>("gameAreaManager");
 
     layoutContainers.firepower.firepowerContainer.forEach((firepower) => {
       this.scene.physics.add.collider(
@@ -154,8 +152,10 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   public setPositionByPercentage(percentage: number) {
     const { defaultScale: scale, gate, text } = this;
     if (!gate || !text || this.isDestroyed) return;
+
     const { perspective } = gamePreset;
     const { offsetY } = playerPreset;
+    const { miss } = gatePreset;
 
     const easingPercentage = Easing(percentage);
     const currentScale =
@@ -165,12 +165,11 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
 
     const x = this.scene.scale.width / 2 + this.quadrant * gate.displayWidth;
     const y = (this.scene.scale.height + gate.displayHeight) * easingPercentage;
-
     this.setPxy(x, y);
 
     const missPositionY =
       this.scene.scale.height -
-      gate.displayHeight * (GATE_MISS_OFFSET_RATIO + perspective) -
+      gate.displayHeight * (miss + perspective) -
       offsetY;
 
     if (y > missPositionY) {

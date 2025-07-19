@@ -80,7 +80,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   }
 
   private createBucket(): void {
-    const { fontStyle } = gatePreset;
+    const { fontStyle } = supplementPreset;
     const { ratio } = supplementPreset;
     this.bucket = this.scene.physics.add.staticSprite(
       0,

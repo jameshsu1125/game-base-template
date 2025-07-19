@@ -58,8 +58,22 @@ export const enemyPreset = {
 };
 
 export const gatePreset = {
+  miss: 1.8, // Ratio to adjust the position of the gate when it is missed
   ratio: 160 / 320,
   duration: 20000,
+  fontStyle: {
+    fontSize: "44px",
+    color: "#ffffff",
+    fontFamily: "monospace",
+    align: "center",
+    fixedHeight: 44,
+  },
+};
+
+export const supplementPreset = {
+  ratio: 120 / 320,
+  offsetY: -60,
+  gap: 20,
   fontStyle: {
     fontSize: "44px",
     color: "#ffffff",
@@ -70,12 +84,6 @@ export const gatePreset = {
       top: 145,
     },
   },
-};
-
-export const supplementPreset = {
-  ratio: 120 / 320,
-  offsetY: -60,
-  gap: 20,
 };
 
 export const endPreset = {

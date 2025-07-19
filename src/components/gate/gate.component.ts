@@ -1,26 +1,20 @@
+import { Container, Sprite } from "@/configs/constants/constants";
+import { gatePreset } from "@/configs/presets/layout.preset";
+import { GATE_ENTITY_CONFIG } from "@/entities/entity.config";
 import Phaser from "phaser";
-import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { TGateState, TQuadrantX } from "./gate.config";
 import GateWithCounterComponent from "./gateWithCounter.component";
-import { GATE_ENTITY_CONFIG } from "@/entities/entity.config";
-import { gatePreset } from "@/configs/presets/layout.preset";
 
-export class GateComponent extends Phaser.GameObjects.Container {
+export class GateComponent extends Container {
   private isStarted = false;
   public gateState: TGateState[] = [];
-  private increaseGateCount: (
-    gate: Phaser.Physics.Arcade.Sprite,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
+  private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
   private index = 0;
 
   constructor(
     scene: Phaser.Scene,
-    increaseGateCount: (
-      gate: Phaser.Physics.Arcade.Sprite,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void,
+    increaseGateCount: (gate: Sprite, firepower: Sprite) => void,
     increasePlayerCount: (count: number, gateName: string) => void
   ) {
     super(scene, 0, 0);
