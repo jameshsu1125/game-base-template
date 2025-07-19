@@ -1,10 +1,15 @@
+import {
+  Container,
+  Image,
+  Rectangle,
+  Scene,
+} from "@/configs/constants/constants";
 import { endPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
-  getDisplayPositionAlign,
-  getDisplaySizeByWidthPercentage,
+  getDisplayPositionAlign as getAlign,
+  getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
-import Phaser from "phaser";
 
 export type EndGameResult = "VICTORY" | "DEFEAT";
 export interface ResultComponentConfig {
@@ -12,14 +17,13 @@ export interface ResultComponentConfig {
   onRestart?: () => void;
 }
 
-export class EndComponent extends Phaser.GameObjects.Container {
+export class EndComponent extends Container {
   public gameResult: EndGameResult = "VICTORY";
-  public elements: (Phaser.GameObjects.Rectangle | Phaser.GameObjects.Image)[] =
-    [];
+  public elements: (Rectangle | Image)[] = [];
 
-  private card: Phaser.GameObjects.Image | null = null;
+  private card?: Image;
 
-  constructor(scene: Phaser.Scene) {
+  constructor(scene: Scene) {
     super(scene);
     this.build();
     this.setVisibility(false);
@@ -53,9 +57,9 @@ export class EndComponent extends Phaser.GameObjects.Container {
         : GAME_ASSET_KEYS.endBannerDefeat;
 
     const image = this.scene.add.image(0, 0, assets);
-    const { width, height } = getDisplaySizeByWidthPercentage(image, ratio);
+    const { width, height } = getSize(image, ratio);
     image.setDisplaySize(width, height);
-    const { left, top } = getDisplayPositionAlign(image, "CENTER_CENTER");
+    const { left, top } = getAlign(image, "CENTER_CENTER");
     image.setPosition(left, top + offsetY);
     image.setDepth(4);
     this.card = image;
@@ -65,16 +69,16 @@ export class EndComponent extends Phaser.GameObjects.Container {
   private createButton(): void {
     const { ratio, offsetY } = endPreset.button;
     const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endButton);
-    const { width, height } = getDisplaySizeByWidthPercentage(image, ratio);
-    image.setDisplaySize(width, height);
-    const { left, top } = getDisplayPositionAlign(image, "CENTER_CENTER");
-    image.setPosition(left, top + offsetY);
     image.setDepth(4);
 
+    const { width, height } = getSize(image, ratio);
+    image.setDisplaySize(width, height);
+
+    const { left, top } = getAlign(image, "CENTER_CENTER");
+    image.setPosition(left, top + offsetY);
+
     image.setInteractive();
-    image.on("pointerdown", () => {
-      location.reload();
-    });
+    image.on("pointerdown", () => location.reload());
 
     this.elements.push(image);
   }

@@ -9,6 +9,7 @@ export type BitmapMask = Phaser.Display.Masks.BitmapMask;
 export type Graphics = Phaser.GameObjects.Graphics;
 export type Image = Phaser.GameObjects.Image;
 export type Text = Phaser.GameObjects.Text;
+export type Rectangle = Phaser.GameObjects.Rectangle;
 
 export const Container = Phaser.GameObjects.Container;
 export const Scene = Phaser.Scene;

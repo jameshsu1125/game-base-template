@@ -28,7 +28,6 @@ export class LandingComponent extends Container {
 
     const x = -this.fingerWidth / 2 - width / 2;
     const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY;
-
     arrow.setPosition(x, y);
 
     this.add(arrow);
