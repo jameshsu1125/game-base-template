@@ -14,7 +14,6 @@ import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import { HEALTH_BAR_TEXT_STYLE } from "./enemy.config";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
@@ -29,7 +28,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
   public healthBarBorder = this.scene.add.graphics();
   public healthBarMask = this.scene.make.graphics({});
   public healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
-  public healthText = this.scene.add.text(0, 0, "100%", HEALTH_BAR_TEXT_STYLE);
   public mask = new Phaser.Display.Masks.BitmapMask(
     this.scene,
     this.healthBarMask
@@ -81,7 +79,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBarMask.setDepth(3);
     this.healthBar.setOrigin(0, 0);
     this.healthBar.setDepth(2);
-    this.healthText.setDepth(3);
     this.build();
     this.setHealthBar();
     this.setVisibility(false);
@@ -193,9 +190,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBar.setPosition(currentX, currentY);
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);
-
-    this.healthText.setPosition(currentX, currentY + 3);
-    this.healthText.width = currentWidth - 2;
   }
 
   public setPxy(x: number, y: number) {
@@ -231,7 +225,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBarBorder.setVisible(value);
     this.healthBarMask.setVisible(value);
     this.healthBar.setVisible(value);
-    this.healthText.setVisible(value);
   }
 
   public loseBlood(): void {
@@ -251,8 +244,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     if (this.blood <= 0) {
       this.destroy();
       this.removeStateByName(this.enemyName);
-    } else {
-      this.healthText.setText(`${this.blood}%`);
     }
   }
 
@@ -261,7 +252,6 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
     this.healthBarBorder.destroy();
     this.healthBarMask.destroy();
     this.healthBar.destroy();
-    this.healthText.destroy();
     this.mask.destroy();
     if (this.enemy) {
       this.enemy.destroy(true);

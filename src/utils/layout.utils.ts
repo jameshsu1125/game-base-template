@@ -47,7 +47,10 @@ export function scaleImageToCover(
  * @returns An object with the calculated width and height.
  */
 export function getDisplaySizeByWidthPercentage(
-  gameObject: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite,
+  gameObject:
+    | Phaser.GameObjects.Image
+    | Phaser.GameObjects.Sprite
+    | Phaser.GameObjects.DOMElement,
   widthPercentage: number
 ): { width: number; height: number; ratio: number } {
   const aspectRatio = gameObject.width / gameObject.height;

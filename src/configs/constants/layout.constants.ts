@@ -36,3 +36,6 @@ export const Easing = BezierEasing(0.55, 0.085, 0.68, 0.53);
 export const adjustmentOffsetTime = 500; // 開始遊戲後，補給出現的時間延遲
 
 export const END_CARD_RESULT_WIDTH_SCALE_RATIO = 300 / 320;
+export const END_CARD_RESULT_OFFSET_Y = -50;
+export const END_CARD_BUTTON_WIDTH_SCALE_RATIO = 200 / 320;
+export const END_CARD_BUTTON_OFFSET_Y = 150;

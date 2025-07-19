@@ -223,11 +223,13 @@ export default class SceneLayoutManager {
 
     Object.entries(this.layoutContainers).forEach(([key, container]) => {
       if (key === "sceneContainer") return;
-      if (key === "endScreenComponent") container.show();
-      else container.destroy();
+      if (key === "endScreenComponent") {
+        container.gameResult = "DEFEAT";
+        container.setVisibility(true);
+      }
     });
 
-    this.layoutContainers.endScreenComponent.show();
+    this.layoutContainers.endScreenComponent.setVisibility(true);
   }
 
   public update(time: number, delta: number): void {
