@@ -8,13 +8,13 @@ import {
   ENEMY_FAR_RANDOM_WIDTH,
   ENEMY_HEALTH_BAR_OFFSET_Y,
   ENEMY_WIDTH_SCALE_RATIO,
-  SCENE_PERSPECTIVE,
 } from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 import { PLAYER_COMPONENT_HEALTH_BAR_SIZE } from "./player.config";
+import { gamePreset } from "@/configs/presets/layout.preset";
 
 export default class EnemyWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -200,10 +200,12 @@ export default class EnemyWithCounterComponent extends Phaser.GameObjects
 
   public update(percent: number): void {
     if (!this.enemy || this.isDestroyed) return;
+    const { perspective } = gamePreset;
+
     const scale =
       this.defaultScale -
       this.defaultScale *
-        (1 - SCENE_PERSPECTIVE) *
+        (1 - perspective) *
         (Math.abs(this.scene.scale.height - this.enemy.y) /
           this.scene.scale.height);
 

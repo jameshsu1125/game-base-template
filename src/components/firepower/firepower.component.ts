@@ -3,12 +3,6 @@ import {
   GAME_DELTA,
   STOP_COLLISION,
 } from "@/configs/constants/game.constants";
-import {
-  FIREPOWER_OFFSET_Y,
-  FIREPOWER_PERSPECTIVE,
-  FIREPOWER_WIDTH_SCALE_RATIO,
-  SCENE_PERSPECTIVE,
-} from "@/configs/constants/layout.constants";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
   getDisplayPositionByBorderAlign,
@@ -18,6 +12,7 @@ import Phaser from "phaser";
 import { PlayerComponent } from "../characters/player.component";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import { firepowerPreset, gamePreset } from "@/configs/presets/layout.preset";
 
 export class FirepowerComponent extends Phaser.GameObjects.Container {
   private player: PlayerComponent;
@@ -75,13 +70,14 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
   private build(): void {
     if (this.player && this.player.players.length > 0) {
       const [player] = this.player.players;
+      const { offsetY } = firepowerPreset;
 
       if (player.player) {
         this.setPosition(
           getDisplayPositionByBorderAlign(player.player, this.scene, "LEFT"),
           getDisplayPositionByBorderAlign(player.player, this.scene, "TOP") -
             player.displayHeight * 0.5 +
-            FIREPOWER_OFFSET_Y
+            offsetY
         );
       }
     }
@@ -91,13 +87,16 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
     if (!this.isStarted || !this.player || this.player.players.length === 0)
       return;
 
+    const { perspective } = gamePreset;
+    const { perspective: firePerspective, offsetY, ratio } = firepowerPreset;
+
     this.player.players.forEach((player) => {
       if (!player.player) return;
 
       const firepower = this.scene.physics.add
         .sprite(
           player.player.x,
-          player.player.y - FIREPOWER_OFFSET_Y,
+          player.player.y - offsetY,
           this.level === 1
             ? GAME_ASSET_KEYS.firepowerLevel1
             : GAME_ASSET_KEYS.firepowerLevel2
@@ -107,27 +106,27 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
 
       const { width, height } = getDisplaySizeByWidthPercentage(
         firepower,
-        FIREPOWER_WIDTH_SCALE_RATIO
+        ratio
       );
       firepower.setDisplaySize(width, height);
       firepower.setPosition(
         player.player.x - player.player.displayWidth / 2,
-        player.player.y - player.displayHeight + FIREPOWER_OFFSET_Y - 100
+        player.player.y - player.displayHeight + offsetY - 100
       );
       this.baseScale = firepower.scale;
       firepower.setVelocityY(-(FIREPOWER_SPEED * GAME_DELTA) / delta);
       firepower.setVelocityX(
         (player.player.x - this.scene.scale.width / 2) *
-          FIREPOWER_PERSPECTIVE *
+          firePerspective *
           -1 *
-          SCENE_PERSPECTIVE
+          perspective
       );
       firepower.setRotation(
         Phaser.Math.DegToRad(
           (player.player.x - this.scene.scale.width / 2) *
-            FIREPOWER_PERSPECTIVE *
+            firePerspective *
             -0.05 *
-            SCENE_PERSPECTIVE
+            perspective
         )
       );
 
@@ -246,12 +245,13 @@ export class FirepowerComponent extends Phaser.GameObjects.Container {
 
   public update(): void {
     if (!this.isStarted) return;
+    const { perspective } = gamePreset;
 
     this.firepowerContainer.forEach((firepower) => {
       const scale =
         this.baseScale -
         this.baseScale *
-          (1 - SCENE_PERSPECTIVE) *
+          (1 - perspective) *
           (Math.abs(this.scene.scale.height - firepower.y) /
             this.scene.scale.height);
 

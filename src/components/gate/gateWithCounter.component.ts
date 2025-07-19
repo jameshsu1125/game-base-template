@@ -1,22 +1,21 @@
-import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
-  GATE_MISS_OFFSET_RATIO,
-  GATE_TEXT_STYLE,
-  TQuadrantX,
-} from "./gate.config";
+  Easing,
+  GATE_WIDTH_SCALE_RATIO,
+  PLAYER_OFFSET_Y,
+} from "@/configs/constants/layout.constants";
+import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import ServiceLocator from "@/services/service-locator/service-locator.service";
 import {
   getDisplayPositionAlign,
   getDisplaySizeByWidthPercentage,
 } from "@/utils/layout.utils";
 import {
-  Easing,
-  GATE_WIDTH_SCALE_RATIO,
-  PLAYER_OFFSET_Y,
-  SCENE_PERSPECTIVE,
-} from "@/configs/constants/layout.constants";
-import ServiceLocator from "@/services/service-locator/service-locator.service";
-import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
-import BezierEasing from "bezier-easing";
+  GATE_MISS_OFFSET_RATIO,
+  GATE_TEXT_STYLE,
+  TQuadrantX,
+} from "./gate.config";
+import { gamePreset } from "@/configs/presets/layout.preset";
 
 export default class GateWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -156,11 +155,11 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
   public setPositionByPercentage(percentage: number) {
     const { defaultScale: scale, gate, text } = this;
     if (!gate || !text || this.isDestroyed) return;
+    const { perspective } = gamePreset;
 
     const easingPercentage = Easing(percentage);
-
     const currentScale =
-      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - easingPercentage);
+      scale - scale * (1 - perspective) * (1 - easingPercentage);
     gate.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
 
@@ -171,7 +170,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
 
     const missPositionY =
       this.scene.scale.height -
-      gate.displayHeight * (GATE_MISS_OFFSET_RATIO + SCENE_PERSPECTIVE) -
+      gate.displayHeight * (GATE_MISS_OFFSET_RATIO + perspective) -
       PLAYER_OFFSET_Y;
 
     if (y > missPositionY) {

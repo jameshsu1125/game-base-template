@@ -1,19 +1,15 @@
-import {
-  LANDING_ARROW_LEFT_WIDTH_SCALE_RATIO,
-  LANDING_ARROW_OFFSET_Y,
-  LANDING_ARROW_RIGHT_WIDTH_SCALE_RATIO,
-  LANDING_FINGER_WIDTH_SCALE_RATIO,
-} from "@/configs/constants/layout.constants";
+import { Container, Scene } from "@/configs/constants/constants";
+import { landingPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import {
-  getDisplayPositionByBorderAlign,
-  getDisplaySizeByWidthPercentage,
+  getDisplayPositionByBorderAlign as getAlign,
+  getDisplaySizeByWidthPercentage as setSize,
 } from "@/utils/layout.utils";
-import Phaser from "phaser";
 
-export class LandingComponent extends Phaser.GameObjects.Container {
+export class LandingComponent extends Container {
   private fingerWidth: number = 0;
-  constructor(scene: Phaser.Scene) {
+
+  constructor(scene: Scene) {
     super(scene);
     this.build();
   }
@@ -23,48 +19,51 @@ export class LandingComponent extends Phaser.GameObjects.Container {
     this.createArrows();
   }
 
+  private createLeftArrow() {
+    const { ratio, offsetY } = landingPreset.leftArrow;
+    const arrow = this.scene.add.image(0, 0, GAME_ASSET_KEYS.arrowLeft);
+
+    const { width, height } = setSize(arrow, ratio);
+    arrow.setDisplaySize(width, height);
+
+    const x = -this.fingerWidth / 2 - width / 2;
+    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY;
+
+    arrow.setPosition(x, y);
+
+    this.add(arrow);
+  }
+
+  private createRightArrow(): void {
+    const { ratio, offsetY } = landingPreset.rightArrow;
+
+    const arrow = this.scene.add.image(0, 0, GAME_ASSET_KEYS.arrowRight);
+
+    const { width: rightWidth, height: rightHeight } = setSize(arrow, ratio);
+    arrow.setDisplaySize(rightWidth, rightHeight);
+
+    const x = 0 + this.fingerWidth / 2 + rightWidth / 2;
+    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY;
+    arrow.setPosition(x, y);
+
+    this.add(arrow);
+  }
+
   private createArrows(): void {
-    const arrowLeft = this.scene.add.image(0, 0, GAME_ASSET_KEYS.arrowLeft);
-    const arrowRight = this.scene.add.image(0, 0, GAME_ASSET_KEYS.arrowRight);
-
-    const { width: leftWidth, height: leftHeight } =
-      getDisplaySizeByWidthPercentage(
-        arrowLeft,
-        LANDING_ARROW_LEFT_WIDTH_SCALE_RATIO
-      );
-    const { width: rightWidth, height: rightHeight } =
-      getDisplaySizeByWidthPercentage(
-        arrowRight,
-        LANDING_ARROW_RIGHT_WIDTH_SCALE_RATIO
-      );
-
-    arrowLeft.setDisplaySize(leftWidth, leftHeight);
-    arrowRight.setDisplaySize(rightWidth, rightHeight);
-
-    arrowLeft.setPosition(
-      0 - this.fingerWidth / 2 - leftWidth / 2,
-      getDisplayPositionByBorderAlign(arrowLeft, this.scene, "BOTTOM") +
-        LANDING_ARROW_OFFSET_Y
-    );
-    arrowRight.setPosition(
-      0 + this.fingerWidth / 2 + rightWidth / 2,
-      getDisplayPositionByBorderAlign(arrowLeft, this.scene, "BOTTOM") +
-        LANDING_ARROW_OFFSET_Y
-    );
-
-    this.add([arrowLeft, arrowRight]);
+    this.createLeftArrow();
+    this.createRightArrow();
   }
 
   private createFinger(): void {
+    const { ratio } = landingPreset.finger;
+
     const finger = this.scene.add.image(0, 0, GAME_ASSET_KEYS.finger);
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      finger,
-      LANDING_FINGER_WIDTH_SCALE_RATIO
-    );
-    const y = getDisplayPositionByBorderAlign(finger, this.scene, "BOTTOM");
+    const { width, height } = setSize(finger, ratio);
+    const y = getAlign(finger, this.scene, "BOTTOM");
 
     finger.setDisplaySize(width, height);
     finger.setPosition(0, y);
+
     this.fingerWidth = width;
 
     this.add(finger);

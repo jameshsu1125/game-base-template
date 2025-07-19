@@ -1,10 +1,10 @@
 import {
   Easing,
   PLAYER_OFFSET_Y,
-  SCENE_PERSPECTIVE,
   SUPPLEMENT_BUCKET_GAP,
   SUPPLEMENT_BUCKET_WIDTH_SCALE_RATIO,
 } from "@/configs/constants/layout.constants";
+import { gamePreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
@@ -173,11 +173,12 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   public update(percentage: number): void {
     const { defaultScale: scale, bucket, text } = this;
     if (!bucket || !text || this.isDestroyed) return;
+    const { perspective } = gamePreset;
 
     const easingPercentage = Easing(percentage);
 
     const currentScale =
-      scale - scale * (1 - SCENE_PERSPECTIVE) * (1 - easingPercentage);
+      scale - scale * (1 - perspective) * (1 - easingPercentage);
     bucket.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
 
@@ -192,8 +193,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
     const missPositionY =
       this.scene.scale.height -
-      bucket.displayHeight *
-        (SUPPLEMENT_MISS_OFFSET_RATIO + SCENE_PERSPECTIVE) -
+      bucket.displayHeight * (SUPPLEMENT_MISS_OFFSET_RATIO + perspective) -
       PLAYER_OFFSET_Y;
 
     if (y > missPositionY) {
