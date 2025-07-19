@@ -102,8 +102,7 @@ export class EnemyComponent extends Container {
 
   public update(time: number): void {
     if (!this.isStarted) return;
-    const { duration } = gatePreset;
-    const { timeOffset } = enemyPreset;
+    const { timeOffset, duration } = enemyPreset;
     this.enemyState.forEach((state) => {
       const percent =
         (time - state.startTime - this.offsetTime + timeOffset) / duration;

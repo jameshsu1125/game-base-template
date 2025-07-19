@@ -53,6 +53,7 @@ export const enemyPreset = {
   ratio: 100 / 320,
   randomWidth: 100,
   timeOffset: 500,
+  duration: 20000,
   healthBar: {
     offsetY: -7,
     width: 70,
@@ -100,4 +101,12 @@ export const endPreset = {
     ratio: 200 / 320,
     offsetY: 150,
   },
+};
+
+export const finishLinePreset = {
+  miss: 150,
+  ratio: 180 / 320,
+  perspective: 0.4,
+  duration: 20000,
+  timeOffset: 0,
 };

@@ -5,7 +5,6 @@ import {
   Image,
   Sprite,
 } from "@/configs/constants/constants";
-import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
 import { playerFormation } from "@/configs/presets/player.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";

@@ -182,7 +182,7 @@ export default class EnemyWithCounterComponent extends Container {
     this.setHealthBar();
   }
 
-  public update(percent: number): void {
+  public update(): void {
     if (!this.enemy || this.isDestroyed) return;
     const { perspective } = gamePreset;
 
@@ -259,6 +259,6 @@ export default class EnemyWithCounterComponent extends Container {
     const y = (this.scene.scale.height + enemy.displayHeight) * currentPercent;
 
     this.setPxy(x, y);
-    this.update(currentPercent);
+    this.update();
   }
 }

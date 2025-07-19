@@ -31,6 +31,7 @@ export interface GameAssets {
     endBannerDefeat: string;
     endBannerVictory: string;
     endButton: string;
+    finishLine: string;
   };
   text: {
     restartButton: string;
@@ -64,6 +65,7 @@ const defaultGameAssets = {
     endBannerDefeat: "assets/choice-runner/end-banner-defeat.png",
     endBannerVictory: "assets/choice-runner/end-banner-victory.png",
     endButton: "assets/choice-runner/end-button.png",
+    finishLine: "assets/choice-runner/finish-line.png",
   },
   text: {
     restartButton: "Restart",

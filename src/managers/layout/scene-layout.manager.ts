@@ -11,6 +11,7 @@ import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
+import { FinishComponent } from "@/components/finishLine/finishLine.component";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -26,6 +27,7 @@ export interface LayoutContainers {
   gate: GateComponent;
   supplement: SupplementComponent;
   enemy: EnemyComponent;
+  finishLine: FinishComponent;
 
   endScreenComponent: EndComponent;
 }
@@ -57,6 +59,7 @@ export default class SceneLayoutManager {
 
     this.layoutContainers.background = this.createBackground();
     this.layoutContainers.road = this.createRoad();
+    this.layoutContainers.finishLine = this.createFinishLine();
     this.layoutContainers.gate = this.createGate();
     this.layoutContainers.enemy = this.createEnemy();
     this.layoutContainers.supplement = this.createSupplement();
@@ -69,6 +72,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
       this.layoutContainers.road,
+      this.layoutContainers.finishLine,
       this.layoutContainers.gate,
       this.layoutContainers.supplement,
       this.layoutContainers.enemy,
@@ -79,6 +83,14 @@ export default class SceneLayoutManager {
       this.layoutContainers.endScreenComponent,
     ]);
     return this.layoutContainers;
+  }
+
+  private createFinishLine(): FinishComponent {
+    const finishLineComponent = new FinishComponent(
+      this.scene,
+      this.onGameVictory.bind(this)
+    );
+    return finishLineComponent;
   }
 
   private createSupplement(): SupplementComponent {
@@ -232,13 +244,26 @@ export default class SceneLayoutManager {
     this.layoutContainers.endScreenComponent.setVisibility(true);
   }
 
-  public update(time: number, delta: number): void {
+  public onGameVictory(): void {
+    this.isGameOver = true;
+    this.gameOverCallback();
+    Object.entries(this.layoutContainers).forEach(([key, container]) => {
+      if (key === "sceneContainer") return;
+      if (key === "endScreenComponent") {
+        container.gameResult = "VICTORY";
+        container.setVisibility(true);
+      }
+    });
+  }
+
+  public update(time: number): void {
     if (this.isGameOver) return;
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
     this.layoutContainers.gate.update(time);
     this.layoutContainers.enemy.update(time);
     this.layoutContainers.supplement.update(time);
+    this.layoutContainers.finishLine.update(time);
   }
 
   public onStart(gameOver: () => void): void {
@@ -248,6 +273,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.gate.onStart();
     this.layoutContainers.enemy.onStart();
     this.layoutContainers.supplement.onStart();
+    this.layoutContainers.finishLine.onStart();
     this.layoutContainers.landing.destroy();
   }
 }

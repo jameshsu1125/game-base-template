@@ -7,13 +7,15 @@ import SceneLayoutManager from "../managers/layout/scene-layout.manager";
 import ServiceLocator from "../services/service-locator/service-locator.service";
 import ServiceRegistry from "../services/service-registry.service";
 import EndScreenSystem from "../systems/end-screen.system";
+import FinishLineEntity from "@/entities/finishLine.entity";
 // import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
-  private firepowerEntity?: FirepowerEntity = undefined;
-  private gateEntity?: GateEntity = undefined;
-  private enemyEntity?: EnemyEntity = undefined;
-  private supplementEntity?: SupplementEntity = undefined;
+  private firepowerEntity?: FirepowerEntity;
+  private gateEntity?: GateEntity;
+  private enemyEntity?: EnemyEntity;
+  private supplementEntity?: SupplementEntity;
+  private finishLineEntity?: FinishLineEntity;
 
   private isGameOver = false;
   private updateTime: number = 0;
@@ -51,6 +53,7 @@ export default class MainScene extends Phaser.Scene {
     this.gateEntity = new GateEntity();
     this.enemyEntity = new EnemyEntity();
     this.supplementEntity = new SupplementEntity();
+    this.finishLineEntity = new FinishLineEntity();
   }
 
   private addOnStartListener(): void {
@@ -63,6 +66,7 @@ export default class MainScene extends Phaser.Scene {
       this.gateEntity?.onStart();
       this.enemyEntity?.onStart(this.updateTime);
       this.supplementEntity?.onStart(this.updateTime);
+      this.finishLineEntity?.onStart();
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
@@ -78,13 +82,11 @@ export default class MainScene extends Phaser.Scene {
   update(time: number, delta: number): void {
     this.updateTime = time;
     if (this.isGameOver) return;
-    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(
-      time,
-      delta
-    );
+    ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time);
     this.enemyEntity?.update(time, delta);
     this.supplementEntity?.update(time);
+    this.finishLineEntity?.update(time);
   }
 }
