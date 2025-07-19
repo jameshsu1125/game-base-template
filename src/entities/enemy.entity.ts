@@ -1,6 +1,6 @@
+import { enemyEntityConfig } from "@/configs/presets/enemy.preset";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
-import { ENEMY_ENTITY_CONFIG } from "./entity.config";
 
 /**
  * FirepowerEntity class representing the firepower component in the game.
@@ -23,9 +23,9 @@ export default class EnemyEntity {
     if (!this.isStarted) return;
 
     const currentTime = time - this.state.startTime;
-    const [config] = ENEMY_ENTITY_CONFIG.filter(
-      (config) => currentTime >= config.time
-    ).reverse();
+    const [config] = enemyEntityConfig
+      .filter((config) => currentTime >= config.time)
+      .reverse();
 
     if (config && this.state.index !== config?.index) {
       this.state.index = config?.index || 0;

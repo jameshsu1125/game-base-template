@@ -1,8 +1,8 @@
-import { Container, Sprite } from "@/configs/constants/constants";
+import { Container, Sprite, TQuadrant } from "@/configs/constants/constants";
+import { gateEntityConfig } from "@/configs/presets/gate.preset";
 import { gatePreset } from "@/configs/presets/layout.preset";
-import { GATE_ENTITY_CONFIG } from "@/entities/entity.config";
 import Phaser from "phaser";
-import { TGateState, TQuadrantX } from "./gate.config";
+import { TGateState } from "./gate.config";
 import GateWithCounterComponent from "./gateWithCounter.component";
 
 export class GateComponent extends Container {
@@ -25,7 +25,7 @@ export class GateComponent extends Container {
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
   }
 
-  public fire(time: number, config: (typeof GATE_ENTITY_CONFIG)[number]): void {
+  public fire(time: number, config: (typeof gateEntityConfig)[number]): void {
     if (!this.isStarted) return;
 
     [...config.data].forEach((cfg) => {
@@ -34,7 +34,7 @@ export class GateComponent extends Container {
   }
 
   private createGate(
-    config: { quadrant: TQuadrantX; count: number },
+    config: { quadrant: TQuadrant; count: number },
     time: number
   ): void {
     const name = `${time}-${this.index++}`;

@@ -1,10 +1,9 @@
 import { Container, Sprite } from "@/configs/constants/constants";
-import { adjustmentOffsetTime } from "@/configs/constants/layout.constants";
-import { gatePreset } from "@/configs/presets/layout.preset";
 import {
-  ENEMY_ENTITY_BEFORE_START_CONFIG,
-  ENEMY_ENTITY_CONFIG,
-} from "@/entities/entity.config";
+  enemyEntityPresetConfig,
+  enemyEntityConfig,
+} from "@/configs/presets/enemy.preset";
+import { enemyPreset, gatePreset } from "@/configs/presets/layout.preset";
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
@@ -34,7 +33,7 @@ export class EnemyComponent extends Container {
 
   public buildBeforeStart(): void {
     const { duration } = gatePreset;
-    ENEMY_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
+    enemyEntityPresetConfig.forEach((cfg) => {
       const currentConfig = {
         x: cfg.data.x,
         type: cfg.data.type,
@@ -50,16 +49,13 @@ export class EnemyComponent extends Container {
     });
   }
 
-  public fire(
-    time: number,
-    config: (typeof ENEMY_ENTITY_CONFIG)[number]
-  ): void {
+  public fire(time: number, config: (typeof enemyEntityConfig)[number]): void {
     if (!this.isStarted) return;
     [...config.data].forEach((cfg) => this.createEnemy(cfg, time));
   }
 
   private createEnemy(
-    config: (typeof ENEMY_ENTITY_CONFIG)[number]["data"][number],
+    config: (typeof enemyEntityConfig)[number]["data"][number],
     time: number
   ): void {
     const name = `enemy-${this.index++}`;
@@ -107,10 +103,10 @@ export class EnemyComponent extends Container {
   public update(time: number): void {
     if (!this.isStarted) return;
     const { duration } = gatePreset;
+    const { timeOffset } = enemyPreset;
     this.enemyState.forEach((state) => {
       const percent =
-        (time - state.startTime - this.offsetTime + adjustmentOffsetTime) /
-        duration;
+        (time - state.startTime - this.offsetTime + timeOffset) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

@@ -1,15 +1,11 @@
 import { Container } from "@/configs/constants/constants";
 import { gatePreset } from "@/configs/presets/layout.preset";
 import {
-  SUPPLEMENT_ENTITY_BEFORE_START_CONFIG,
-  SUPPLEMENT_ENTITY_CONFIG,
-} from "@/entities/entity.config";
+  supplementEntityPresetConfig,
+  supplementEntityConfig,
+} from "@/configs/presets/supplement.preset";
 import Phaser from "phaser";
-import {
-  TQuadrantX,
-  TSupplementState,
-  TSupplementType,
-} from "./supplement.config";
+import { TConfig, TSupplementState } from "./supplement.config";
 import SupplementWithCounterComponent from "./supplementWithCounter.component";
 
 export class SupplementComponent extends Container {
@@ -38,7 +34,7 @@ export class SupplementComponent extends Container {
 
   private buildBeforeStart(): void {
     const { duration } = gatePreset;
-    SUPPLEMENT_ENTITY_BEFORE_START_CONFIG.forEach((cfg) => {
+    supplementEntityPresetConfig.forEach((cfg) => {
       const currentConfig = {
         quadrant: cfg.data.quadrant,
         count: cfg.data.count,
@@ -56,7 +52,7 @@ export class SupplementComponent extends Container {
 
   public fire(
     time: number,
-    config: (typeof SUPPLEMENT_ENTITY_CONFIG)[number]
+    config: (typeof supplementEntityConfig)[number]
   ): void {
     if (!this.isStarted) return;
 
@@ -65,14 +61,7 @@ export class SupplementComponent extends Container {
     });
   }
 
-  private createSupplement(
-    config: {
-      type: TSupplementType;
-      count: number;
-      quadrant: TQuadrantX;
-    },
-    time: number
-  ): void {
+  private createSupplement(config: TConfig, time: number): void {
     const name = `supplement-${this.index++}`;
     const supplement = new SupplementWithCounterComponent(
       this.scene,

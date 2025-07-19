@@ -1,4 +1,10 @@
-import { Container, Scene, Sprite, Text } from "@/configs/constants/constants";
+import {
+  Container,
+  Scene,
+  Sprite,
+  Text,
+  TQuadrant,
+} from "@/configs/constants/constants";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
 import {
@@ -13,12 +19,11 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
-import { TQuadrantX } from "./gate.config";
 
 export default class GateWithCounterComponent extends Container {
   private isDestroyed = false;
   private defaultScale: number = 1;
-  private quadrant: TQuadrantX = 0;
+  private quadrant: TQuadrant = 0;
 
   public gateName = "";
   public num = 0;
@@ -32,7 +37,7 @@ export default class GateWithCounterComponent extends Container {
 
   constructor(
     scene: Scene,
-    config: { quadrant: TQuadrantX; count: number },
+    config: { quadrant: TQuadrant; count: number },
     name: string,
     removeStateByName: (name: string) => void,
     increaseGateCount: (gate: Sprite, firepower: Sprite) => void,

@@ -1,6 +1,6 @@
+import { gateEntityConfig } from "@/configs/presets/gate.preset";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
-import { GATE_ENTITY_CONFIG } from "./entity.config";
 
 export default class GateEntity {
   private isStarted = false;
@@ -19,9 +19,9 @@ export default class GateEntity {
     }
 
     const currentTime = time - this.state.startTime;
-    const [config] = GATE_ENTITY_CONFIG.filter(
-      (config) => currentTime >= config.time
-    ).reverse();
+    const [config] = gateEntityConfig
+      .filter((config) => currentTime >= config.time)
+      .reverse();
 
     if (config && this.state.index !== config?.index) {
       this.state.index = config?.index || 0;

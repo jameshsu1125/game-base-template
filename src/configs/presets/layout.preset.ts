@@ -50,6 +50,7 @@ export const enemyPreset = {
   perspective: 5,
   ratio: 100 / 320,
   randomWidth: 100,
+  timeOffset: 500,
   healthBar: {
     offsetY: -7,
     width: 70,

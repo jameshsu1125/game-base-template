@@ -6,6 +6,7 @@ import {
 } from "@/configs/constants/constants";
 import { GAME_MECHANIC_CONFIG_SCHEMA } from "@/configs/constants/game-mechanic/game-mechanic.constants";
 import { enemyPreset, playerPreset } from "@/configs/presets/layout.preset";
+import { formation } from "@/configs/presets/player.formation.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
@@ -13,7 +14,6 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
-import { PLAYER_FORMATION } from "./player.config";
 
 export default class PlayerWidthCounterComponent extends Container {
   public playerName: string;
@@ -185,17 +185,18 @@ export default class PlayerWidthCounterComponent extends Container {
   public setPositionByIndex(index: number, offset: number, total: number) {
     if (this.player === null || this.isDestroyed) return;
     const { gap, offsetY } = playerPreset;
+    const { max } = GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce;
 
     const currentTotal = Math.max(
       1,
-      Math.min(total, GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce.max)
-    ) as keyof typeof PLAYER_FORMATION;
+      Math.min(total, max)
+    ) as keyof typeof formation;
 
-    const formation = PLAYER_FORMATION[currentTotal][index] || { x: 0, y: 0 };
+    const position = formation[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
-    const currentX = left + formation.x * gap;
-    const currentY = top + formation.y * gap;
+    const currentX = left + position.x * gap;
+    const currentY = top + position.y * gap;
 
     this.player!.setPosition(currentX + offset, currentY + offsetY);
     this.addHealthBar(currentX + offset, currentY + offsetY);

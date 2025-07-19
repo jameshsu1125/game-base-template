@@ -17,3 +17,5 @@ export const BitmapMask = Phaser.Display.Masks.BitmapMask;
 export const Graphics = Phaser.GameObjects.Graphics;
 export const Image = Phaser.GameObjects.Image;
 export const Text = Phaser.GameObjects.Text;
+
+export type TQuadrant = -1 | 0 | 1;
