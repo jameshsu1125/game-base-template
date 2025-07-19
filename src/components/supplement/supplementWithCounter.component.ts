@@ -14,6 +14,7 @@ import {
   TQuadrantX,
   TSupplementType,
 } from "./supplement.config";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 
 export default class SupplementWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -115,7 +116,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     this.add(this.bucket);
     this.add(this.text);
 
-    this.addCollision(this.bucket);
+    if (STOP_COLLISION) this.addCollision(this.bucket);
   }
 
   private addCollision(bucket: Phaser.Physics.Arcade.Sprite): void {

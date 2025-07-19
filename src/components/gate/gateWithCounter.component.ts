@@ -16,6 +16,7 @@ import {
   gatePreset,
   playerPreset,
 } from "@/configs/presets/layout.preset";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 
 export default class GateWithCounterComponent extends Phaser.GameObjects
   .Container {
@@ -92,7 +93,7 @@ export default class GateWithCounterComponent extends Phaser.GameObjects
 
     this.add(this.gate);
     this.add(this.text);
-    this.addCollision(this.gate);
+    if (!STOP_COLLISION) this.addCollision(this.gate);
   }
 
   private addCollision(gate: Phaser.Physics.Arcade.Sprite) {
