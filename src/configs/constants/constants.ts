@@ -2,6 +2,7 @@
 // To start that project as standalone, we shouldn't need GameBuilderKey
 export const GAME_NAME = "choiceRunner";
 
+// constants it for easy to read
 export type Scene = Phaser.Scene;
 export type Sprite = Phaser.Physics.Arcade.Sprite;
 export type BitmapMask = Phaser.Display.Masks.BitmapMask;

@@ -238,7 +238,6 @@ export default class SceneLayoutManager {
     this.layoutContainers.firepower.update();
     this.layoutContainers.gate.update(time);
     this.layoutContainers.enemy.update(time);
-    this.layoutContainers.logo.update();
     this.layoutContainers.supplement.update(time);
   }
 

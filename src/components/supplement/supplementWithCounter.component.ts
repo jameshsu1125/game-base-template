@@ -1,66 +1,43 @@
+import { Container, Scene, Sprite, Text } from "@/configs/constants/constants";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
 import {
   gamePreset,
-  gatePreset,
   playerPreset,
   supplementPreset,
 } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
-import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import {
-  SUPPLEMENT_MISS_OFFSET_RATIO,
-  TQuadrantX,
-  TSupplementType,
-} from "./supplement.config";
-import { STOP_COLLISION } from "@/configs/constants/game.constants";
+import { getDisplaySizeByWidthPercentage as getSize } from "@/utils/layout.utils";
+import { TConfig, TSupplementType } from "./supplement.config";
 
-export default class SupplementWithCounterComponent extends Phaser.GameObjects
-  .Container {
+export default class SupplementWithCounterComponent extends Container {
   public isDestroyed = false;
   public supplementName: string;
 
+  private num = 0;
   private defaultScale = 1;
 
-  public bucket?: Phaser.Physics.Arcade.Sprite;
-  private text?: Phaser.GameObjects.Text;
-  private num = 0;
+  public bucket?: Sprite;
+  private text?: Text;
 
   private removeStateByName: (name: string) => void;
+  private decreaseSupplementCount: (name: string, firepower: Sprite) => void;
   private increaseSupplementCountByType: (
-    type: "ARMY" | "GUN",
-    supplementName: string
+    type: TSupplementType,
+    name: string
   ) => void;
 
-  private decreaseSupplementCount: (
-    supplementName: string,
-    firepower: Phaser.Physics.Arcade.Sprite
-  ) => void;
-
-  private config?: {
-    type: TSupplementType;
-    count: number;
-    quadrant: TQuadrantX;
-  };
+  private config?: TConfig;
 
   constructor(
-    scene: Phaser.Scene,
-    config: {
-      type: TSupplementType;
-      count: number;
-      quadrant: TQuadrantX;
-    },
+    scene: Scene,
+    config: TConfig,
     name: string,
     removeStateByName: (name: string) => void,
-    increaseSupplementCountByType: (
-      type: "ARMY" | "GUN",
-      supplementName: string
-    ) => void,
-    decreaseSupplementCount: (
-      supplementName: string,
-      firepower: Phaser.Physics.Arcade.Sprite
-    ) => void
+    decreaseSupplementCount: (name: string, firepower: Sprite) => void,
+    increaseSupplementCountByType: (type: TSupplementType, name: string) => void
   ) {
     super(scene, 0, 0);
 
@@ -77,10 +54,10 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
 
   private build(): void {
     this.createBucket();
+    this.createText();
   }
 
   private createBucket(): void {
-    const { fontStyle } = supplementPreset;
     const { ratio } = supplementPreset;
     this.bucket = this.scene.physics.add.staticSprite(
       0,
@@ -91,32 +68,25 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
     this.add(this.bucket);
     this.sendToBack(this.bucket);
 
-    const { width, height } = getDisplaySizeByWidthPercentage(
-      this.bucket,
-      ratio
-    );
-
+    const { width, height } = getSize(this.bucket, ratio);
     this.bucket.setDisplaySize(width, height);
+
     this.defaultScale = this.bucket.scale;
 
-    this.text = this.scene.add.text(
-      this.bucket.x,
-      this.bucket.y,
-      `${this.num}`,
-      {
-        ...fontStyle,
-        fixedWidth: this.bucket.displayWidth,
-        fixedHeight: 200,
-        padding: {
-          top: 145,
-        },
-      }
-    );
-    this.text.setOrigin(0.5, 0.5);
     this.add(this.bucket);
-    this.add(this.text);
 
     if (STOP_COLLISION) this.addCollision(this.bucket);
+  }
+
+  private createText(): void {
+    const { fontStyle } = supplementPreset;
+    const { x, y } = this.bucket || { x: 0, y: 0 };
+    this.text = this.scene.add.text(x, y, `${this.num}`, {
+      ...fontStyle,
+      fixedWidth: this.bucket!.displayWidth,
+    });
+    this.text.setOrigin(0.5, 0.5);
+    this.add(this.text);
   }
 
   private addCollision(bucket: Phaser.Physics.Arcade.Sprite): void {
@@ -130,9 +100,7 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
         this.scene.physics.add.collider(
           bucket,
           firepower,
-          () => {
-            this.decreaseSupplementCount(this.supplementName, firepower);
-          },
+          () => this.decreaseSupplementCount(this.supplementName, firepower),
           undefined,
           this
         );
@@ -175,28 +143,27 @@ export default class SupplementWithCounterComponent extends Phaser.GameObjects
   public update(percentage: number): void {
     const { defaultScale: scale, bucket, text } = this;
     if (!bucket || !text || this.isDestroyed) return;
+
     const { offsetY } = playerPreset;
     const { perspective } = gamePreset;
-    const { gap } = supplementPreset;
+    const { gap, miss } = supplementPreset;
 
-    const easingPercentage = Easing(percentage);
-
+    const currentPercent = Easing(percentage);
     const currentScale =
-      scale - scale * (1 - perspective) * (1 - easingPercentage);
+      scale - scale * (1 - perspective) * (1 - currentPercent);
     bucket.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
 
     const x =
       this.scene.scale.width / 2 +
       (this.config?.quadrant || 0) * (bucket.displayWidth + gap);
-    const y =
-      (this.scene.scale.height + bucket.displayHeight) * easingPercentage;
+    const y = (this.scene.scale.height + bucket.displayHeight) * currentPercent;
 
     this.setPxy(x, y);
 
     const missPositionY =
       this.scene.scale.height -
-      bucket.displayHeight * (SUPPLEMENT_MISS_OFFSET_RATIO + perspective) -
+      bucket.displayHeight * (miss + perspective) -
       offsetY;
 
     if (y > missPositionY) {

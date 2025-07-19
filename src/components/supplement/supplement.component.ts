@@ -1,3 +1,4 @@
+import { Container } from "@/configs/constants/constants";
 import { gatePreset } from "@/configs/presets/layout.preset";
 import {
   SUPPLEMENT_ENTITY_BEFORE_START_CONFIG,
@@ -11,7 +12,7 @@ import {
 } from "./supplement.config";
 import SupplementWithCounterComponent from "./supplementWithCounter.component";
 
-export class SupplementComponent extends Phaser.GameObjects.Container {
+export class SupplementComponent extends Container {
   private index = 0;
   private isStarted = false;
   public supplementState: TSupplementState[] = [];
@@ -78,8 +79,8 @@ export class SupplementComponent extends Phaser.GameObjects.Container {
       config,
       name,
       this.removeStateByName.bind(this),
-      this.increaseSupplementCountByType,
-      this.decreaseSupplementCount
+      this.decreaseSupplementCount,
+      this.increaseSupplementCountByType
     );
 
     this.add(supplement);
