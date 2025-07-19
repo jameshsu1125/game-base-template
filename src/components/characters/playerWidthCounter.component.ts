@@ -19,8 +19,12 @@ import {
 export default class PlayerWidthCounterComponent extends Container {
   private isDestroyed = false;
   private randomOffset = {
-    x: -2 + Math.random() * 4,
-    y: -2 + Math.random() * 4,
+    x:
+      -playerPreset.randomGap * 0.5 +
+      Math.random() * -playerPreset.randomGap * 0.5,
+    y:
+      -playerPreset.randomGap * 0.5 +
+      Math.random() * -playerPreset.randomGap * 0.5,
   };
 
   public playerName: string;
@@ -53,10 +57,10 @@ export default class PlayerWidthCounterComponent extends Container {
     this.increasePlayerCount = increasePlayerCount;
     this.removePlayerByName = removePlayerByName;
 
-    this.healthBarBorder.setDepth(1);
-    this.healthBarMask.setDepth(2);
+    this.healthBarBorder.setDepth(21);
+    this.healthBarMask.setDepth(21);
     this.healthBar.setOrigin(0, 0);
-    this.healthBar.setDepth(2);
+    this.healthBar.setDepth(21);
     this.build();
   }
 
@@ -180,14 +184,18 @@ export default class PlayerWidthCounterComponent extends Container {
 
   public setPositionByIndex(index: number, offset: number) {
     if (this.player === null || this.isDestroyed) return;
-    const { gap, offsetY } = playerPreset;
+    const { gap, offsetY, isRadom } = playerPreset;
 
-    const position = playerFormation[index] || { x: 0, y: 0 };
+    const position = playerFormation[index] || { x: 0, y: 0, depth: 0 };
     const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
-    const currentX = left + position.x * gap + this.randomOffset.x;
-    const currentY = top + position.y * gap + this.randomOffset.y;
+    const randomX = isRadom ? this.randomOffset.x : 0;
+    const randomY = isRadom ? this.randomOffset.y : 0;
 
+    const currentX = left + position.x * gap + randomX;
+    const currentY = top + position.y * gap + randomY;
+
+    this.player!.setDepth(position.depth);
     this.player!.setPosition(currentX + offset, currentY + offsetY);
     this.addHealthBar(currentX + offset, currentY + offsetY);
   }

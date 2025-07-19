@@ -37,7 +37,9 @@ export const playerPreset = {
   speedByInput: 5,
   ratio: 30 / 320,
   offsetY: -100,
-  gap: 20,
+  gap: 30,
+  isRadom: false,
+  randomGap: 10,
   healthBar: {
     offsetY: 10,
     width: 70,
