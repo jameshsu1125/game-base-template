@@ -2,7 +2,6 @@ import { NumericSchema } from "./game-mechanic.interface";
 
 const NUMERIC_MIN_VALUE = 1;
 
-//TODO: match-fight: mini-enemy health?
 // Game Logic Configuration Schema
 type GameMechanicConfigSchema = {
   playerReinforce: NumericSchema;

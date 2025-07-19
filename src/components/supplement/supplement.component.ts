@@ -116,7 +116,9 @@ export class SupplementComponent extends Container {
   }
 
   public decreaseSupplementCount(supplementName: string): void {
-    console.log(this, this.supplementState, supplementName);
+    if (!this || !this.supplementState) {
+      console.log(this, this.supplementState, supplementName);
+    }
 
     const [state] = this.supplementState?.filter(
       (state) => state.target.supplementName === supplementName

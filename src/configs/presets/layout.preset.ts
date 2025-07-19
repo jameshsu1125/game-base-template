@@ -22,7 +22,7 @@ export const landingPreset = {
 };
 
 export const firepowerPreset = {
-  perspective: 12,
+  perspective: 190,
   offsetY: -10,
   ratio: 23 / 320,
   speed: 800,

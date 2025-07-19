@@ -93,16 +93,18 @@ export class FirepowerComponent extends Container {
       this.baseScale = firepower.scale;
       firepower.setVelocityY(-(speed * gameDelta) / delta);
       firepower.setVelocityX(
-        (player.player.x - this.scene.scale.width / 2) *
+        ((player.player.x - this.scene.scale.width / 2) *
           firePerspective *
           -1 *
-          perspective
+          perspective *
+          (700 / player.player.y)) /
+          delta
       );
       firepower.setRotation(
         Phaser.Math.DegToRad(
           (player.player.x - this.scene.scale.width / 2) *
             firePerspective *
-            -0.05 *
+            -0.005 *
             perspective
         )
       );

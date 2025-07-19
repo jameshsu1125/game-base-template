@@ -18,19 +18,23 @@ import {
 
 export default class PlayerWidthCounterComponent extends Container {
   private isDestroyed = false;
+  private randomOffset = {
+    x: -2 + Math.random() * 4,
+    y: -2 + Math.random() * 4,
+  };
 
   public playerName: string;
+  public blood: number = 100;
+
   public player?: Sprite;
   public healthBarBorder: Graphics = this.scene.add.graphics();
   public healthBarMask: Graphics = this.scene.make.graphics({});
+  public mask = new BitmapMask(this.scene, this.healthBarMask);
   public healthBar: Image = this.scene.add.image(
     0,
     0,
     GAME_ASSET_KEYS.healthBar
   );
-  public mask = new BitmapMask(this.scene, this.healthBarMask);
-
-  public blood: number = 100;
 
   private increasePlayerCount: (count: number, gateName: string) => void;
   private removePlayerByName: (name: string) => void;
@@ -187,8 +191,8 @@ export default class PlayerWidthCounterComponent extends Container {
     const position = formation[currentTotal][index] || { x: 0, y: 0 };
     const { left, top } = getAlign(this.player!, "CENTER_BOTTOM");
 
-    const currentX = left + position.x * gap;
-    const currentY = top + position.y * gap;
+    const currentX = left + position.x * gap + this.randomOffset.x;
+    const currentY = top + position.y * gap + this.randomOffset.y;
 
     this.player!.setPosition(currentX + offset, currentY + offsetY);
     this.addHealthBar(currentX + offset, currentY + offsetY);
