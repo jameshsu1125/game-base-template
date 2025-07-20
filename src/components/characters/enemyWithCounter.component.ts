@@ -150,6 +150,8 @@ export default class EnemyWithCounterComponent extends Container {
     const currentX = x - (displayWidth - currentWidth) / 2;
     const currentY = y - displayHeight / 2 + offsetY;
 
+    const gap = 2 * scale;
+
     this.healthBarBorder.clear();
     this.healthBarBorder.fillStyle(0xffffff, 1);
     this.healthBarBorder.fillRoundedRect(
@@ -163,11 +165,11 @@ export default class EnemyWithCounterComponent extends Container {
     this.healthBarMask.clear();
     this.healthBarMask.fillStyle(0x000000, 1);
     this.healthBarMask.fillRoundedRect(
-      currentX + 2,
-      currentY + 2,
-      currentWidth - 4,
-      currentHeight - 4,
-      (currentHeight - 4) * 0.5
+      currentX + gap,
+      currentY + gap,
+      currentWidth - gap * 2,
+      currentHeight - gap * 2,
+      (currentHeight - gap * 2) * 0.5
     );
 
     const percent = this.blood / 100;
@@ -251,9 +253,10 @@ export default class EnemyWithCounterComponent extends Container {
 
     const currentPercent = Easing(percentage);
     const x =
-      this.config?.type === "follow"
+      this.config?.type === "follow" &&
+      this.enemy!.y > this.scene.scale.height / 3
         ? this.enemy!.x +
-          ((player.players[0].player?.x || 0) - this.enemy!.x) / 500
+          ((player.players[0].player?.x || 0) - this.enemy!.x) / 200
         : this.enemy!.x;
 
     const y = (this.scene.scale.height + enemy.displayHeight) * currentPercent;
