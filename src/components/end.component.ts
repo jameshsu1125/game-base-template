@@ -48,7 +48,7 @@ export class EndComponent extends Container {
       1
     );
     darkScreen.setOrigin(0, 0);
-    darkScreen.setDepth(1000);
+    darkScreen.setDepth(1001);
     darkScreen.setAlpha(0);
     this.darkScreen = darkScreen;
   }
@@ -65,7 +65,7 @@ export class EndComponent extends Container {
     image.setDisplaySize(width, height);
     const { left, top } = getAlign(image, "CENTER_CENTER");
     image.setPosition(left, top + offsetY + 100);
-    image.setDepth(1000);
+    image.setDepth(1001);
     image.setAlpha(0);
 
     this.card = image;
@@ -74,7 +74,7 @@ export class EndComponent extends Container {
   private createButton(): void {
     const { ratio, offsetY } = endPreset.button;
     const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endButton);
-    image.setDepth(1000);
+    image.setDepth(1001);
 
     const { width, height } = getSize(image, ratio);
     image.setDisplaySize(width, height);
@@ -128,16 +128,5 @@ export class EndComponent extends Container {
     this.darkScreen?.setVisible(visible);
     this.card?.setVisible(visible);
     this.button?.setVisible(visible);
-
-    // this.elements.forEach((element) => {
-    //   if (visible && this.card) {
-    //     this.card.setTexture(
-    //       this.gameResult === "VICTORY"
-    //         ? GAME_ASSET_KEYS.endBannerVictory
-    //         : GAME_ASSET_KEYS.endBannerDefeat
-    //     );
-    //   }
-    //   element.setVisible(visible);
-    // });
   }
 }

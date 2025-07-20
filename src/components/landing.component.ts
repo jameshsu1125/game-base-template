@@ -86,13 +86,13 @@ export class LandingComponent extends Container {
       ease: "Quart.easeOut",
       delay: 100,
       onComplete: () => {
-        this.scene.tweens.add({
+        this.scene?.tweens.add({
           targets: finger,
           x: `+=20`,
           duration: 500,
           ease: "Quart.easeIn",
           onComplete: () => {
-            this.scene.tweens.add({
+            this.scene?.tweens.add({
               targets: finger,
               x: `-=40`,
               duration: 1000,

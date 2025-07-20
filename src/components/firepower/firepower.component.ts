@@ -231,9 +231,12 @@ export class FirepowerComponent extends Container {
             this.scene.scale.height);
 
       firepower.setScale(scale, scale);
-      if (firepower.y < 0 - this.scene.scale.height) {
+
+      if (firepower.y < 100) {
         firepower.destroy();
-        this.firepowerContainer.shift();
+        this.firepowerContainer = this.firepowerContainer.filter(
+          (fp) => fp.name !== firepower.name
+        );
       }
     });
   }

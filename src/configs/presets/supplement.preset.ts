@@ -5,7 +5,7 @@ export const supplementEntityConfig: {
   data: { quadrant: TQuadrant; count: number; type: "ARMY" | "GUN" }[];
 }[] = [
   {
-    time: 4000,
+    time: 5000,
     data: [{ quadrant: 0, count: 30, type: "ARMY" }],
   },
   {
