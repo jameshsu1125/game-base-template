@@ -52,7 +52,7 @@ export const enemyPreset = {
   perspective: 5,
   ratio: 100 / 320,
   randomWidth: 100,
-  timeOffset: 500,
+  timeOffset: 570,
   duration: 20000,
   healthBar: {
     offsetY: -7,

@@ -1,5 +1,8 @@
 import { Container, Sprite, TQuadrant } from "@/configs/constants/constants";
-import { gateEntityConfig } from "@/configs/presets/gate.preset";
+import {
+  gateEntityConfig,
+  gateEntityPresetConfig,
+} from "@/configs/presets/gate.preset";
 import { gatePreset } from "@/configs/presets/layout.preset";
 import Phaser from "phaser";
 import { TGateState } from "./gate.config";
@@ -8,6 +11,7 @@ import GateWithCounterComponent from "./gateWithCounter.component";
 export class GateComponent extends Container {
   private isStarted = false;
   public gateState: TGateState[] = [];
+  public offsetTime = 0;
   private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
   private index = 0;
@@ -23,6 +27,26 @@ export class GateComponent extends Container {
     this.increasePlayerCount = increasePlayerCount;
 
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
+
+    requestAnimationFrame(() => this.buildBeforeStart());
+  }
+
+  private buildBeforeStart(): void {
+    const { duration } = gatePreset;
+    gateEntityPresetConfig.forEach((cfg) => {
+      const currentConfig = {
+        quadrant: cfg.data[0].quadrant,
+        count: cfg.data[0].count,
+      };
+      this.createGate(currentConfig, cfg.time);
+    });
+
+    this.gateState.forEach((state) => {
+      const percent = (0 - state.startTime) / duration;
+      const { target } = state;
+      target.setPositionByPercentage(percent);
+      target.gate?.refreshBody();
+    });
   }
 
   public fire(time: number, config: (typeof gateEntityConfig)[number]): void {
@@ -82,7 +106,7 @@ export class GateComponent extends Container {
     if (!this.isStarted) return;
     const { duration } = gatePreset;
     this.gateState.forEach((state) => {
-      const percent = (time - state.startTime) / duration;
+      const percent = (time - state.startTime - this.offsetTime) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

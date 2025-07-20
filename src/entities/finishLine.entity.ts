@@ -7,19 +7,15 @@ export default class FinishLineEntity {
   private state = { startTime: 0, index: 0 };
   constructor() {}
 
-  public onStart(): void {
+  public onStart(time: number): void {
     this.isStarted = true;
+    ServiceLocator.get<SceneLayoutManager>(
+      "gameAreaManager"
+    ).layoutContainers.finishLine.offsetTime = time;
   }
 
   public update(time: number): void {
     if (!this.isStarted) return;
-    if (this.state.startTime === 0) {
-      this.state.startTime = time;
-      ServiceLocator.get<SceneLayoutManager>(
-        "gameAreaManager"
-      ).layoutContainers.finishLine.offsetTime = time;
-      return;
-    }
 
     const currentTime = time - this.state.startTime;
     const [config] = finishLineEntityConfig
@@ -30,7 +26,7 @@ export default class FinishLineEntity {
       this.state.index = config?.index || 0;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.finishLine.fire(time);
+      ).layoutContainers.finishLine.fire(currentTime);
     }
   }
 }

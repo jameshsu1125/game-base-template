@@ -4,19 +4,19 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 
 export default class GateEntity {
   private isStarted = false;
-  private state = { startTime: 0, index: 0 };
+  private state = { startTime: 0, index: -1 };
   constructor() {}
 
-  public onStart(): void {
+  public onStart(time: number): void {
     this.isStarted = true;
+    this.state.startTime = time;
+    ServiceLocator.get<SceneLayoutManager>(
+      "gameAreaManager"
+    ).layoutContainers.gate.offsetTime = time;
   }
 
   public update(time: number): void {
     if (!this.isStarted) return;
-    if (this.state.startTime === 0) {
-      this.state.startTime = time;
-      return;
-    }
 
     const currentTime = time - this.state.startTime;
     const [config] = gateEntityConfig
@@ -27,7 +27,7 @@ export default class GateEntity {
       this.state.index = config?.index || 0;
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
-      ).layoutContainers.gate.fire(time, config);
+      ).layoutContainers.gate.fire(currentTime, config);
     }
   }
 }

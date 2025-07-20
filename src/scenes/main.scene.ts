@@ -63,10 +63,10 @@ export default class MainScene extends Phaser.Scene {
       );
 
       this.firepowerEntity?.onStart();
-      this.gateEntity?.onStart();
+      this.gateEntity?.onStart(this.updateTime);
       this.enemyEntity?.onStart(this.updateTime);
       this.supplementEntity?.onStart(this.updateTime);
-      this.finishLineEntity?.onStart();
+      this.finishLineEntity?.onStart(this.updateTime);
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
@@ -85,7 +85,7 @@ export default class MainScene extends Phaser.Scene {
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
     this.gateEntity?.update(time);
-    this.enemyEntity?.update(time, delta);
+    this.enemyEntity?.update(time);
     this.supplementEntity?.update(time);
     this.finishLineEntity?.update(time);
   }

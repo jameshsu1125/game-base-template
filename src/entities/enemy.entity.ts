@@ -19,7 +19,7 @@ export default class EnemyEntity {
     ).layoutContainers.enemy.offsetTime = time;
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number): void {
     if (!this.isStarted) return;
 
     const currentTime = time - this.state.startTime;

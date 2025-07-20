@@ -32,7 +32,7 @@ export class EnemyComponent extends Container {
   }
 
   public buildBeforeStart(): void {
-    const { duration } = gatePreset;
+    const { duration } = enemyPreset;
     enemyEntityPresetConfig.forEach((cfg) => {
       const currentConfig = {
         x: cfg.data.x,
