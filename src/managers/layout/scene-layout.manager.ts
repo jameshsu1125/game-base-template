@@ -82,6 +82,7 @@ export default class SceneLayoutManager {
       this.layoutContainers.landing,
       this.layoutContainers.endScreenComponent,
     ]);
+
     return this.layoutContainers;
   }
 

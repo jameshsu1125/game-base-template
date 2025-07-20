@@ -19,9 +19,11 @@ export interface ResultComponentConfig {
 
 export class EndComponent extends Container {
   public gameResult: EndGameResult = "VICTORY";
-  public elements: (Rectangle | Image)[] = [];
 
+  private darkScreen?: Rectangle;
   private card?: Image;
+  private button?: Image;
+  private buttonScale: number = 1;
 
   constructor(scene: Scene) {
     super(scene);
@@ -43,11 +45,12 @@ export class EndComponent extends Container {
       this.scene.scale.width,
       this.scene.scale.height,
       0x000000,
-      0.5
+      1
     );
     darkScreen.setOrigin(0, 0);
     darkScreen.setDepth(1000);
-    this.elements.push(darkScreen);
+    darkScreen.setAlpha(0);
+    this.darkScreen = darkScreen;
   }
 
   private createBanner(): void {
@@ -61,10 +64,11 @@ export class EndComponent extends Container {
     const { width, height } = getSize(image, ratio);
     image.setDisplaySize(width, height);
     const { left, top } = getAlign(image, "CENTER_CENTER");
-    image.setPosition(left, top + offsetY);
+    image.setPosition(left, top + offsetY + 100);
     image.setDepth(1000);
+    image.setAlpha(0);
+
     this.card = image;
-    this.elements.push(image);
   }
 
   private createButton(): void {
@@ -78,22 +82,62 @@ export class EndComponent extends Container {
     const { left, top } = getAlign(image, "CENTER_CENTER");
     image.setPosition(left, top + offsetY);
 
+    this.buttonScale = image.scale;
+    image.setScale(this.buttonScale * 2);
+    image.setAlpha(0);
+
     image.setInteractive();
     image.on("pointerdown", () => location.reload());
 
-    this.elements.push(image);
+    this.button = image;
   }
 
   setVisibility(visible: boolean): void {
-    this.elements.forEach((element) => {
-      if (visible && this.card) {
-        this.card.setTexture(
-          this.gameResult === "VICTORY"
-            ? GAME_ASSET_KEYS.endBannerVictory
-            : GAME_ASSET_KEYS.endBannerDefeat
-        );
-      }
-      element.setVisible(visible);
-    });
+    if (visible && this.card) {
+      this.card.setTexture(
+        this.gameResult === "VICTORY"
+          ? GAME_ASSET_KEYS.endBannerVictory
+          : GAME_ASSET_KEYS.endBannerDefeat
+      );
+
+      this.scene.tweens.add({
+        targets: this.darkScreen,
+        alpha: 0.5,
+        duration: 500,
+        ease: "Quart.easeOut",
+      });
+
+      this.scene.tweens.add({
+        targets: this.card,
+        y: "-=100",
+        alpha: 1,
+        duration: 500,
+        ease: "Quart.easeOut",
+      });
+
+      this.scene.tweens.add({
+        targets: this.button,
+        scale: this.buttonScale,
+        alpha: 1,
+        delay: 300,
+        duration: 400,
+        ease: "Back.easeOut",
+      });
+    }
+
+    this.darkScreen?.setVisible(visible);
+    this.card?.setVisible(visible);
+    this.button?.setVisible(visible);
+
+    // this.elements.forEach((element) => {
+    //   if (visible && this.card) {
+    //     this.card.setTexture(
+    //       this.gameResult === "VICTORY"
+    //         ? GAME_ASSET_KEYS.endBannerVictory
+    //         : GAME_ASSET_KEYS.endBannerDefeat
+    //     );
+    //   }
+    //   element.setVisible(visible);
+    // });
   }
 }

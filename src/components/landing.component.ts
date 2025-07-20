@@ -28,8 +28,15 @@ export class LandingComponent extends Container {
     arrow.setDisplaySize(width, height);
 
     const x = -this.fingerWidth / 2 - width / 2;
-    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY;
+    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY + 100;
     arrow.setPosition(x, y);
+
+    this.scene.tweens.add({
+      targets: arrow,
+      y: `-=100`,
+      duration: 800,
+      ease: "Quart.easeOut",
+    });
 
     this.add(arrow);
   }
@@ -43,8 +50,16 @@ export class LandingComponent extends Container {
     arrow.setDisplaySize(rightWidth, rightHeight);
 
     const x = 0 + this.fingerWidth / 2 + rightWidth / 2;
-    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY;
+    const y = getAlign(arrow, this.scene, "BOTTOM") + offsetY + 100;
     arrow.setPosition(x, y);
+
+    this.scene.tweens.add({
+      targets: arrow,
+      y: `-=100`,
+      duration: 800,
+      delay: 200,
+      ease: "Quart.easeOut",
+    });
 
     this.add(arrow);
   }
@@ -59,10 +74,36 @@ export class LandingComponent extends Container {
 
     const finger = this.scene.add.image(0, 0, GAME_ASSET_KEYS.finger);
     const { width, height } = setSize(finger, ratio);
-    const y = getAlign(finger, this.scene, "BOTTOM");
+    const y = getAlign(finger, this.scene, "BOTTOM") + 100;
 
     finger.setDisplaySize(width, height);
     finger.setPosition(0, y);
+
+    this.scene.tweens.add({
+      targets: finger,
+      y: `-=100`,
+      duration: 800,
+      ease: "Quart.easeOut",
+      delay: 100,
+      onComplete: () => {
+        this.scene.tweens.add({
+          targets: finger,
+          x: `+=20`,
+          duration: 500,
+          ease: "Quart.easeIn",
+          onComplete: () => {
+            this.scene.tweens.add({
+              targets: finger,
+              x: `-=40`,
+              duration: 1000,
+              ease: "Quart.easeInOut",
+              yoyo: true,
+              repeat: -1,
+            });
+          },
+        });
+      },
+    });
 
     this.fingerWidth = width;
 
