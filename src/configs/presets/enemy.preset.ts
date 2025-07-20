@@ -23,7 +23,7 @@ export const enemyEntityConfig: {
   { time: 28000, data: { x: 20, type: "follow" } },
   { time: 28800, data: { x: 50, type: "straight" } },
   { time: 29400, data: { x: 34, type: "follow" } },
-  { time: 31400, data: { x: 64, type: "straight" } },
+  { time: 31400, data: { x: 54, type: "straight" } },
   { time: 32400, data: { x: 24, type: "follow" } },
   { time: 34400, data: { x: 54, type: "straight" } },
   { time: 35678, data: { x: 24, type: "follow" } },
