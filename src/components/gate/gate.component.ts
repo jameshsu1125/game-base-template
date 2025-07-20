@@ -33,7 +33,7 @@ export class GateComponent extends Container {
 
   private buildBeforeStart(): void {
     const { duration } = gatePreset;
-    gateEntityPresetConfig.forEach((cfg) => {
+    gateEntityPresetConfig.reverse().forEach((cfg) => {
       const currentConfig = {
         quadrant: cfg.data.quadrant,
         count: cfg.data.count,

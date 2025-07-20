@@ -34,7 +34,7 @@ export class SupplementComponent extends Container {
 
   private buildBeforeStart(): void {
     const { duration } = gatePreset;
-    supplementEntityPresetConfig.forEach((cfg) => {
+    supplementEntityPresetConfig.reverse().forEach((cfg) => {
       const currentConfig = {
         quadrant: cfg.data.quadrant,
         count: cfg.data.count,

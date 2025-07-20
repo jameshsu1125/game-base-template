@@ -38,6 +38,7 @@ export class FinishComponent extends Container {
     super(scene, 0, 0);
     this.createMask();
     this.onGameVictory = onGameVictory;
+    this.setDepth(1);
   }
 
   private createMask(): void {

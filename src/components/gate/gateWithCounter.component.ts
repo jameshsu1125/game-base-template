@@ -14,6 +14,7 @@ import {
 } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import MainScene from "@/scenes/main.scene";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import {
   getDisplayPositionAlign as getAlign,
@@ -52,6 +53,7 @@ export default class GateWithCounterComponent extends Container {
 
     this.num = config.count;
     this.build();
+    this.setDepth((this.scene as MainScene).getIndex());
   }
 
   private createGate(): void {

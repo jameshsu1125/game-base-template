@@ -8,6 +8,7 @@ import {
 } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
+import MainScene from "@/scenes/main.scene";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
 
@@ -58,10 +59,10 @@ export default class EnemyWithCounterComponent extends Container {
 
     this.config = config;
 
-    this.healthBarBorder.setDepth(1);
-    this.healthBarMask.setDepth(3);
+    this.healthBarBorder.setDepth(999);
+    this.healthBarMask.setDepth(999);
     this.healthBar.setOrigin(0, 0);
-    this.healthBar.setDepth(2);
+    this.healthBar.setDepth(999);
     this.build();
     this.setHealthBar();
   }
@@ -81,7 +82,7 @@ export default class EnemyWithCounterComponent extends Container {
     this.enemy.setOrigin(0.5, 0.5);
     this.enemy.setPosition(randomX, -height / 2);
 
-    this.enemy.setDepth(0);
+    this.enemy.setDepth((this.scene as MainScene).getIndex());
 
     this.defaultScale = this.enemy.scale;
 

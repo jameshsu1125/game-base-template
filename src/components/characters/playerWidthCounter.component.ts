@@ -56,10 +56,10 @@ export default class PlayerWidthCounterComponent extends Container {
     this.increasePlayerCount = increasePlayerCount;
     this.removePlayerByName = removePlayerByName;
 
-    this.healthBarBorder.setDepth(21);
-    this.healthBarMask.setDepth(21);
+    this.healthBarBorder.setDepth(1000);
+    this.healthBarMask.setDepth(1000);
     this.healthBar.setOrigin(0, 0);
-    this.healthBar.setDepth(21);
+    this.healthBar.setDepth(1000);
     this.build();
   }
 
@@ -121,6 +121,7 @@ export default class PlayerWidthCounterComponent extends Container {
     });
     player.play("run", true);
     this.player = player;
+    this.player.setDepth(999);
     this.addCollider(player);
   }
 

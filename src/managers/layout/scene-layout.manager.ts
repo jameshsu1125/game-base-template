@@ -16,7 +16,7 @@ import { FinishComponent } from "@/components/finishLine/finishLine.component";
 type Background = Phaser.GameObjects.Image;
 
 export interface LayoutContainers {
-  sceneContainer: Phaser.GameObjects.Container;
+  sceneContainer: Phaser.GameObjects.Container & { zIndex: number };
 
   landing: LandingComponent;
   background: Background;
@@ -59,7 +59,6 @@ export default class SceneLayoutManager {
 
     this.layoutContainers.background = this.createBackground();
     this.layoutContainers.road = this.createRoad();
-    this.layoutContainers.finishLine = this.createFinishLine();
     this.layoutContainers.gate = this.createGate();
     this.layoutContainers.enemy = this.createEnemy();
     this.layoutContainers.supplement = this.createSupplement();
@@ -68,6 +67,7 @@ export default class SceneLayoutManager {
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
     this.layoutContainers.landing = this.createLanding();
+    this.layoutContainers.finishLine = this.createFinishLine();
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
@@ -164,6 +164,7 @@ export default class SceneLayoutManager {
       this.constants.containerWidth,
       this.constants.containerHeight
     );
+    background.setDepth(1);
 
     return background;
   }
@@ -175,6 +176,7 @@ export default class SceneLayoutManager {
       this.constants.containerWidth,
       this.constants.containerHeight
     );
+    road.setDepth(1);
     return road;
   }
 

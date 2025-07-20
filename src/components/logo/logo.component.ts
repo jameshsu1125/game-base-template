@@ -10,6 +10,7 @@ export class LogoComponent extends Container {
   constructor(scene: Scene) {
     super(scene, 0, 0);
     this.build();
+    this.setDepth(1);
   }
 
   private build(): void {

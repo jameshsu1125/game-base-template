@@ -43,6 +43,7 @@ export class FirepowerComponent extends Container {
       ).layoutContainers.player;
 
     this.build();
+    this.setDepth(999);
   }
 
   private build(): void {

@@ -25,6 +25,13 @@ export const gateEntityConfig: {
       { quadrant: -1, count: -3 },
     ],
   },
+  {
+    time: 30000,
+    data: [
+      { quadrant: 1, count: -5 },
+      { quadrant: -1, count: -3 },
+    ],
+  },
 ];
 
 export const gateEntityPresetConfig: {

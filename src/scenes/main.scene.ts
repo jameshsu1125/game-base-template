@@ -20,6 +20,7 @@ export default class MainScene extends Phaser.Scene {
 
   private isGameOver = false;
   private updateTime: number = 0;
+  public zIndex: number = 998;
 
   constructor() {
     super("MainScene");
@@ -77,6 +78,11 @@ export default class MainScene extends Phaser.Scene {
     window.addEventListener("blur", () => {
       if (!STOP_COLLISION) return location.reload();
     });
+  }
+
+  public getIndex(): number {
+    this.zIndex -= 1;
+    return this.zIndex;
   }
 
   private onGameOver(): void {

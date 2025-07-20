@@ -11,6 +11,7 @@ import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage as getSize } from "@/utils/layout.utils";
 import { TConfig, TSupplementType } from "./supplement.config";
+import MainScene from "@/scenes/main.scene";
 
 export default class SupplementWithCounterComponent extends Container {
   public isDestroyed = false;
@@ -72,6 +73,7 @@ export default class SupplementWithCounterComponent extends Container {
     this.bucket.setDisplaySize(width, height);
 
     this.defaultScale = this.bucket.scale;
+    this.bucket.setDepth((this.scene as MainScene).getIndex());
 
     this.add(this.bucket);
 
@@ -86,6 +88,7 @@ export default class SupplementWithCounterComponent extends Container {
       fixedWidth: this.bucket!.displayWidth,
     });
     this.text.setOrigin(0.5, 0.5);
+    this.text.setDepth((this.scene as MainScene).getIndex());
     this.add(this.text);
   }
 

@@ -12,6 +12,7 @@ export class LandingComponent extends Container {
   constructor(scene: Scene) {
     super(scene);
     this.build();
+    this.setDepth(1000);
   }
 
   private build(): void {

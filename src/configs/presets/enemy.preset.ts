@@ -17,6 +17,7 @@ export const enemyEntityConfig: {
   { time: 18300, data: { x: 50, type: "straight" } },
   { time: 19700, data: { x: 70, type: "follow" } },
   { time: 21900, data: { x: 55, type: "straight" } },
+  { time: 23900, data: { x: 25, type: "follow" } },
 ];
 
 export const enemyEntityPresetConfig: {
