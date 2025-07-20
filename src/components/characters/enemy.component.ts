@@ -51,11 +51,11 @@ export class EnemyComponent extends Container {
 
   public fire(time: number, config: (typeof enemyEntityConfig)[number]): void {
     if (!this.isStarted) return;
-    [...config.data].forEach((cfg) => this.createEnemy(cfg, time));
+    this.createEnemy(config.data, time);
   }
 
   private createEnemy(
-    config: (typeof enemyEntityConfig)[number]["data"][number],
+    config: (typeof enemyEntityConfig)[number]["data"],
     time: number
   ): void {
     const name = `enemy-${this.index++}`;

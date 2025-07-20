@@ -8,6 +8,10 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 export default class EnemyEntity {
   private isStarted = false;
   private state = { startTime: 0, index: -1 };
+  private entityConfig = enemyEntityConfig.map((cfg, index) => ({
+    ...cfg,
+    index: index + 1,
+  }));
 
   constructor() {}
 
@@ -23,7 +27,7 @@ export default class EnemyEntity {
     if (!this.isStarted) return;
 
     const currentTime = time - this.state.startTime;
-    const [config] = enemyEntityConfig
+    const [config] = this.entityConfig
       .filter((config) => currentTime >= config.time)
       .reverse();
 

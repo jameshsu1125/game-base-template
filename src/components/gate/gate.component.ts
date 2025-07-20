@@ -35,8 +35,8 @@ export class GateComponent extends Container {
     const { duration } = gatePreset;
     gateEntityPresetConfig.forEach((cfg) => {
       const currentConfig = {
-        quadrant: cfg.data[0].quadrant,
-        count: cfg.data[0].count,
+        quadrant: cfg.data.quadrant,
+        count: cfg.data.count,
       };
       this.createGate(currentConfig, cfg.time);
     });

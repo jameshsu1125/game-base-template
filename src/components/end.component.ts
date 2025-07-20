@@ -45,7 +45,7 @@ export class EndComponent extends Container {
       0.5
     );
     darkScreen.setOrigin(0, 0);
-    darkScreen.setDepth(4);
+    darkScreen.setDepth(10);
     this.elements.push(darkScreen);
   }
 
@@ -61,7 +61,7 @@ export class EndComponent extends Container {
     image.setDisplaySize(width, height);
     const { left, top } = getAlign(image, "CENTER_CENTER");
     image.setPosition(left, top + offsetY);
-    image.setDepth(4);
+    image.setDepth(10);
     this.card = image;
     this.elements.push(image);
   }
@@ -69,7 +69,7 @@ export class EndComponent extends Container {
   private createButton(): void {
     const { ratio, offsetY } = endPreset.button;
     const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endButton);
-    image.setDepth(4);
+    image.setDepth(10);
 
     const { width, height } = getSize(image, ratio);
     image.setDisplaySize(width, height);

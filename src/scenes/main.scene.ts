@@ -73,6 +73,7 @@ export default class MainScene extends Phaser.Scene {
     };
     window.addEventListener("pointerdown", onUserInput);
     window.addEventListener("keydown", onUserInput);
+    window.addEventListener("blur", () => location.reload());
   }
 
   private onGameOver(): void {

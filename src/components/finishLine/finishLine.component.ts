@@ -80,8 +80,7 @@ export class FinishComponent extends Container {
     const y =
       getAlign(this.finishLine, this.scene, "TOP") -
       this.finishLine.displayHeight +
-      (this.scene.scale.height + this.finishLine.displayHeight) *
-        currentPercent;
+      this.scene.scale.height * currentPercent;
 
     this.finishLine.setPosition(x, y);
 

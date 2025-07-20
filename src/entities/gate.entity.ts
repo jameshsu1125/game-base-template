@@ -5,6 +5,10 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 export default class GateEntity {
   private isStarted = false;
   private state = { startTime: 0, index: -1 };
+  private entityConfig = gateEntityConfig.map((cfg, index) => ({
+    ...cfg,
+    index: index + 1,
+  }));
   constructor() {}
 
   public onStart(time: number): void {
@@ -19,7 +23,7 @@ export default class GateEntity {
     if (!this.isStarted) return;
 
     const currentTime = time - this.state.startTime;
-    const [config] = gateEntityConfig
+    const [config] = this.entityConfig
       .filter((config) => currentTime >= config.time)
       .reverse();
 

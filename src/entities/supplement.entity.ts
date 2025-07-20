@@ -5,6 +5,10 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 export default class SupplementEntity {
   private isStarted = false;
   private state = { startTime: 0, index: -1 };
+  private entityConfig = supplementEntityConfig.map((cfg, index) => ({
+    ...cfg,
+    index: index + 1,
+  }));
 
   constructor() {}
 
@@ -25,7 +29,7 @@ export default class SupplementEntity {
     }
 
     const currentTime = time - this.state.startTime;
-    const [config] = supplementEntityConfig
+    const [config] = this.entityConfig
       .filter((config) => currentTime >= config.time)
       .reverse();
 

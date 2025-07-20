@@ -2,31 +2,33 @@ import { TQuadrant } from "../constants/constants";
 
 export const gateEntityConfig: {
   time: number;
-  index: number;
   data: { quadrant: TQuadrant; count: number }[];
 }[] = [
   {
     time: 0,
-    index: 1,
     data: [
       { quadrant: 1, count: -12 },
       { quadrant: -1, count: 1 },
     ],
   },
   {
-    time: 15000,
-    index: 2,
+    time: 10000,
     data: [
-      { quadrant: 1, count: 1 },
-      { quadrant: -1, count: -30 },
+      { quadrant: 1, count: 0 },
+      { quadrant: -1, count: -23 },
     ],
   },
-  { time: 20000, index: 3, data: [{ quadrant: 1, count: -231 }] },
-  { time: 30000, index: 4, data: [{ quadrant: -1, count: -542 }] },
+  {
+    time: 20000,
+    data: [
+      { quadrant: 1, count: -5 },
+      { quadrant: -1, count: -3 },
+    ],
+  },
 ];
 
 export const gateEntityPresetConfig: {
   time: number;
   index: number;
-  data: { quadrant: TQuadrant; count: number }[];
+  data: { quadrant: TQuadrant; count: number };
 }[] = [];
