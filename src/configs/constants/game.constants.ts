@@ -1,1 +1,1 @@
-export const STOP_COLLISION = false;
+export const STOP_COLLISION = true;

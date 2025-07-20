@@ -8,6 +8,7 @@ import ServiceLocator from "../services/service-locator/service-locator.service"
 import ServiceRegistry from "../services/service-registry.service";
 import EndScreenSystem from "../systems/end-screen.system";
 import FinishLineEntity from "@/entities/finishLine.entity";
+import { STOP_COLLISION } from "@/configs/constants/game.constants";
 // import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
@@ -73,7 +74,9 @@ export default class MainScene extends Phaser.Scene {
     };
     window.addEventListener("pointerdown", onUserInput);
     window.addEventListener("keydown", onUserInput);
-    window.addEventListener("blur", () => location.reload());
+    window.addEventListener("blur", () => {
+      if (!STOP_COLLISION) return location.reload();
+    });
   }
 
   private onGameOver(): void {

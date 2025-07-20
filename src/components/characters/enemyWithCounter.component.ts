@@ -81,6 +81,8 @@ export default class EnemyWithCounterComponent extends Container {
     this.enemy.setOrigin(0.5, 0.5);
     this.enemy.setPosition(randomX, -height / 2);
 
+    this.enemy.setDepth(0);
+
     this.defaultScale = this.enemy.scale;
 
     this.enemy.anims.create({
