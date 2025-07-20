@@ -16,6 +16,10 @@ export const supplementEntityConfig: {
     time: 25000,
     data: [{ quadrant: -1, count: 20, type: "ARMY" }],
   },
+  {
+    time: 35000,
+    data: [{ quadrant: 0, count: 20, type: "ARMY" }],
+  },
 ];
 
 export const supplementEntityPresetConfig: {
