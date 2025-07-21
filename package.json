@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "find-deadcode": "ts-prune | grep -v '(used in module)'",
-    "deploy:prod": "NODE_ENV=production netlify deploy --dir=dist --prod"
+    "deploy": "NODE_ENV=production netlify deploy --dir=dist --prod"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
