@@ -10,6 +10,7 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
+import { log } from "console";
 
 export type EndGameResult = "VICTORY" | "DEFEAT";
 export interface ResultComponentConfig {
@@ -21,7 +22,7 @@ export class EndComponent extends Container {
   public gameResult: EndGameResult = "VICTORY";
 
   private darkScreen?: Rectangle;
-  private card?: Image;
+  private banner?: Image;
   private button?: Image;
   private buttonScale: number = 1;
 
@@ -68,7 +69,7 @@ export class EndComponent extends Container {
     image.setDepth(1001);
     image.setAlpha(0);
 
-    this.card = image;
+    this.banner = image;
   }
 
   private createButton(): void {
@@ -93,8 +94,8 @@ export class EndComponent extends Container {
   }
 
   setVisibility(visible: boolean): void {
-    if (visible && this.card) {
-      this.card.setTexture(
+    if (visible && this.banner) {
+      this.banner.setTexture(
         this.gameResult === "VICTORY"
           ? GAME_ASSET_KEYS.endBannerVictory
           : GAME_ASSET_KEYS.endBannerDefeat
@@ -107,8 +108,16 @@ export class EndComponent extends Container {
         ease: "Quart.easeOut",
       });
 
+      if (Math.abs(this.banner.width) < Math.abs(this.banner.height)) {
+        const { ratio } = endPreset.banner;
+        this.banner.setRotation(-Math.PI / 2);
+
+        const { width, height } = getSize(this.banner, (ratio * 438) / 600);
+        this.banner.setDisplaySize(width, height);
+      }
+
       this.scene.tweens.add({
-        targets: this.card,
+        targets: this.banner,
         y: "-=100",
         alpha: 1,
         duration: 500,
@@ -126,7 +135,7 @@ export class EndComponent extends Container {
     }
 
     this.darkScreen?.setVisible(visible);
-    this.card?.setVisible(visible);
+    this.banner?.setVisible(visible);
     this.button?.setVisible(visible);
   }
 }
