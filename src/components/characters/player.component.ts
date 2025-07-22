@@ -94,7 +94,6 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   }
 
   public increasePlayersCount(count: number = 1): void {
-    console.log(this.players.length, count);
     if (count > 0) this.createPlayer(count);
     else {
       const minDiscount = Math.min(this.players.length - 1, Math.abs(count));
@@ -138,6 +137,9 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     });
     this.scene.input.on("pointerup", () => {
       this.touchState.isDown = false;
+    });
+    this.players.forEach((player) => {
+      player.runAnimationSheet();
     });
   }
 

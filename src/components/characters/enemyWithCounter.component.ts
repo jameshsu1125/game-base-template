@@ -1,6 +1,7 @@
 import { BitmapMask, Container, Sprite } from "@/configs/constants/constants";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
+import { enemyEntityConfig } from "@/configs/presets/enemy.preset";
 import {
   enemyPreset,
   firepowerPreset,
@@ -19,6 +20,7 @@ export default class EnemyWithCounterComponent extends Container {
 
   public enemy: Sprite | null = null;
   public blood: number = 100;
+  public maxBlood: number = 100;
 
   public healthBarBorder = this.scene.add.graphics();
   public healthBarMask = this.scene.make.graphics({});
@@ -28,19 +30,14 @@ export default class EnemyWithCounterComponent extends Container {
   private removeStateByName: (name: string) => void;
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
   private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
+  private sheetName: string;
 
-  private config?: {
-    x: number;
-    type: "follow" | "straight";
-  };
+  private config?: (typeof enemyEntityConfig)[number]["data"];
 
   constructor(
     scene: Phaser.Scene,
     name: string,
-    config: {
-      x: number;
-      type: "follow" | "straight";
-    },
+    config: (typeof enemyEntityConfig)[number]["data"],
     removeStateByName: (name: string) => void,
     decreaseEnemyBlood: (
       enemy: Phaser.Physics.Arcade.Sprite,
@@ -58,6 +55,10 @@ export default class EnemyWithCounterComponent extends Container {
     this.decreasePlayerBlood = decreasePlayerBlood;
 
     this.config = config;
+    this.sheetName =
+      this.config.blood.type === "boss" ? "bossSheet" : "enemySheet";
+    this.blood = config.blood.value;
+    this.maxBlood = config.blood.max;
 
     this.healthBarBorder.setDepth(999);
     this.healthBarMask.setDepth(999);
@@ -68,12 +69,13 @@ export default class EnemyWithCounterComponent extends Container {
   }
 
   private build(): void {
-    const { ratio, randomWidth } = enemyPreset;
-    this.enemy = this.scene.physics.add.staticSprite(0, 0, "enemySheet");
+    const { ratios, randomWidth } = enemyPreset;
+
+    this.enemy = this.scene.physics.add.staticSprite(0, 0, this.sheetName);
 
     const { width, height } = getDisplaySizeByWidthPercentage(
       this.enemy,
-      ratio
+      this.config?.blood.type === "ghost" ? ratios.ghost : ratios.boss
     );
     const randomX =
       (this.scene.scale.width - randomWidth) / 2 + (this.config?.x || 0);
@@ -81,14 +83,13 @@ export default class EnemyWithCounterComponent extends Container {
     this.enemy.setDisplaySize(width, height);
     this.enemy.setOrigin(0.5, 0.5);
     this.enemy.setPosition(randomX, -height / 2);
-
     this.enemy.setDepth((this.scene as MainScene).getIndex());
 
     this.defaultScale = this.enemy.scale;
 
     this.enemy.anims.create({
       key: "run",
-      frames: this.scene.anims.generateFrameNumbers("enemySheet", {
+      frames: this.scene.anims.generateFrameNumbers(this.sheetName, {
         start: 0,
         end: 7,
       }),
@@ -141,7 +142,10 @@ export default class EnemyWithCounterComponent extends Container {
 
   private setHealthBar(): void {
     if (!this.enemy) return;
-    const { offsetY, width, height } = enemyPreset.healthBar;
+    const { offsetY, width, height } =
+      this.config?.blood.type === "ghost"
+        ? enemyPreset.healthBar.ghost
+        : enemyPreset.healthBar.boss;
 
     const { scale, displayWidth, displayHeight } = this.enemy;
     const currentWidth = width * scale;
@@ -150,7 +154,7 @@ export default class EnemyWithCounterComponent extends Container {
     const x = this.enemy.x;
     const y = this.enemy.y;
 
-    const currentX = x - (displayWidth - currentWidth) / 2;
+    const currentX = x - currentWidth / 2;
     const currentY = y - displayHeight / 2 + offsetY;
 
     const gap = 2 * scale;
@@ -175,7 +179,7 @@ export default class EnemyWithCounterComponent extends Container {
       (currentHeight - gap * 2) * 0.5
     );
 
-    const percent = this.blood / 100;
+    const percent = this.blood / this.maxBlood;
     this.healthBar.setPosition(currentX, currentY);
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
     this.healthBar.setMask(this.mask);

@@ -1,6 +1,7 @@
 import { Container, Scene } from "@/configs/constants/constants";
 import { landingPreset } from "@/configs/presets/layout.preset";
 import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
+import MainScene from "@/scenes/main.scene";
 import {
   getDisplayPositionByBorderAlign as getAlign,
   getDisplaySizeByWidthPercentage as setSize,
@@ -100,6 +101,8 @@ export class LandingComponent extends Container {
               yoyo: true,
               repeat: -1,
             });
+            const scene = this.scene as MainScene;
+            scene.onLandingAnimationEnd();
           },
         });
       },

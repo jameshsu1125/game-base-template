@@ -1,48 +1,76 @@
+const ghostBlood: { type: "ghost" | "boss"; max: number; value: number } = {
+  type: "ghost",
+  max: 100,
+  value: 100,
+};
+
+const bossBlood: { type: "ghost" | "boss"; max: number; value: number } = {
+  type: "boss",
+  max: 1000,
+  value: 1000,
+};
+
 export const enemyEntityConfig: {
   time: number;
-  data: { x: number; type: "follow" | "straight" };
+  data: {
+    x: number;
+    type: "follow" | "straight";
+    blood: {
+      type: "ghost" | "boss";
+      max: number;
+      value: number;
+    };
+  };
 }[] = [
-  { time: 2000, data: { x: 50, type: "straight" } },
-  { time: 4500, data: { x: 25, type: "straight" } },
-  { time: 5500, data: { x: 75, type: "straight" } },
-  { time: 7500, data: { x: 25, type: "straight" } },
-  { time: 8500, data: { x: 75, type: "follow" } },
-  { time: 9000, data: { x: 25, type: "straight" } },
-  { time: 10000, data: { x: 65, type: "straight" } },
-  { time: 12300, data: { x: 15, type: "straight" } },
-  { time: 13000, data: { x: 75, type: "follow" } },
-  { time: 13800, data: { x: 35, type: "straight" } },
-  { time: 16000, data: { x: 25, type: "straight" } },
-  { time: 17500, data: { x: 55, type: "straight" } },
-  { time: 18300, data: { x: 50, type: "straight" } },
-  { time: 19700, data: { x: 70, type: "follow" } },
-  { time: 21900, data: { x: 55, type: "straight" } },
-  { time: 23900, data: { x: 25, type: "follow" } },
-  { time: 26800, data: { x: 55, type: "follow" } },
-  { time: 27400, data: { x: 70, type: "straight" } },
-  { time: 28000, data: { x: 20, type: "follow" } },
-  { time: 28800, data: { x: 50, type: "straight" } },
-  { time: 29400, data: { x: 34, type: "follow" } },
-  { time: 31400, data: { x: 54, type: "straight" } },
-  { time: 32400, data: { x: 24, type: "follow" } },
-  { time: 34400, data: { x: 54, type: "straight" } },
-  { time: 35678, data: { x: 24, type: "follow" } },
-  { time: 37542, data: { x: 14, type: "straight" } },
-  { time: 38492, data: { x: 34, type: "follow" } },
-  { time: 39042, data: { x: 74, type: "follow" } },
+  { time: 2000, data: { x: 50, type: "straight", blood: ghostBlood } },
+  { time: 4500, data: { x: 25, type: "straight", blood: ghostBlood } },
+  { time: 5500, data: { x: 75, type: "straight", blood: ghostBlood } },
+  { time: 7500, data: { x: 25, type: "straight", blood: ghostBlood } },
+  { time: 8500, data: { x: 75, type: "follow", blood: ghostBlood } },
+  { time: 9000, data: { x: 25, type: "straight", blood: ghostBlood } },
+  { time: 10000, data: { x: 65, type: "straight", blood: ghostBlood } },
+  { time: 12300, data: { x: 15, type: "straight", blood: ghostBlood } },
+  { time: 13000, data: { x: 75, type: "follow", blood: ghostBlood } },
+  { time: 13800, data: { x: 35, type: "straight", blood: ghostBlood } },
+  { time: 16000, data: { x: 25, type: "straight", blood: ghostBlood } },
+  { time: 17500, data: { x: 55, type: "straight", blood: ghostBlood } },
+  { time: 18300, data: { x: 50, type: "straight", blood: ghostBlood } },
+  { time: 19700, data: { x: 70, type: "follow", blood: ghostBlood } },
+  { time: 21900, data: { x: 55, type: "straight", blood: ghostBlood } },
+  { time: 23900, data: { x: 25, type: "follow", blood: ghostBlood } },
+  { time: 26800, data: { x: 55, type: "follow", blood: ghostBlood } },
+  { time: 27400, data: { x: 70, type: "straight", blood: ghostBlood } },
+  { time: 28000, data: { x: 20, type: "follow", blood: ghostBlood } },
+  { time: 28800, data: { x: 50, type: "straight", blood: ghostBlood } },
+  { time: 29400, data: { x: 34, type: "follow", blood: ghostBlood } },
+  { time: 31400, data: { x: 54, type: "straight", blood: ghostBlood } },
+  { time: 32400, data: { x: 24, type: "follow", blood: ghostBlood } },
+  { time: 34400, data: { x: 54, type: "straight", blood: ghostBlood } },
+  { time: 35678, data: { x: 24, type: "follow", blood: ghostBlood } },
+  { time: 37542, data: { x: 14, type: "straight", blood: ghostBlood } },
+  { time: 38492, data: { x: 34, type: "follow", blood: ghostBlood } },
+  { time: 39042, data: { x: 50, type: "follow", blood: bossBlood } },
 ];
 
 export const enemyEntityPresetConfig: {
   time: number;
-  data: { x: number; type: "follow" | "straight" };
+  data: {
+    x: number;
+    type: "follow" | "straight";
+    blood: {
+      type: "ghost" | "boss";
+      max: number;
+      value: number;
+    };
+  };
 }[] = [
-  { time: -500, data: { x: 20, type: "follow" } },
-  { time: -1000, data: { x: 50, type: "straight" } },
-  { time: -2000, data: { x: 30, type: "follow" } },
-  { time: -4000, data: { x: 70, type: "follow" } },
-  { time: -7000, data: { x: 20, type: "straight" } },
-  { time: -8000, data: { x: 80, type: "straight" } },
-  { time: -9000, data: { x: 100, type: "straight" } },
-  { time: -10000, data: { x: 0, type: "follow" } },
-  { time: -12000, data: { x: 20, type: "follow" } },
+  { time: -500, data: { x: 20, type: "follow", blood: ghostBlood } },
+  { time: -1000, data: { x: 50, type: "straight", blood: ghostBlood } },
+  { time: -2000, data: { x: 30, type: "follow", blood: ghostBlood } },
+  { time: -4000, data: { x: 70, type: "follow", blood: ghostBlood } },
+  { time: -7000, data: { x: 20, type: "straight", blood: ghostBlood } },
+  { time: -8000, data: { x: 80, type: "straight", blood: ghostBlood } },
+  { time: -9000, data: { x: 100, type: "straight", blood: ghostBlood } },
+  { time: -10000, data: { x: 0, type: "follow", blood: ghostBlood } },
+  { time: -12000, data: { x: 20, type: "follow", blood: ghostBlood } },
 ];

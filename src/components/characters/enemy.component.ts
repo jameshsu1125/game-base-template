@@ -34,11 +34,8 @@ export class EnemyComponent extends Container {
   public buildBeforeStart(): void {
     const { duration } = enemyPreset;
     enemyEntityPresetConfig.reverse().forEach((cfg) => {
-      const currentConfig = {
-        x: cfg.data.x,
-        type: cfg.data.type,
-      };
-      this.createEnemy(currentConfig, cfg.time);
+      const { data } = cfg;
+      this.createEnemy(data, cfg.time);
     });
 
     this.enemyState.forEach((state) => {

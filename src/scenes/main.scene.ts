@@ -46,7 +46,6 @@ export default class MainScene extends Phaser.Scene {
   }
 
   private initEventListeners(): void {
-    this.addOnStartListener();
     this.addEntityListener();
   }
 
@@ -58,7 +57,7 @@ export default class MainScene extends Phaser.Scene {
     this.finishLineEntity = new FinishLineEntity();
   }
 
-  private addOnStartListener(): void {
+  public onLandingAnimationEnd(): void {
     const onUserInput = () => {
       ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart(
         this.onGameOver.bind(this)
@@ -72,12 +71,13 @@ export default class MainScene extends Phaser.Scene {
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
+
+      window.addEventListener("blur", () => {
+        if (!STOP_COLLISION) return location.reload();
+      });
     };
     window.addEventListener("pointerdown", onUserInput);
     window.addEventListener("keydown", onUserInput);
-    window.addEventListener("blur", () => {
-      if (!STOP_COLLISION) return location.reload();
-    });
   }
 
   public getIndex(): number {

@@ -27,6 +27,15 @@ export default class PreloadScene extends Phaser.Scene {
         frameHeight: 133,
       }
     );
+
+    this.load.spritesheet(
+      "bossSheet",
+      "assets/choice-runner/enemy-boss-sheet.png",
+      {
+        frameWidth: 297,
+        frameHeight: 165,
+      }
+    );
   }
 
   create() {

@@ -119,10 +119,13 @@ export default class PlayerWidthCounterComponent extends Container {
       frameRate: 9,
       repeat: -1,
     });
-    player.play("run", true);
     this.player = player;
     this.player.setDepth(999);
     this.addCollider(player);
+  }
+
+  public runAnimationSheet(): void {
+    this.player?.play("run", true);
   }
 
   private addCollider(player: Sprite): void {

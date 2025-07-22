@@ -18,5 +18,5 @@ export const playerFormation = [
   { x: 1, y: -1, depth: 1 },
   { x: 2, y: 0, depth: 3 },
   { x: -2, y: 0, depth: 3 },
-  { x: 3, y: 2, depth: 5 },
+  { x: 2, y: 1, depth: 5 },
 ];

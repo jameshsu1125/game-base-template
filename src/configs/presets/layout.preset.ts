@@ -51,14 +51,24 @@ export const playerPreset = {
 export const enemyPreset = {
   damage: 100,
   perspective: 5,
-  ratio: 100 / 320,
+  ratios: {
+    boss: 250 / 320,
+    ghost: 100 / 320,
+  },
   randomWidth: 100,
   timeOffset: 570,
   duration: 20000,
   healthBar: {
-    offsetY: -7,
-    width: 70,
-    height: 25,
+    boss: {
+      offsetY: -18,
+      width: 150,
+      height: 25,
+    },
+    ghost: {
+      offsetY: -7,
+      width: 70,
+      height: 25,
+    },
   },
 };
 
