@@ -11,6 +11,9 @@ importers:
       bezier-easing:
         specifier: ^2.1.0
         version: 2.1.0
+      lesca-object-tweener:
+        specifier: ^2.4.7
+        version: 2.4.7
       phaser:
         specifier: ^3.90.0
         version: 3.90.0
@@ -39,6 +42,10 @@ packages:
 
   '@babel/helper-validator-identifier@7.27.1':
     resolution: {integrity: sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow==}
+    engines: {node: '>=6.9.0'}
+
+  '@babel/runtime@7.27.6':
+    resolution: {integrity: sha512-vbavdySgbTTrmFE+EsiqUTzlOr5bzlnJtUv9PynGCAKvfQqjIXbvFdumPM/GxMDfyuGMJaJAU6TO4zc1Jf1i8Q==}
     engines: {node: '>=6.9.0'}
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -442,6 +449,9 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
+  lesca-object-tweener@2.4.7:
+    resolution: {integrity: sha512-/iaU07/lpbHK64w0CUXpIi3QqgVzBO/qS9/Qikg62acADRqJ3vwwjlx1KI1PZYDm7goTbAyNjyJUfT2oEzPRTw==}
+
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
@@ -641,6 +651,8 @@ snapshots:
       picocolors: 1.1.1
 
   '@babel/helper-validator-identifier@7.27.1': {}
+
+  '@babel/runtime@7.27.6': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -936,6 +948,11 @@ snapshots:
   json-parse-even-better-errors@2.3.1: {}
 
   json5@2.2.3: {}
+
+  lesca-object-tweener@2.4.7:
+    dependencies:
+      '@babel/runtime': 7.27.6
+      bezier-easing: 2.1.0
 
   lines-and-columns@1.2.4: {}
 

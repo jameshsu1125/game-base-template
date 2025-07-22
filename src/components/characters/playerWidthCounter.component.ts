@@ -14,6 +14,7 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
+import Tweener, { Bezier } from "lesca-object-tweener";
 
 export default class PlayerWidthCounterComponent extends Container {
   private isDestroyed = false;
@@ -25,6 +26,7 @@ export default class PlayerWidthCounterComponent extends Container {
       -playerPreset.randomGap * 0.5 +
       Math.random() * -playerPreset.randomGap * 0.5,
   };
+  public tweenProperty = { y: -20 };
 
   public playerName: string;
   public blood: number = 100;
@@ -126,6 +128,16 @@ export default class PlayerWidthCounterComponent extends Container {
 
   public runAnimationSheet(): void {
     this.player?.play("run", true);
+    new Tweener({
+      from: this.tweenProperty,
+      to: { y: 0 },
+      duration: 500,
+      delay: Math.random() * 100,
+      easing: Bezier.easeOutQuart,
+      onUpdate: (property: { y: number }) => {
+        this.tweenProperty = property;
+      },
+    }).play();
   }
 
   private addCollider(player: Sprite): void {
@@ -196,7 +208,7 @@ export default class PlayerWidthCounterComponent extends Container {
     const randomY = isRadom ? this.randomOffset.y : 0;
 
     const currentX = left + position.x * gap + randomX;
-    const currentY = top + position.y * gap + randomY;
+    const currentY = top + position.y * gap + randomY + this.tweenProperty.y;
 
     this.player!.setDepth(position.depth);
     this.player!.setPosition(currentX + offset, currentY + offsetY);

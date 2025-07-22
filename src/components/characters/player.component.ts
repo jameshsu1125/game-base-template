@@ -61,11 +61,11 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
         this.increasePlayerCount,
         this.removePlayerByName.bind(this)
       );
+      this.group?.add(player);
+      this.players.push(player);
       if (autoPlaySheet) {
         player.runAnimationSheet();
       }
-      this.group?.add(player);
-      this.players.push(player);
     });
     this.calculatePlayersPosition();
   }
