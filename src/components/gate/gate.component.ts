@@ -45,7 +45,6 @@ export class GateComponent extends Container {
       const percent = (0 - state.startTime) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
-      target.gate?.refreshBody();
     });
   }
 

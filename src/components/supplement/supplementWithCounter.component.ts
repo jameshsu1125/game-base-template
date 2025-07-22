@@ -107,6 +107,14 @@ export default class SupplementWithCounterComponent extends Container {
           undefined,
           this
         );
+
+        this.scene.physics.add.overlap(
+          bucket,
+          firepower,
+          () => this.decreaseSupplementCount(this.supplementName, firepower),
+          undefined,
+          this
+        );
       });
     }
   }

@@ -1,3 +1,4 @@
+import { gamePreset } from "@/configs/presets/layout.preset";
 import { supplementEntityConfig } from "@/configs/presets/supplement.preset";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
@@ -30,7 +31,11 @@ export default class SupplementEntity {
 
     const currentTime = time - this.state.startTime;
     const [config] = this.entityConfig
-      .filter((config) => currentTime >= config.time)
+      .filter(
+        (config) =>
+          currentTime >= config.time &&
+          currentTime - config.time < gamePreset.preventJumpTime
+      )
       .reverse();
 
     if (config && this.state.index !== config?.index) {

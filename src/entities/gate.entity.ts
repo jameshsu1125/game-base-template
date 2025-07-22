@@ -1,4 +1,5 @@
 import { gateEntityConfig } from "@/configs/presets/gate.preset";
+import { gamePreset } from "@/configs/presets/layout.preset";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 
@@ -24,7 +25,11 @@ export default class GateEntity {
 
     const currentTime = time - this.state.startTime;
     const [config] = this.entityConfig
-      .filter((config) => currentTime >= config.time)
+      .filter(
+        (config) =>
+          currentTime >= config.time &&
+          currentTime - config.time < gamePreset.preventJumpTime
+      )
       .reverse();
 
     if (config && this.state.index !== config?.index) {

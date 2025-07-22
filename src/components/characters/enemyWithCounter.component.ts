@@ -248,19 +248,19 @@ export default class EnemyWithCounterComponent extends Container {
   public setPositionByPercentage(percentage: number) {
     const { enemy } = this;
     if (!enemy || this.isDestroyed) return;
-    const { perspective } = enemyPreset;
-
     const { player } =
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
 
     const currentPercent = Easing(percentage);
+    const [playerComponent] = player.players;
+    const playerX = playerComponent?.player?.x || 0;
+
     const x =
       this.config?.type === "follow" &&
       this.enemy!.y > this.scene.scale.height / 3
-        ? this.enemy!.x +
-          ((player.players[0].player?.x || 0) - this.enemy!.x) / 200
+        ? this.enemy!.x + (playerX - this.enemy!.x) / 200
         : this.enemy!.x +
           (this.enemy!.x > this.scene.scale.width / 2
             ? 0.5 * currentPercent

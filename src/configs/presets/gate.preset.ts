@@ -7,7 +7,7 @@ export const gateEntityConfig: {
   {
     time: 0,
     data: [
-      { quadrant: 1, count: -12 },
+      { quadrant: 1, count: -3 },
       { quadrant: -1, count: 1 },
     ],
   },
@@ -15,27 +15,26 @@ export const gateEntityConfig: {
     time: 10000,
     data: [
       { quadrant: 1, count: 0 },
-      { quadrant: -1, count: -23 },
+      { quadrant: -1, count: -3 },
     ],
   },
   {
     time: 20000,
     data: [
-      { quadrant: 1, count: -5 },
+      { quadrant: 1, count: 1 },
       { quadrant: -1, count: -3 },
     ],
   },
   {
     time: 30000,
     data: [
-      { quadrant: 1, count: -5 },
-      { quadrant: -1, count: -3 },
+      { quadrant: 1, count: -1 },
+      { quadrant: -1, count: 1 },
     ],
   },
 ];
 
 export const gateEntityPresetConfig: {
   time: number;
-  index: number;
   data: { quadrant: TQuadrant; count: number };
 }[] = [];

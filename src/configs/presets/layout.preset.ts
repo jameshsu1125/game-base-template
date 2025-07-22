@@ -1,6 +1,7 @@
 export const gamePreset = {
   perspective: 0.1,
   delta: 16, // default delta when game are not lag
+  preventJumpTime: 500,
 };
 
 export const logoPreset = {
@@ -62,7 +63,7 @@ export const enemyPreset = {
 };
 
 export const gatePreset = {
-  miss: 3.3, // Ratio to adjust the position of the gate when it is missed
+  miss: 2, // Ratio to adjust the position of the gate when it is missed
   ratio: 160 / 320,
   duration: 20000,
   maxCount: 5,
@@ -76,7 +77,7 @@ export const gatePreset = {
 };
 
 export const supplementPreset = {
-  miss: 2.2,
+  miss: 1,
   ratio: 120 / 320,
   offsetY: -60,
   gap: 20,
