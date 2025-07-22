@@ -52,7 +52,7 @@ export const enemyPreset = {
   damage: 100,
   perspective: 5,
   ratios: {
-    boss: 250 / 320,
+    boss: 300 / 320,
     ghost: 100 / 320,
   },
   randomWidth: 100,

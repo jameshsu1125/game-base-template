@@ -30,6 +30,7 @@ export default class EnemyWithCounterComponent extends Container {
   private removeStateByName: (name: string) => void;
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
   private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
+  private onGameVictory: () => void;
   private sheetName: string;
 
   private config?: (typeof enemyEntityConfig)[number]["data"];
@@ -46,13 +47,15 @@ export default class EnemyWithCounterComponent extends Container {
     decreasePlayerBlood: (
       player: Phaser.Physics.Arcade.Sprite,
       enemy: Phaser.Physics.Arcade.Sprite
-    ) => void
+    ) => void,
+    onGameVictory: () => void
   ) {
     super(scene, 0, 0);
     this.enemyName = name;
     this.removeStateByName = removeStateByName;
     this.decreaseEnemyBlood = decreaseEnemyBlood;
     this.decreasePlayerBlood = decreasePlayerBlood;
+    this.onGameVictory = onGameVictory;
 
     this.config = config;
     this.sheetName =
@@ -232,6 +235,9 @@ export default class EnemyWithCounterComponent extends Container {
     if (this.blood <= 0) {
       this.destroy();
       this.removeStateByName(this.enemyName);
+      if (this.config?.blood.type === "boss") {
+        this.onGameVictory();
+      }
     }
   }
 

@@ -6,8 +6,8 @@ const ghostBlood: { type: "ghost" | "boss"; max: number; value: number } = {
 
 const bossBlood: { type: "ghost" | "boss"; max: number; value: number } = {
   type: "boss",
-  max: 1000,
-  value: 1000,
+  max: 10000,
+  value: 10000,
 };
 
 export const enemyEntityConfig: {
@@ -45,11 +45,14 @@ export const enemyEntityConfig: {
   { time: 29400, data: { x: 34, type: "follow", blood: ghostBlood } },
   { time: 31400, data: { x: 54, type: "straight", blood: ghostBlood } },
   { time: 32400, data: { x: 24, type: "follow", blood: ghostBlood } },
+  { time: 33100, data: { x: 74, type: "straight", blood: ghostBlood } },
   { time: 34400, data: { x: 54, type: "straight", blood: ghostBlood } },
   { time: 35678, data: { x: 24, type: "follow", blood: ghostBlood } },
+  { time: 36678, data: { x: 32, type: "follow", blood: ghostBlood } },
   { time: 37542, data: { x: 14, type: "straight", blood: ghostBlood } },
   { time: 38492, data: { x: 34, type: "follow", blood: ghostBlood } },
-  { time: 39042, data: { x: 50, type: "follow", blood: bossBlood } },
+  { time: 39042, data: { x: 72, type: "follow", blood: ghostBlood } },
+  { time: 40000, data: { x: 55, type: "follow", blood: bossBlood } },
 ];
 
 export const enemyEntityPresetConfig: {
@@ -72,5 +75,5 @@ export const enemyEntityPresetConfig: {
   { time: -8000, data: { x: 80, type: "straight", blood: ghostBlood } },
   { time: -9000, data: { x: 100, type: "straight", blood: ghostBlood } },
   { time: -10000, data: { x: 0, type: "follow", blood: ghostBlood } },
-  { time: -12000, data: { x: 20, type: "follow", blood: ghostBlood } },
+  { time: -12000, data: { x: 55, type: "follow", blood: ghostBlood } },
 ];

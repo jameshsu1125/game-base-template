@@ -16,16 +16,19 @@ export class EnemyComponent extends Container {
 
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
   private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
+  private onGameVictory: () => void;
 
   constructor(
     scene: Phaser.Scene,
     decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void,
-    decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void
+    decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void,
+    onGameVictory: () => void
   ) {
     super(scene, 0, 0);
 
     this.decreaseEnemyBlood = decreaseEnemyBlood;
     this.decreasePlayerBlood = decreasePlayerBlood;
+    this.onGameVictory = onGameVictory;
     this.setPosition(-scene.scale.width / 2, -scene.scale.height / 2);
 
     requestAnimationFrame(() => this.buildBeforeStart());
@@ -62,7 +65,8 @@ export class EnemyComponent extends Container {
       config,
       this.removeStateByName.bind(this),
       this.decreaseEnemyBlood,
-      this.decreasePlayerBlood
+      this.decreasePlayerBlood,
+      this.onGameVictory
     );
     this.add(enemy);
 

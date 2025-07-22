@@ -119,7 +119,8 @@ export default class SceneLayoutManager {
     const enemyComponent = new EnemyComponent(
       this.scene,
       this.decreaseEnemyBlood.bind(this),
-      this.decreasePlayerBlood.bind(this)
+      this.decreasePlayerBlood.bind(this),
+      this.onGameVictory.bind(this)
     );
     return enemyComponent;
   }
