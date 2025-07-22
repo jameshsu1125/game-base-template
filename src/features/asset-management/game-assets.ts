@@ -20,6 +20,7 @@ export interface GameAssets {
     firepowerLevel1: string;
     firepowerLevel2: string;
     gatePositive: string;
+    gatePositiveMax: string;
     gateNegative: string;
     arrowLeft: string;
     arrowRight: string;
@@ -54,6 +55,7 @@ const defaultGameAssets = {
     firepowerLevel1: "assets/choice-runner/firepower-level-1.png",
     firepowerLevel2: "assets/choice-runner/firepower-level-2.png",
     gatePositive: "assets/choice-runner/gate-positive.png",
+    gatePositiveMax: "assets/choice-runner/gate-positive-max.png",
     gateNegative: "assets/choice-runner/gate-negative.png",
     arrowLeft: "assets/choice-runner/arrow-left.png",
     arrowRight: "assets/choice-runner/arrow-right.png",

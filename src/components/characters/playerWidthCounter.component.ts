@@ -156,12 +156,29 @@ export default class PlayerWidthCounterComponent extends Container {
           () => {},
           this.scene
         );
+        this.scene.physics.add.overlap(
+          player,
+          target,
+          () => this.decreasePlayerBlood(player, target.enemy!),
+          () => {},
+          this.scene
+        );
       }
     });
 
     layoutContainers.gate.gateState.forEach((gateState) => {
       const { target } = gateState;
       this.scene.physics.add.collider(
+        player,
+        target,
+        () => {
+          this.increasePlayerCount(target.num, target.name);
+          target.destroy();
+        },
+        () => {},
+        this.scene
+      );
+      this.scene.physics.add.overlap(
         player,
         target,
         () => {

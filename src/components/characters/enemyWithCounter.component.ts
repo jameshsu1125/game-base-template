@@ -139,6 +139,13 @@ export default class EnemyWithCounterComponent extends Container {
           undefined,
           this.scene
         );
+        this.scene.physics.add.overlap(
+          enemy,
+          player.player,
+          () => this.decreasePlayerBlood(player.player!, enemy),
+          undefined,
+          this.scene
+        );
       });
     }
   }

@@ -36,7 +36,7 @@ export const firepowerPreset = {
 
 export const playerPreset = {
   speedByInput: 5,
-  ratio: 30 / 320,
+  ratio: (30 / 320) * 1.2,
   offsetY: -100,
   gap: 30,
   isRadom: false,
@@ -57,7 +57,7 @@ export const enemyPreset = {
   },
   randomWidth: 100,
   timeOffset: 570,
-  duration: 20000,
+  duration: 20000 / 1.3,
   healthBar: {
     boss: {
       offsetY: -18,
@@ -75,7 +75,7 @@ export const enemyPreset = {
 export const gatePreset = {
   miss: 2, // Ratio to adjust the position of the gate when it is missed
   ratio: 160 / 320,
-  duration: 20000,
+  duration: 20000 / 1.3,
   maxCount: 5,
   fontStyle: {
     fontSize: "44px",
@@ -91,6 +91,7 @@ export const supplementPreset = {
   ratio: 120 / 320,
   offsetY: -60,
   gap: 20,
+  duration: 20000 / 1.3,
   fontStyle: {
     fontSize: "44px",
     color: "#ffffff",
@@ -118,6 +119,6 @@ export const finishLinePreset = {
   miss: 150,
   ratio: 180 / 320,
   perspective: 0.4,
-  duration: 20000,
+  duration: 20000 / 1.3,
   timeOffset: 0,
 };

@@ -1,5 +1,5 @@
 import { Container } from "@/configs/constants/constants";
-import { gatePreset } from "@/configs/presets/layout.preset";
+import { gatePreset, supplementPreset } from "@/configs/presets/layout.preset";
 import {
   supplementEntityPresetConfig,
   supplementEntityConfig,
@@ -33,7 +33,7 @@ export class SupplementComponent extends Container {
   }
 
   private buildBeforeStart(): void {
-    const { duration } = gatePreset;
+    const { duration } = supplementPreset;
     supplementEntityPresetConfig.reverse().forEach((cfg) => {
       const currentConfig = {
         quadrant: cfg.data.quadrant,

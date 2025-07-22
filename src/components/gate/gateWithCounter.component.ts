@@ -145,10 +145,17 @@ export default class GateWithCounterComponent extends Container {
 
   private updateText(): void {
     if (!this.text) return;
+    const { maxCount } = gatePreset;
+
     this.text.setText(
       `${this.num > 0 ? "+" : this.num < 0 ? "-" : ""}${Math.abs(this.num)}`
     );
-    if (this.num >= 0) this.gate?.setTexture(GAME_ASSET_KEYS.gatePositive);
+
+    if (this.num >= maxCount) {
+      this.gate?.setTexture(GAME_ASSET_KEYS.gatePositiveMax);
+    } else if (this.num >= 0) {
+      this.gate?.setTexture(GAME_ASSET_KEYS.gatePositive);
+    }
   }
 
   public increaseNum(): void {
