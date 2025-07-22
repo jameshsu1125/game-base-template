@@ -75,9 +75,9 @@ export default class MainScene extends Phaser.Scene {
     };
     window.addEventListener("pointerdown", onUserInput);
     window.addEventListener("keydown", onUserInput);
-    // window.addEventListener("blur", () => {
-    //   if (!STOP_COLLISION) return location.reload();
-    // });
+    window.addEventListener("blur", () => {
+      if (!STOP_COLLISION) return location.reload();
+    });
   }
 
   public getIndex(): number {
