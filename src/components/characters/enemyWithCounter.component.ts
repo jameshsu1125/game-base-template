@@ -147,7 +147,7 @@ export default class EnemyWithCounterComponent extends Container {
         ? enemyPreset.healthBar.ghost
         : enemyPreset.healthBar.boss;
 
-    const { scale, displayWidth, displayHeight } = this.enemy;
+    const { scale, displayHeight } = this.enemy;
     const currentWidth = width * scale;
     const currentHeight = height * scale;
 
@@ -156,7 +156,6 @@ export default class EnemyWithCounterComponent extends Container {
 
     const currentX = x - currentWidth / 2;
     const currentY = y - displayHeight / 2 + offsetY;
-
     const gap = 2 * scale;
 
     this.healthBarBorder.clear();

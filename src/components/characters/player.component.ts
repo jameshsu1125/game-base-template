@@ -43,10 +43,10 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
 
   private build(): void {
     this.cursors = this.scene.input.keyboard?.createCursorKeys();
-    this.createPlayer(this.playersCount);
+    this.createPlayer(this.playersCount, false);
   }
 
-  private createPlayer(count: number): void {
+  private createPlayer(count: number, autoPlaySheet: boolean = true): void {
     const { max } = GAME_MECHANIC_CONFIG_SCHEMA.playerReinforce;
     const currentCount =
       this.players.length + count > max ? max - this.players.length : count;
@@ -61,6 +61,9 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
         this.increasePlayerCount,
         this.removePlayerByName.bind(this)
       );
+      if (autoPlaySheet) {
+        player.runAnimationSheet();
+      }
       this.group?.add(player);
       this.players.push(player);
     });
