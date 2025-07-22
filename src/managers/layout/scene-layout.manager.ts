@@ -52,10 +52,6 @@ export default class SceneLayoutManager {
       containerWidth: this.scene.scale.width,
       containerHeight: this.scene.scale.height,
     };
-
-    setTimeout(() => {
-      this.onGameVictory();
-    }, 1000);
   }
 
   public createGameAreas(): LayoutContainers {
