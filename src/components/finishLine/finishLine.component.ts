@@ -24,6 +24,7 @@ export class FinishComponent extends Container {
   public mask = new BitmapMask(this.scene, this.roadGraphics);
 
   public offsetTime = 0;
+  private historyY: number = 0;
 
   private roadPoints = [
     { x: 165, y: 0 },
@@ -84,11 +85,18 @@ export class FinishComponent extends Container {
       Math.abs(this.finishLine.displayHeight) +
       this.scene.scale.height * currentPercent;
 
+    this.setVisibility(this.finishLine.y > this.historyY);
+    this.historyY = y;
+
     this.finishLine.setPosition(x, y);
 
     if (this.finishLine.y > this.scene.scale.height * 0.5 - miss) {
       this.onGameVictory();
     }
+  }
+
+  private setVisibility(value: boolean) {
+    this.finishLine?.setVisible(value);
   }
 
   public update(time: number): void {

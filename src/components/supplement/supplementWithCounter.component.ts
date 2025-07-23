@@ -22,6 +22,7 @@ export default class SupplementWithCounterComponent extends Container {
 
   public bucket?: Sprite;
   private text?: Text;
+  private historyY: number = 0;
 
   private removeStateByName: (name: string) => void;
   private decreaseSupplementCount: (name: string, firepower: Sprite) => void;
@@ -123,6 +124,9 @@ export default class SupplementWithCounterComponent extends Container {
     this.bucket?.setPosition(x, y);
     this.text?.setPosition(x, y);
     this.bucket?.refreshBody();
+
+    if (this.bucket) this.setVisibility(this.bucket.y > this.historyY);
+    this.historyY = this.y;
   }
 
   public destroy(): void {
