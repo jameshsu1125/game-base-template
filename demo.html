@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Phaser 3 Explode Effect 1: Procedural Debris</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        backgroundColor: "#1e1e1e",
+        scene: {
+          create: create,
+        },
+      };
+
+      const game = new Phaser.Game(config);
+
+      function create() {
+        // --- 1. Create the procedural texture for debris ---
+        const graphics = this.make.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fillRect(0, 0, 8, 8); // Create a small square
+        graphics.generateTexture("debris_particle", 8, 8);
+        graphics.destroy();
+
+        // --- 2. Create the particle emitter ---
+        const debrisEffect = this.add.particles(0, 0, "debris_particle", {
+          speed: { min: 100, max: 300 },
+          angle: { min: 0, max: 360 },
+          scale: { start: 1, end: 0 },
+          blendMode: "NORMAL",
+          lifespan: 1000,
+          gravityY: 400, // Debris falls down
+          emitting: false,
+        });
+
+        // --- 3. Create a clickable object ---
+        const box = this.add
+          .rectangle(400, 300, 100, 100, 0x00ff00)
+          .setInteractive();
+
+        this.add.text(10, 10, "Click the square to make it explode.", {
+          font: '18px "Arial"',
+          fill: "#ffffff",
+        });
+
+        // --- 4. Define the click-to-explode logic ---
+        box.on(
+          "pointerdown",
+          function () {
+            // Set the particle tint to match the box's color
+            debrisEffect.setEmitterAngle({ min: 0, max: 360 }); // Ensure it explodes outwards
+            debrisEffect.setParticleTint(this.fillColor); // Use the box's color
+
+            // Position the emitter at the box's location
+            debrisEffect.setPosition(this.x, this.y);
+
+            // Fire a burst of 60 debris particles
+            debrisEffect.explode(60);
+
+            // Add camera shake for impact
+            this.scene.cameras.main.shake(200, 0.01);
+
+            // Destroy the box
+            this.destroy();
+          },
+          box
+        ); // Pass the box as the context
+      }
+    </script>
+  </body>
+</html>

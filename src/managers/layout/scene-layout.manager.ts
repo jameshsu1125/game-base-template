@@ -190,6 +190,11 @@ export default class SceneLayoutManager {
   public increasePlayerCount(count: number = 1, gateName: string): void {
     this.layoutContainers.player.increasePlayersCount(count);
     this.layoutContainers.gate.removeStateByName(gateName);
+    if (count > 0) {
+      this.scene.sound.add(GAME_ASSET_KEYS.audioAward).play({ volume: 0.5 });
+    } else {
+      this.scene.sound.add(GAME_ASSET_KEYS.audioDeath).play({ volume: 0.5 });
+    }
   }
 
   public increaseGateCount(
@@ -231,6 +236,8 @@ export default class SceneLayoutManager {
     this.layoutContainers.supplement.removeStateByName(supplementName);
     if (type === "ARMY") this.layoutContainers.player.increasePlayersCount(1);
     else this.layoutContainers.firepower.increaseFirepowerLevel();
+
+    this.scene.sound.add(GAME_ASSET_KEYS.audioAward).play({ volume: 0.5 });
   }
 
   public onGameOver(): void {
@@ -246,6 +253,7 @@ export default class SceneLayoutManager {
     });
 
     this.layoutContainers.endScreenComponent.setVisibility(true);
+    this.scene.sound.add(GAME_ASSET_KEYS.audioDefeat).play({ volume: 0.5 });
   }
 
   public onGameVictory(): void {
@@ -258,6 +266,7 @@ export default class SceneLayoutManager {
         container.setVisibility(true);
       }
     });
+    this.scene.sound.add(GAME_ASSET_KEYS.audioVictory).play({ volume: 0.5 });
   }
 
   public update(time: number): void {
@@ -279,5 +288,8 @@ export default class SceneLayoutManager {
     this.layoutContainers.supplement.onStart();
     this.layoutContainers.finishLine.onStart();
     this.layoutContainers.landing.destroy();
+    this.scene.sound
+      .add(GAME_ASSET_KEYS.audioBGM)
+      .play({ volume: 0.4, loop: true });
   }
 }

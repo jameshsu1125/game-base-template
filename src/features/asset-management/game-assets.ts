@@ -33,6 +33,17 @@ export interface GameAssets {
     endBannerVictory: string;
     endButton: string;
     finishLine: string;
+
+    //audio
+    audioBGM: string;
+    audioAward: string;
+    audioEnemyDead: string;
+    audioPlayerDead: string;
+    audioDefeat: string;
+    audioVictory: string;
+    audioFirepower: string;
+    audioFire: string;
+    audioDeath: string;
   };
   text: {};
 }
@@ -61,6 +72,16 @@ const defaultGameAssets = {
     endBannerVictory: "assets/choice-runner/end-banner-victory.png",
     endButton: "assets/choice-runner/end-button.png",
     finishLine: "assets/choice-runner/finish-line.png",
+
+    audioBGM: "assets/choice-runner/audio-bgm.mp3",
+    audioAward: "assets/choice-runner/audio-award.mp3",
+    audioEnemyDead: "assets/choice-runner/audio-enemy-dead.mp3",
+    audioPlayerDead: "assets/choice-runner/audio-player-dead.mp3",
+    audioDefeat: "assets/choice-runner/audio-defeat.mp3",
+    audioVictory: "assets/choice-runner/audio-victory.mp3",
+    audioFirepower: "assets/choice-runner/audio-firepower.mp3",
+    audioFire: "assets/choice-runner/audio-fire.mp3",
+    audioDeath: "assets/choice-runner/audio-death.mp3",
   },
   text: {},
 } satisfies GameAssets;

@@ -70,6 +70,8 @@ export class FinishComponent extends Container {
 
   private setPositionByPercentage(percent: number): void {
     if (!this.finishLine) return;
+    console.log(percent);
+
     const { miss } = finishLinePreset;
 
     const currentPercent = Easing(percent);

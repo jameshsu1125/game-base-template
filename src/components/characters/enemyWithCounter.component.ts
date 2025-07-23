@@ -240,8 +240,12 @@ export default class EnemyWithCounterComponent extends Container {
     this.blood -= currentDamage;
 
     if (this.blood <= 0) {
+      this.scene.sound
+        .add(GAME_ASSET_KEYS.audioEnemyDead)
+        .play({ volume: 0.2 });
       this.destroy();
       this.removeStateByName(this.enemyName);
+
       if (this.config?.blood.type === "boss") {
         this.onGameVictory();
       }
