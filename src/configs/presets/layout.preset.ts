@@ -5,48 +5,48 @@ export const gamePreset = {
 };
 
 export const logoPreset = {
-  ratio: 99 / 320,
+  ratio: 99 / 320, // 大小比例
 };
 
 export const landingPreset = {
   finger: {
-    ratio: 61 / 320,
+    ratio: 61 / 320, // 大小比例
   },
   leftArrow: {
-    ratio: 114 / 320,
-    offsetY: -20,
+    ratio: 114 / 320, // 大小比例
+    offsetY: -20, // Y轴偏移
   },
   rightArrow: {
-    ratio: 114 / 320,
-    offsetY: -20,
+    ratio: 114 / 320, // 大小比例
+    offsetY: -20, // Y轴偏移
   },
 };
 
 export const firepowerPreset = {
-  perspective: 190,
-  offsetY: -10,
-  ratio: 23 / 320,
-  speed: 800,
-  reload: 500, // time ms
+  perspective: 190, // 透视效果
+  offsetY: -10, // Y轴偏移
+  ratio: 23 / 320, // 大小比例
+  speed: 800, // 子弹速度
+  reload: 500, // 子彈間隔 ms
   damage: {
-    level1: 50,
-    level2: 100,
+    level1: 50, // 伤害值
+    level2: 100, // 伤害值
   },
   random: {
-    enable: true,
-    velocity: 200,
+    enable: true, // 是否启用随機
+    velocity: 200, // 随機x轴偏移
   },
 };
 
 export const playerPreset = {
-  speedByInput: 5,
-  ratio: (30 / 320) * 1.2,
-  offsetY: -100,
-  gap: 30,
-  isRadom: false,
-  randomGap: 10,
+  speedByInput: 5, // 玩家移動速度
+  ratio: (30 / 320) * 1.2, // 大小比例
+  offsetY: -100, // Y轴偏移
+  gap: 30, //  玩家間距
+  isRadom: false, // 是否隨機位置
+  randomGap: 10, // 隨機位置間距
   healthBar: {
-    offsetY: 10,
+    offsetY: 10, // Y轴偏移
     width: 70,
     height: 25,
   },
