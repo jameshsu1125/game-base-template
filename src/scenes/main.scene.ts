@@ -58,6 +58,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   public onLandingAnimationEnd(): void {
+    if (this.isGameOver) return;
     const onUserInput = () => {
       ServiceLocator.get<SceneLayoutManager>("gameAreaManager").onStart(
         this.onGameOver.bind(this)

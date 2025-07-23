@@ -160,6 +160,7 @@ export default class SupplementWithCounterComponent extends Container {
     const { gap, miss } = supplementPreset;
 
     const currentPercent = Easing(percentage);
+
     const currentScale =
       scale - scale * (1 - perspective) * (1 - currentPercent);
     bucket.setScale(currentScale, currentScale);
@@ -168,7 +169,9 @@ export default class SupplementWithCounterComponent extends Container {
     const x =
       this.scene.scale.width / 2 +
       (this.config?.quadrant || 0) * (bucket.displayWidth + gap);
-    const y = (this.scene.scale.height + bucket.displayHeight) * currentPercent;
+    const y =
+      (this.scene.scale.height + Math.abs(bucket.displayHeight)) *
+      currentPercent;
 
     this.setPxy(x, y);
 

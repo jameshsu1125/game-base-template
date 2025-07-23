@@ -70,7 +70,6 @@ export class FinishComponent extends Container {
 
   private setPositionByPercentage(percent: number): void {
     if (!this.finishLine) return;
-    console.log(percent);
 
     const { miss } = finishLinePreset;
 
@@ -82,7 +81,7 @@ export class FinishComponent extends Container {
     const x = 0;
     const y =
       getAlign(this.finishLine, this.scene, "TOP") -
-      this.finishLine.displayHeight +
+      Math.abs(this.finishLine.displayHeight) +
       this.scene.scale.height * currentPercent;
 
     this.finishLine.setPosition(x, y);
