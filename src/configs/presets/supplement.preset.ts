@@ -6,15 +6,15 @@ export const supplementEntityConfig: {
 }[] = [
   {
     time: 5000,
-    data: [{ quadrant: 0, count: 30, type: "ARMY" }],
+    data: [{ quadrant: 0, count: 50, type: "ARMY" }],
   },
   {
     time: 15000,
-    data: [{ quadrant: 1, count: 20, type: "ARMY" }],
+    data: [{ quadrant: 1, count: 90, type: "ARMY" }],
   },
   {
     time: 25000,
-    data: [{ quadrant: -1, count: 20, type: "ARMY" }],
+    data: [{ quadrant: -1, count: 105, type: "ARMY" }],
   },
 ];
 

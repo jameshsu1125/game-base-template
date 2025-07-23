@@ -12,8 +12,8 @@ const minorBoss: { type: "ghost" | "boss"; max: number; value: number } = {
 
 const boss: { type: "ghost" | "boss"; max: number; value: number } = {
   type: "boss",
-  max: 10000,
-  value: 10000,
+  max: 8000,
+  value: 8000,
 };
 
 export const enemyEntityConfig: {
