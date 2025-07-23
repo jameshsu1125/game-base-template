@@ -68,7 +68,7 @@ export class FirepowerComponent extends Container {
 
     const { perspective, delta: gameDelta } = gamePreset;
     const { perspective: firePerspective, offsetY, ratio } = firepowerPreset;
-    const { speed } = firepowerPreset;
+    const { speed, random } = firepowerPreset;
 
     this.player.players.forEach((player) => {
       if (!player.player) return;
@@ -82,10 +82,23 @@ export class FirepowerComponent extends Container {
             : GAME_ASSET_KEYS.firepowerLevel2
         )
         .refreshBody();
+
       firepower.setName(`firepower-${this.index++}`);
 
       const { width, height } = getSize(firepower, ratio);
       firepower.setDisplaySize(width, height);
+
+      const velocityX =
+        ((player.player.x - this.scene.scale.width / 2) *
+          firePerspective *
+          -1 *
+          perspective *
+          (700 / player.player.y)) /
+        delta;
+
+      const currentVelocity = random.enable
+        ? -random.velocity * 0.5 + velocityX + Math.random() * 100
+        : velocityX;
 
       firepower.setPosition(
         player.player.x - player.player.displayWidth / 2,
@@ -93,14 +106,7 @@ export class FirepowerComponent extends Container {
       );
       this.baseScale = firepower.scale;
       firepower.setVelocityY(-(speed * gameDelta) / delta);
-      firepower.setVelocityX(
-        ((player.player.x - this.scene.scale.width / 2) *
-          firePerspective *
-          -1 *
-          perspective *
-          (700 / player.player.y)) /
-          delta
-      );
+      firepower.setVelocityX(currentVelocity);
       firepower.setRotation(
         Phaser.Math.DegToRad(
           (player.player.x - this.scene.scale.width / 2) *

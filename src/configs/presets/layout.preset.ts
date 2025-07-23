@@ -32,6 +32,10 @@ export const firepowerPreset = {
     level1: 50,
     level2: 100,
   },
+  random: {
+    enable: true,
+    velocity: 200,
+  },
 };
 
 export const playerPreset = {
