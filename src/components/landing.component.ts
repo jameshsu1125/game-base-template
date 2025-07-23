@@ -89,15 +89,15 @@ export class LandingComponent extends Container {
       onComplete: () => {
         this.scene?.tweens.add({
           targets: finger,
-          x: `+=25`,
+          x: `+=20`,
           duration: 500,
-          ease: "Quart.easeOut",
+          ease: "linear",
           onComplete: () => {
             this.scene?.tweens.add({
               targets: finger,
               x: `-=40`,
               duration: 1000,
-              ease: "Quart.easeInOut",
+              ease: "linear",
               yoyo: true,
               repeat: -1,
             });
