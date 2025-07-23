@@ -34,14 +34,7 @@ export interface GameAssets {
     endButton: string;
     finishLine: string;
   };
-  text: {
-    restartButton: string;
-    playAgain: string;
-    winText: string;
-    loseText: string;
-    instructions: string;
-    movesLabel: string;
-  };
+  text: {};
 }
 type MatchFightAssetKeys = keyof GameAssets["assets"];
 
@@ -69,14 +62,7 @@ const defaultGameAssets = {
     endButton: "assets/choice-runner/end-button.png",
     finishLine: "assets/choice-runner/finish-line.png",
   },
-  text: {
-    restartButton: "Restart",
-    playAgain: "Play Again",
-    winText: "Victory",
-    loseText: "Defeat!",
-    instructions: "Match 3 or more tiles to deal damage to the enemy castle!",
-    movesLabel: "Moves: ",
-  },
+  text: {},
 } satisfies GameAssets;
 
 export const gameAssets = deepMerge(
