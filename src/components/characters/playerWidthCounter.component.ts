@@ -72,11 +72,11 @@ export default class PlayerWidthCounterComponent extends Container {
   private addHealthBar(x: number, y: number): void {
     if (!this.player) return;
     const { offsetY, width, height } = playerPreset.healthBar;
-    const { scale, displayWidth, displayHeight } = this.player;
+    const { scale, displayHeight } = this.player;
 
     const currentWidth = width * scale;
     const currentHeight = height * scale;
-    const currentX = x - (displayWidth - currentWidth) / 2;
+    const currentX = x - currentWidth / 2;
     const currentY = y - displayHeight / 2 + offsetY;
 
     this.healthBarBorder.clear();
