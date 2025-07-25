@@ -2,10 +2,15 @@
 import Phaser from "phaser";
 import { gameAssets } from "../features/asset-management/game-assets";
 import { loadAssetsFromMap } from "../features/asset-management/load-assets-from-map";
+import { SpriteConfig } from "@/types/sprite-config.types";
+import spriteConfig from "@/configs/sprite-config.json";
 
 export default class PreloadScene extends Phaser.Scene {
+  private config: SpriteConfig;
+
   constructor() {
     super("PreloadScene");
+    this.config = spriteConfig as SpriteConfig;
   }
 
   preload() {
@@ -14,8 +19,8 @@ export default class PreloadScene extends Phaser.Scene {
       "playerSheet",
       "assets/choice-runner/player-sheet.png",
       {
-        frameWidth: 128,
-        frameHeight: 224,
+        frameWidth: this.config.player.frameWidth,
+        frameHeight: this.config.player.frameHeight,
       }
     );
 
@@ -23,8 +28,8 @@ export default class PreloadScene extends Phaser.Scene {
       "enemySheet",
       "assets/choice-runner/enemy-sheet.png",
       {
-        frameWidth: 127,
-        frameHeight: 133,
+        frameWidth: this.config.enemy.frameWidth,
+        frameHeight: this.config.enemy.frameHeight,
       }
     );
 
@@ -32,8 +37,8 @@ export default class PreloadScene extends Phaser.Scene {
       "bossSheet",
       "assets/choice-runner/enemy-boss-sheet.png",
       {
-        frameWidth: 261,
-        frameHeight: 176,
+        frameWidth: this.config.enemyBoss.frameWidth,
+        frameHeight: this.config.enemyBoss.frameHeight,
       }
     );
   }

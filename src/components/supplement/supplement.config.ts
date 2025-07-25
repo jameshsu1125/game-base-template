@@ -83,13 +83,14 @@ export const getSupplementItemEffect = (
     ease: "Power2.easeInOut",
   });
 
-  const color = { r: 255, g: 255, b: 255 };
+  const color = { r: 255, g: 255, b: 255, a: 1 };
   scene.tweens.add({
     targets: color,
     r: 0,
     g: 0,
     b: 0,
-    duration: 400,
+    a: 0,
+    duration: 200,
     ease: "Power2.easeIn",
     onUpdate: () => {
       const tint = Phaser.Display.Color.GetColor(
@@ -98,9 +99,11 @@ export const getSupplementItemEffect = (
         Math.floor(color.b)
       );
       bucket.setTint(tint);
+      bucket.setAlpha(color.a);
     },
     onComplete: () => {
       bucket.setTint(0x000000);
+      bucket.setAlpha(0);
       tweenQueue.bucket = true;
       complete();
     },
