@@ -8,7 +8,7 @@
     "frameHeight": 133
   },
   "enemyBoss": {
-    "frameWidth": 127,
-    "frameHeight": 133
+    "frameWidth": 261,
+    "frameHeight": 176
   }
 }
