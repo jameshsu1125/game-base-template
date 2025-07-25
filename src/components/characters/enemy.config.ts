@@ -6,7 +6,7 @@ export type TEnemyState = {
   target: EnemyWithCounterComponent;
 };
 
-export const HitEnemy = (enemy: Sprite) => {
+export const hitEnemyEffect = (enemy: Sprite) => {
   const { scene } = enemy;
   const originalScaleX = enemy.scaleX;
   const originalScaleY = enemy.scaleY;
@@ -30,7 +30,7 @@ export const HitEnemy = (enemy: Sprite) => {
   });
 };
 
-export const enemyToDead = (
+export const enemyDeadEffect = (
   enemy: Sprite,
   graphicsName: string,
   onStart: () => void,

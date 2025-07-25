@@ -12,7 +12,7 @@ import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import MainScene from "@/scenes/main.scene";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
-import { enemyToDead, HitEnemy } from "./enemy.config";
+import { enemyDeadEffect, hitEnemyEffect } from "./enemy.config";
 
 export default class EnemyWithCounterComponent extends Container {
   private isDestroyed = false;
@@ -249,7 +249,7 @@ export default class EnemyWithCounterComponent extends Container {
       layoutContainers.firepower.level === 1 ? damage.level1 : damage.level2;
     this.blood -= currentDamage;
 
-    HitEnemy(this.enemy);
+    hitEnemyEffect(this.enemy);
 
     if (this.blood <= 0) {
       this.scene.sound
@@ -270,7 +270,7 @@ export default class EnemyWithCounterComponent extends Container {
     // TODO=> add effects here
 
     if (this.enemy)
-      enemyToDead(
+      enemyDeadEffect(
         this.enemy,
         this.graphicsName,
         () => {

@@ -16,9 +16,13 @@ import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage as getSize } from "@/utils/layout.utils";
-import { hitSupplement, TConfig, TSupplementType } from "./supplement.config";
+import {
+  getSupplementItemEffect,
+  hitSupplementEffect,
+  TConfig,
+  TSupplementType,
+} from "./supplement.config";
 import MainScene from "@/scenes/main.scene";
-import { setAnimationAsBlank } from "@/utils/animatation.utils";
 
 export default class SupplementWithCounterComponent extends Container {
   public isDestroyed = false;
@@ -32,6 +36,9 @@ export default class SupplementWithCounterComponent extends Container {
   private text?: Text;
   private historyY: number = 0;
   private item?: Image;
+
+  private graphicsName = "glow-particle";
+  private graphics = this.scene.make.graphics();
 
   private removeStateByName: (name: string) => void;
   private decreaseSupplementCount: (name: string, firepower: Sprite) => void;
@@ -55,6 +62,11 @@ export default class SupplementWithCounterComponent extends Container {
     this.supplementName = name;
     this.config = config;
     this.num = this.config?.count || 0;
+
+    this.graphics.fillStyle(0xffffff, 1);
+    this.graphics.fillCircle(16, 16, 16);
+    this.graphics.generateTexture(this.graphicsName, 32, 32);
+    this.graphics.destroy();
 
     this.removeStateByName = removeStateByName;
     this.increaseSupplementCountByType = increaseSupplementCountByType;
@@ -175,10 +187,26 @@ export default class SupplementWithCounterComponent extends Container {
     if (this.isDestroyed) return;
     this.isDestroyed = true;
 
-    this.bucket?.destroy();
-    this.text?.destroy();
-    this.item?.destroy();
-    super.destroy();
+    if (this.bucket && this.item) {
+      getSupplementItemEffect(
+        this.bucket,
+        this.item,
+        this.graphicsName,
+        () => {
+          this.text?.destroy();
+          this.text?.setVisible(false);
+        },
+        () => {
+          this.bucket?.destroy();
+          this.item?.destroy();
+          this.bucket?.setVisible(false);
+          this.item?.setVisible(false);
+          super.destroy();
+
+          this.removeStateByName(this.supplementName);
+        }
+      );
+    }
   }
 
   public decreaseNum() {
@@ -192,7 +220,8 @@ export default class SupplementWithCounterComponent extends Container {
       );
     } else {
       this.text?.setText(`${this.num}`);
-      if (this.bucket && this.item) hitSupplement([this.bucket, this.item]);
+      if (this.bucket && this.item)
+        hitSupplementEffect([this.bucket, this.item]);
     }
   }
 
@@ -232,7 +261,6 @@ export default class SupplementWithCounterComponent extends Container {
 
     if (y > missPositionY) {
       this.destroy();
-      this.removeStateByName(this.supplementName);
     }
   }
 }
