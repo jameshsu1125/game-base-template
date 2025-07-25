@@ -91,7 +91,7 @@ export const gatePreset = {
 };
 
 export const supplementPreset = {
-  miss: 1,
+  missOffsetY: 230,
   ratio: 120 / 320,
   offsetY: -60,
   gap: 20, // quadrant gap

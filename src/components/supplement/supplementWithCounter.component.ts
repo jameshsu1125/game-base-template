@@ -18,6 +18,7 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage as getSize } from "@/utils/layout.utils";
 import { TConfig, TSupplementType } from "./supplement.config";
 import MainScene from "@/scenes/main.scene";
+import { setAnimationAsBlank } from "@/utils/animatation.utils";
 
 export default class SupplementWithCounterComponent extends Container {
   public isDestroyed = false;
@@ -171,7 +172,9 @@ export default class SupplementWithCounterComponent extends Container {
   }
 
   public destroy(): void {
+    if (this.isDestroyed) return;
     this.isDestroyed = true;
+
     this.bucket?.destroy();
     this.text?.destroy();
     this.item?.destroy();
@@ -204,7 +207,7 @@ export default class SupplementWithCounterComponent extends Container {
 
     const { offsetY } = playerPreset;
     const { perspective } = gamePreset;
-    const { gap, miss } = supplementPreset;
+    const { gap, missOffsetY } = supplementPreset;
 
     const currentPercent = Easing(percentage);
 
@@ -224,12 +227,9 @@ export default class SupplementWithCounterComponent extends Container {
     this.setPxy(x, y, currentScale);
 
     const missPositionY =
-      this.scene.scale.height -
-      bucket.displayHeight * (miss + perspective) -
-      offsetY;
+      this.scene.scale.height - bucket.displayHeight - offsetY - missOffsetY;
 
     if (y > missPositionY) {
-      this.isDestroyed = true;
       this.destroy();
       this.removeStateByName(this.supplementName);
     }

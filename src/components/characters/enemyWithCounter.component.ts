@@ -12,6 +12,7 @@ import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import MainScene from "@/scenes/main.scene";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage } from "@/utils/layout.utils";
+import { enemyToDead, HitEnemy } from "./enemy.config";
 
 export default class EnemyWithCounterComponent extends Container {
   private isDestroyed = false;
@@ -26,6 +27,9 @@ export default class EnemyWithCounterComponent extends Container {
   public healthBarMask = this.scene.make.graphics({});
   public healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
   public mask = new BitmapMask(this.scene, this.healthBarMask);
+
+  private graphicsName = "glow-particle";
+  private graphics = this.scene.make.graphics();
 
   private removeStateByName: (name: string) => void;
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
@@ -67,6 +71,12 @@ export default class EnemyWithCounterComponent extends Container {
     this.healthBarMask.setDepth(999);
     this.healthBar.setOrigin(0, 0);
     this.healthBar.setDepth(999);
+
+    this.graphics.fillStyle(0xffffff, 1);
+    this.graphics.fillCircle(16, 16, 16);
+    this.graphics.generateTexture(this.graphicsName, 32, 32);
+    this.graphics.destroy();
+
     this.build();
     this.setHealthBar();
   }
@@ -239,6 +249,8 @@ export default class EnemyWithCounterComponent extends Container {
       layoutContainers.firepower.level === 1 ? damage.level1 : damage.level2;
     this.blood -= currentDamage;
 
+    HitEnemy(this.enemy);
+
     if (this.blood <= 0) {
       this.scene.sound
         .add(GAME_ASSET_KEYS.audioEnemyDead)
@@ -254,15 +266,28 @@ export default class EnemyWithCounterComponent extends Container {
 
   public destroy(): void {
     this.isDestroyed = true;
-    this.healthBarBorder.destroy();
-    this.healthBarMask.destroy();
-    this.healthBar.destroy();
-    this.mask.destroy();
-    if (this.enemy) {
-      this.enemy.destroy(true);
-      this.enemy = null;
-    }
-    super.destroy();
+
+    // TODO=> add effects here
+
+    if (this.enemy)
+      enemyToDead(
+        this.enemy,
+        this.graphicsName,
+        () => {
+          [this.healthBarBorder, this.healthBarMask, this.healthBar].forEach(
+            (item) => {
+              item.setVisible(false);
+              item.destroy();
+            }
+          );
+          this.mask.destroy();
+        },
+        () => {
+          // Remove enemy from the scene
+          this.enemy!.destroy(true);
+          this.removeStateByName(this.enemyName);
+        }
+      );
   }
 
   public setPositionByPercentage(percentage: number) {

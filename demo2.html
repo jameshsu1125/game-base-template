@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Phaser - 魔法光環效果 (向上爆發)</title>
+    <!-- 引入 Phaser 3 函式庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #1a1a1a; /* 深色背景突顯效果 */
+        font-family: sans-serif;
+      }
+      canvas {
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Phaser 遊戲將會被建立在這個 div 元素中 -->
+    <div id="game-container"></div>
+
+    <script>
+      /**
+       * 遊戲主場景類別
+       * 我們將所有邏輯都放在這個場景中
+       */
+      class AuraScene extends Phaser.Scene {
+        constructor() {
+          super("AuraScene");
+        }
+
+        /**
+         * 預載入資源。在場景開始前執行。
+         */
+        preload() {
+          // 我們不需要載入任何外部圖片，而是動態地產生一個發光材質給粒子系統使用。
+          // 這樣做可以讓整個範例保持在單一檔案中，更易於分享。
+          const graphics = this.make.graphics();
+          // 設定填充顏色為白色，透明度為 1
+          graphics.fillStyle(0xffffff, 1);
+          // 畫一個半徑為 16px 的實心圓，作為粒子的形狀
+          graphics.fillCircle(16, 16, 16);
+          // 將繪製的圖形轉換成一個 32x32 像素的材質，並命名為 'glow-particle'
+          graphics.generateTexture("glow-particle", 32, 32);
+          // 產生材質後，銷毀繪圖物件以釋放記憶體
+          graphics.destroy();
+        }
+
+        /**
+         * 建立場景物件。在 preload 完成後執行。
+         */
+        create() {
+          // 設定一個深藍色的背景，讓光暈效果更明顯
+          this.cameras.main.setBackgroundColor("#000022");
+
+          // 在畫面中央上方加入提示文字
+          this.add
+            .text(
+              this.cameras.main.width / 2,
+              50,
+              "在畫面上任意點擊以產生向上的魔法光環",
+              {
+                font: '22px "Microsoft JhengHei", "Heiti TC", sans-serif',
+                fill: "#ffffff",
+                align: "center",
+              }
+            )
+            .setOrigin(0.5);
+
+          // 監聽整個遊戲畫面的點擊事件 (pointerdown)
+          // 當事件觸發時，呼叫 this.createAuraEffect 函式
+          this.input.on("pointerdown", this.createAuraEffect, this);
+        }
+
+        /**
+         * 建立光環效果的函式
+         * @param {Phaser.Input.Pointer} pointer - 點擊事件的指標物件，包含點擊的座標
+         */
+        createAuraEffect(pointer) {
+          const x = pointer.x;
+          const y = pointer.y;
+
+          // --- 效果 1: 向上爆發的粒子 ---
+          // 在點擊位置建立一個粒子發射器
+          const particles = this.add.particles(x, y, "glow-particle", {
+            // 將角度限制在上方 90 度的範圍內 (270度為正上方)
+            angle: { min: 225, max: 315 },
+            speed: { min: 50, max: 300 }, // 粒子移動速度範圍
+            scale: { start: 0.8, end: 0 }, // 粒子大小，從 0.8 倍漸變到 0
+            alpha: { start: 1, end: 0 }, // 粒子透明度，從 1 漸變到 0 (淡出)
+            lifespan: 800, // 粒子生命週期 (毫秒)
+            quantity: 30, // 一次爆發的粒子總數
+            blendMode: "ADD", // 混合模式設為 'ADD'，讓粒子重疊時更亮，產生發光感
+          });
+
+          // 讓粒子發射器瞬間爆發指定數量的粒子後，自動銷毀
+          particles.explode(30);
+
+          // --- 效果 2: 向上擴散的半圓形光環 ---
+          // 建立一個 Graphics 物件來繪製向量圖形
+          const auraRing = this.add.graphics();
+          // 將圖形物件的位置設定在點擊處
+          auraRing.setPosition(x, y);
+          // 設定線條樣式：寬度 4px，顏色黃色 (0xffff00)，透明度 0.9
+          auraRing.lineStyle(4, 0xffff00, 0.9);
+
+          // *** 修正 ***: 將 strokeArc 替換為更可靠的繪圖方法
+          // 1. 開始定義路徑
+          auraRing.beginPath();
+          // 2. 定義圓弧路徑。Phaser 的 arc 方法使用弧度而非角度。
+          // Math.PI 是 180 度，2 * Math.PI 是 360 度。
+          auraRing.arc(0, 0, 15, Math.PI, 2 * Math.PI, false);
+          // 3. 沿著定義好的路徑繪製線條
+          auraRing.strokePath();
+
+          // 使用 Tween (補間動畫) 來讓光環擴大並消失
+          this.tweens.add({
+            targets: auraRing, // 動畫作用的對象
+            scale: 10, // 放大到 10 倍
+            alpha: 0, // 透明度漸變到 0
+            duration: 700, // 動畫持續時間 (毫秒)
+            ease: "Cubic.easeOut", // 緩動函式，使其開始快、結束慢，效果更自然
+            onComplete: () => {
+              auraRing.destroy(); // 動畫結束後，務必銷毀物件以避免佔用記憶體
+            },
+          });
+        }
+      }
+
+      // Phaser 遊戲設定
+      const config = {
+        type: Phaser.AUTO, // 自動選擇 WebGL 或 Canvas 渲染
+        width: 800,
+        height: 600,
+        parent: "game-container", // 指定遊戲要附加到的 HTML 元素 ID
+        scene: [AuraScene], // 要載入的場景列表
+      };
+
+      // 建立新的 Phaser 遊戲實體
+      const game = new Phaser.Game(config);
+    </script>
+  </body>
+</html>
