@@ -12,6 +12,7 @@ import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
 import { FinishComponent } from "@/components/finishLine/finishLine.component";
+import { gamePreset } from "@/configs/presets/layout.preset";
 
 type Background = Phaser.GameObjects.Image;
 

@@ -267,8 +267,6 @@ export default class EnemyWithCounterComponent extends Container {
   public destroy(): void {
     this.isDestroyed = true;
 
-    // TODO=> add effects here
-
     if (this.enemy)
       enemyDeadEffect(
         this.enemy,

@@ -20,6 +20,7 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
+import { hitGateEffect } from "./gate.config";
 
 export default class GateWithCounterComponent extends Container {
   private isDestroyed = false;
@@ -162,6 +163,12 @@ export default class GateWithCounterComponent extends Container {
     const { maxCount } = gatePreset;
 
     this.num = Math.min(this.num + 1, maxCount);
+    if (this.num >= maxCount) {
+      if (this.gate) hitGateEffect(this.gate, true);
+    } else {
+      if (this.gate) hitGateEffect(this.gate, false);
+    }
+
     this.updateText();
   }
 
@@ -171,7 +178,7 @@ export default class GateWithCounterComponent extends Container {
 
     const { perspective } = gamePreset;
     const { offsetY } = playerPreset;
-    const { miss } = gatePreset;
+    const { missOffsetY } = gatePreset;
 
     const easingPercentage = Easing(percentage);
     const currentScale =
@@ -184,9 +191,7 @@ export default class GateWithCounterComponent extends Container {
     this.setPxy(x, y);
 
     const missPositionY =
-      this.scene.scale.height -
-      gate.displayHeight * (miss + perspective) -
-      offsetY;
+      this.scene.scale.height - gate.displayHeight - offsetY - missOffsetY;
 
     if (y > missPositionY) {
       this.isDestroyed = true;

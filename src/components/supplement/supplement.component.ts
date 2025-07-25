@@ -89,7 +89,7 @@ export class SupplementComponent extends Container {
     );
 
     if (state) {
-      state.target.destroy();
+      state.target.doAnimationAndDestroy();
     }
 
     this.supplementState = this.supplementState.filter(
