@@ -26,8 +26,7 @@ export interface GameAssets {
     arrowRight: string;
     finger: string;
     bucket: string;
-    gun1: string;
-    gun2: string;
+    gun: string;
     army: string;
     endBannerDefeat: string;
     endBannerVictory: string;
@@ -65,8 +64,7 @@ const defaultGameAssets = {
     arrowRight: "assets/choice-runner/arrow-right.png",
     finger: "assets/choice-runner/finger.png",
     bucket: "assets/choice-runner/supplement-shipment.png",
-    gun1: "assets/choice-runner/supplement-item-firepower-1.png",
-    gun2: "assets/choice-runner/supplement-item-firepower-2.png",
+    gun: "assets/choice-runner/supplement-item-firepower.png",
     army: "assets/choice-runner/supplement-item-army.png",
     endBannerDefeat: "assets/choice-runner/end-banner-defeat.png",
     endBannerVictory: "assets/choice-runner/end-banner-victory.png",

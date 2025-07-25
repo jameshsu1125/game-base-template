@@ -94,16 +94,30 @@ export const supplementPreset = {
   miss: 1,
   ratio: 120 / 320,
   offsetY: -60,
-  gap: 20,
+  gap: 20, // quadrant gap
   duration: 20000 / 1.3,
+  item: {
+    gun: {
+      ratio: 54 / 320,
+      offsetY: 20,
+      originY: 68 / 78, // 68 is image scale center, 78 is image height
+    },
+    arm: {
+      ratio: 30 / 320,
+      offsetY: 20,
+      originY: 108 / 118, // 108 is image scale center, 118 is image height
+    },
+  },
   fontStyle: {
     fontSize: "44px",
     color: "#ffffff",
     fontFamily: "monospace",
     align: "center",
+    boundsAlignV: "middle",
     fixedHeight: 200,
+    // backgroundColor: "#000000", // use background color adjustment padding top
     padding: {
-      top: 145,
+      top: 35,
     },
   },
 };

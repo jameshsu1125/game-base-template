@@ -1,4 +1,10 @@
-import { Container, Scene, Sprite, Text } from "@/configs/constants/constants";
+import {
+  Container,
+  Image,
+  Scene,
+  Sprite,
+  Text,
+} from "@/configs/constants/constants";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
 import { Easing } from "@/configs/constants/layout.constants";
 import {
@@ -20,9 +26,11 @@ export default class SupplementWithCounterComponent extends Container {
   private num = 0;
   private defaultScale = 1;
 
+  // items
   public bucket?: Sprite;
   private text?: Text;
   private historyY: number = 0;
+  private item?: Image;
 
   private removeStateByName: (name: string) => void;
   private decreaseSupplementCount: (name: string, firepower: Sprite) => void;
@@ -57,14 +65,35 @@ export default class SupplementWithCounterComponent extends Container {
   private build(): void {
     this.createBucket();
     this.createText();
+    this.createItem();
+  }
+
+  private createItem(): void {
+    const preset =
+      this.config?.type === "GUN"
+        ? supplementPreset.item.gun
+        : supplementPreset.item.arm;
+    const { ratio } = preset;
+
+    this.item = this.scene.add.image(
+      0,
+      0,
+      this.config?.type === "GUN" ? GAME_ASSET_KEYS.gun : GAME_ASSET_KEYS.army
+    );
+    const { width, height } = getSize(this.item, ratio);
+
+    this.item.setDisplaySize(width, height);
+    this.item.setOrigin(0.5, 1);
+
+    this.add(this.item);
   }
 
   private createBucket(): void {
     const { ratio } = supplementPreset;
     this.bucket = this.scene.physics.add.staticSprite(
       0,
-      -200,
-      this.config?.type === "ARMY" ? GAME_ASSET_KEYS.army : GAME_ASSET_KEYS.gun1
+      0,
+      GAME_ASSET_KEYS.bucket
     );
     this.bucket.setName(this.supplementName);
     this.add(this.bucket);
@@ -77,7 +106,6 @@ export default class SupplementWithCounterComponent extends Container {
     this.bucket.setDepth((this.scene as MainScene).getIndex());
 
     this.add(this.bucket);
-
     if (STOP_COLLISION) this.addCollision(this.bucket);
   }
 
@@ -86,6 +114,7 @@ export default class SupplementWithCounterComponent extends Container {
     const { x, y } = this.bucket || { x: 0, y: 0 };
     this.text = this.scene.add.text(x, y, `${this.num}`, {
       ...fontStyle,
+      fixedHeight: this.bucket?.displayHeight,
       fixedWidth: this.bucket!.displayWidth,
     });
     this.text.setOrigin(0.5, 0.5);
@@ -120,11 +149,23 @@ export default class SupplementWithCounterComponent extends Container {
     }
   }
 
-  public setPxy(x: number, y: number): void {
-    this.bucket?.setPosition(x, y);
+  public setPxy(x: number, y: number, scale: number): void {
+    const preset =
+      this.config?.type === "GUN"
+        ? supplementPreset.item.gun
+        : supplementPreset.item.arm;
+
+    const { offsetY } = preset;
+
     this.text?.setPosition(x, y);
+
+    this.bucket?.setPosition(x, y);
     this.bucket?.refreshBody();
 
+    const itemY = y - this.bucket!.displayHeight * 0.5 + offsetY * scale;
+    this.item?.setPosition(x, itemY);
+
+    // prevent item revert move
     if (this.bucket) this.setVisibility(this.bucket.y > this.historyY);
     this.historyY = this.y;
   }
@@ -133,6 +174,7 @@ export default class SupplementWithCounterComponent extends Container {
     this.isDestroyed = true;
     this.bucket?.destroy();
     this.text?.destroy();
+    this.item?.destroy();
     super.destroy();
   }
 
@@ -153,11 +195,12 @@ export default class SupplementWithCounterComponent extends Container {
   setVisibility(value: boolean) {
     this.bucket?.setVisible(value);
     this.text?.setVisible(value);
+    this.item?.setVisible(value);
   }
 
   public update(percentage: number): void {
-    const { defaultScale: scale, bucket, text } = this;
-    if (!bucket || !text || this.isDestroyed) return;
+    const { defaultScale: scale, item, bucket, text } = this;
+    if (!bucket || !text || !item || this.isDestroyed) return;
 
     const { offsetY } = playerPreset;
     const { perspective } = gamePreset;
@@ -169,6 +212,7 @@ export default class SupplementWithCounterComponent extends Container {
       scale - scale * (1 - perspective) * (1 - currentPercent);
     bucket.setScale(currentScale, currentScale);
     text.setScale(currentScale, currentScale);
+    item.setScale(currentScale, currentScale);
 
     const x =
       this.scene.scale.width / 2 +
@@ -177,7 +221,7 @@ export default class SupplementWithCounterComponent extends Container {
       (this.scene.scale.height + Math.abs(bucket.displayHeight)) *
       currentPercent;
 
-    this.setPxy(x, y);
+    this.setPxy(x, y, currentScale);
 
     const missPositionY =
       this.scene.scale.height -
