@@ -16,7 +16,7 @@ import { GAME_ASSET_KEYS } from "@/features/asset-management/game-assets";
 import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 import { getDisplaySizeByWidthPercentage as getSize } from "@/utils/layout.utils";
-import { TConfig, TSupplementType } from "./supplement.config";
+import { hitSupplement, TConfig, TSupplementType } from "./supplement.config";
 import MainScene from "@/scenes/main.scene";
 import { setAnimationAsBlank } from "@/utils/animatation.utils";
 
@@ -192,6 +192,7 @@ export default class SupplementWithCounterComponent extends Container {
       );
     } else {
       this.text?.setText(`${this.num}`);
+      if (this.bucket && this.item) hitSupplement([this.bucket, this.item]);
     }
   }
 
