@@ -261,7 +261,7 @@ export default class SceneLayoutManager {
   public onGameVictory(): void {
     this.isGameOver = true;
     this.gameOverCallback();
-    return;
+
     Object.entries(this.layoutContainers).forEach(([key, container]) => {
       if (key === "sceneContainer") return;
       if (key === "endScreenComponent") {

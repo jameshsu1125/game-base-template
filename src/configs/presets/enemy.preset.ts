@@ -69,16 +69,7 @@ export const enemyEntityConfig: {
   { time: 28000, data: { x: 20, type: "follow", blood: ghost } },
   { time: 28800, data: { x: 50, type: "follow", blood: ghost } },
   { time: 29400, data: { x: 34, type: "follow", blood: ghost } },
-  { time: 31400, data: { x: 54, type: "follow", blood: ghost } },
-  { time: 32400, data: { x: 24, type: "follow", blood: ghost } },
-  { time: 33100, data: { x: 74, type: "follow", blood: ghost } },
-  { time: 34400, data: { x: 54, type: "follow", blood: ghost } },
-  { time: 35678, data: { x: 24, type: "follow", blood: ghost } },
-  { time: 36678, data: { x: 32, type: "follow", blood: ghost } },
-  { time: 37542, data: { x: 14, type: "follow", blood: ghost } },
-  { time: 38492, data: { x: 34, type: "follow", blood: ghost } },
-  { time: 39042, data: { x: 72, type: "follow", blood: ghost } },
-  { time: 40000, data: { x: 55, type: "follow", blood: boss } },
+  { time: 30000, data: { x: 55, type: "follow", blood: boss } },
 ];
 
 export const enemyEntityPresetConfig: {
@@ -90,6 +81,7 @@ export const enemyEntityPresetConfig: {
       type: "ghost" | "boss";
       max: number;
       value: number;
+      color: number;
     };
   };
 }[] = [

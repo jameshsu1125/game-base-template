@@ -27,11 +27,11 @@ export default class FinishLineEntity {
       )
       .reverse();
 
-    if (config && this.state.index !== config?.index) {
-      this.state.index = config?.index || 0;
-      ServiceLocator.get<SceneLayoutManager>(
-        "gameAreaManager"
-      ).layoutContainers.finishLine.fire(currentTime);
-    }
+    // if (config && this.state.index !== config?.index) {
+    //   this.state.index = config?.index || 0;
+    //   ServiceLocator.get<SceneLayoutManager>(
+    //     "gameAreaManager"
+    //   ).layoutContainers.finishLine.fire(currentTime);
+    // }
   }
 }
