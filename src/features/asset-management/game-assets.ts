@@ -40,7 +40,6 @@ export interface GameAssets {
     audioPlayerDead: string;
     audioDefeat: string;
     audioVictory: string;
-    audioFirepower: string;
     audioFire: string;
     audioDeath: string;
   };
@@ -77,7 +76,6 @@ const defaultGameAssets = {
     audioPlayerDead: "assets/choice-runner/audio-player-dead.mp3",
     audioDefeat: "assets/choice-runner/audio-defeat.mp3",
     audioVictory: "assets/choice-runner/audio-victory.mp3",
-    audioFirepower: "assets/choice-runner/audio-firepower.mp3",
     audioFire: "assets/choice-runner/audio-fire.mp3",
     audioDeath: "assets/choice-runner/audio-death.mp3",
   },

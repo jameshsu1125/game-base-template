@@ -136,7 +136,7 @@ export default class SupplementWithCounterComponent extends Container {
   }
 
   private addCollision(bucket: Phaser.Physics.Arcade.Sprite): void {
-    const { firepower } =
+    const { firepower, player } =
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
@@ -146,7 +146,10 @@ export default class SupplementWithCounterComponent extends Container {
         this.scene.physics.add.collider(
           bucket,
           firepower,
-          () => this.decreaseSupplementCount(this.supplementName, firepower),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreaseSupplementCount(this.supplementName, firepower);
+          },
           undefined,
           this
         );
@@ -154,7 +157,10 @@ export default class SupplementWithCounterComponent extends Container {
         this.scene.physics.add.overlap(
           bucket,
           firepower,
-          () => this.decreaseSupplementCount(this.supplementName, firepower),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreaseSupplementCount(this.supplementName, firepower);
+          },
           undefined,
           this
         );

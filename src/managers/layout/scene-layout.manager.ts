@@ -212,6 +212,7 @@ export default class SceneLayoutManager {
   ): void {
     this.layoutContainers.player.loseBlood(player);
     this.layoutContainers.enemy.removeStateByName(enemy.name);
+    this.scene.sound.add(GAME_ASSET_KEYS.audioDeath).play({ volume: 0.5 });
   }
 
   public decreaseEnemyBlood(
@@ -260,6 +261,7 @@ export default class SceneLayoutManager {
   public onGameVictory(): void {
     this.isGameOver = true;
     this.gameOverCallback();
+    return;
     Object.entries(this.layoutContainers).forEach(([key, container]) => {
       if (key === "sceneContainer") return;
       if (key === "endScreenComponent") {

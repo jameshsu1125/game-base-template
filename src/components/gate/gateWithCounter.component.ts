@@ -117,14 +117,20 @@ export default class GateWithCounterComponent extends Container {
       this.scene.physics.add.collider(
         gate,
         firepower,
-        () => this.increaseGateCount(gate, firepower),
+        () => {
+          if (this.isDestroyed) return;
+          this.increaseGateCount(gate, firepower);
+        },
         undefined,
         this.scene
       );
       this.scene.physics.add.overlap(
         gate,
         firepower,
-        () => this.increaseGateCount(gate, firepower),
+        () => {
+          if (this.isDestroyed) return;
+          this.increaseGateCount(gate, firepower);
+        },
         undefined,
         this.scene
       );
@@ -135,14 +141,20 @@ export default class GateWithCounterComponent extends Container {
       this.scene.physics.add.collider(
         gate,
         player.player,
-        () => this.increasePlayerCount(this.num, gate.name),
+        () => {
+          if (this.isDestroyed) return;
+          this.increasePlayerCount(this.num, gate.name);
+        },
         undefined,
         this.scene
       );
       this.scene.physics.add.overlap(
         gate,
         player.player,
-        () => this.increasePlayerCount(this.num, gate.name),
+        () => {
+          if (this.isDestroyed) return;
+          this.increasePlayerCount(this.num, gate.name);
+        },
         undefined,
         this.scene
       );

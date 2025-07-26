@@ -99,11 +99,15 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
   public increasePlayersCount(count: number = 1): void {
     if (count > 0) this.createPlayer(count);
     else {
-      const minDiscount = Math.min(this.players.length - 1, Math.abs(count));
-
-      this.players.splice(-minDiscount, minDiscount).forEach((player) => {
-        player.destroy();
-      });
+      if (this.players.length - Math.abs(count) <= 0) {
+        this.players.forEach((player) => player.destroy());
+        this.onGameOver();
+      } else {
+        const minDiscount = Math.min(this.players.length - 1, Math.abs(count));
+        this.players.splice(-minDiscount, minDiscount).forEach((player) => {
+          player.destroy();
+        });
+      }
     }
   }
 

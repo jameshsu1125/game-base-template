@@ -48,6 +48,7 @@ export const enemyDeadEffect = (
   // Remove enemy collision event if exists
   if (enemy.body && enemy.body.onCollide) {
     enemy.body.onCollide = false;
+    enemy.body.enable = false;
   }
 
   scene.tweens.add({

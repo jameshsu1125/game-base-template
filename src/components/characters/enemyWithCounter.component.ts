@@ -23,8 +23,9 @@ export default class EnemyWithCounterComponent extends Container {
   public blood: number = 100;
   public maxBlood: number = 100;
 
+  private healthBarBorderWidth: number = 5;
   public healthBarBorder = this.scene.add.graphics();
-  public healthBarMask = this.scene.make.graphics({});
+  public healthBarMask = this.scene.make.graphics();
   public healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
   public mask = new BitmapMask(this.scene, this.healthBarMask);
 
@@ -77,6 +78,13 @@ export default class EnemyWithCounterComponent extends Container {
     this.graphics.generateTexture(this.graphicsName, 32, 32);
     this.graphics.destroy();
 
+    const colorGraphics = this.scene.make.graphics();
+    colorGraphics.fillStyle(this.config.blood.color, 1);
+    colorGraphics.fillRect(0, 0, 150, 150);
+    colorGraphics.generateTexture("map", 150, 150);
+
+    this.healthBar.setTexture("map");
+
     this.build();
     this.setHealthBar();
   }
@@ -125,14 +133,20 @@ export default class EnemyWithCounterComponent extends Container {
         this.scene.physics.add.collider(
           enemy,
           firepower,
-          () => this.decreaseEnemyBlood(enemy, firepower),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreaseEnemyBlood(enemy, firepower);
+          },
           undefined,
           this.scene
         );
         this.scene.physics.add.overlap(
           enemy,
           firepower,
-          () => this.decreaseEnemyBlood(enemy, firepower),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreaseEnemyBlood(enemy, firepower);
+          },
           undefined,
           this.scene
         );
@@ -145,14 +159,20 @@ export default class EnemyWithCounterComponent extends Container {
         this.scene.physics.add.collider(
           enemy,
           player.player,
-          () => this.decreasePlayerBlood(player.player!, enemy),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreasePlayerBlood(player.player!, enemy);
+          },
           undefined,
           this.scene
         );
         this.scene.physics.add.overlap(
           enemy,
           player.player,
-          () => this.decreasePlayerBlood(player.player!, enemy),
+          () => {
+            if (this.isDestroyed) return;
+            this.decreasePlayerBlood(player.player!, enemy);
+          },
           undefined,
           this.scene
         );
@@ -176,7 +196,7 @@ export default class EnemyWithCounterComponent extends Container {
 
     const currentX = x - currentWidth / 2;
     const currentY = y - displayHeight / 2 + offsetY;
-    const gap = 2 * scale;
+    const gap = this.healthBarBorderWidth * scale;
 
     this.healthBarBorder.clear();
     this.healthBarBorder.fillStyle(0xffffff, 1);

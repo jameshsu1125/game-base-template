@@ -1,19 +1,37 @@
-const ghost: { type: "ghost" | "boss"; max: number; value: number } = {
+const ghost: {
+  type: "ghost" | "boss";
+  max: number;
+  value: number;
+  color: number;
+} = {
   type: "ghost",
   max: 100,
   value: 100,
+  color: 0x60df4a,
 };
 
-const minorBoss: { type: "ghost" | "boss"; max: number; value: number } = {
+const minorBoss: {
+  type: "ghost" | "boss";
+  max: number;
+  value: number;
+  color: number;
+} = {
   type: "ghost",
   max: 5000,
   value: 5000,
+  color: 0x7055b7,
 };
 
-const boss: { type: "ghost" | "boss"; max: number; value: number } = {
+const boss: {
+  type: "ghost" | "boss";
+  max: number;
+  value: number;
+  color: number;
+} = {
   type: "boss",
   max: 8000,
   value: 8000,
+  color: 0x60df4a,
 };
 
 export const enemyEntityConfig: {
@@ -25,6 +43,7 @@ export const enemyEntityConfig: {
       type: "ghost" | "boss";
       max: number;
       value: number;
+      color: number;
     };
   };
 }[] = [

@@ -51,7 +51,7 @@ export const playerPreset = {
   randomGap: 10, // 隨機位置間距
   healthBar: {
     offsetY: 10, // Y轴偏移
-    width: 100,
+    width: 70,
     height: 25,
   },
 };
