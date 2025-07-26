@@ -85,8 +85,11 @@ export class FirepowerComponent extends Container {
 
         firepower.setName(`firepower-${this.index++}`);
 
-        const { width, height } = getSize(firepower, ratio);
+        const currentRatio = this.level === 1 ? ratio.level1 : ratio.level2;
+
+        const { width, height } = getSize(firepower, currentRatio);
         firepower.setDisplaySize(width, height);
+        this.baseScale = firepower.scale;
 
         const velocityX =
           ((player.player.x - this.scene.scale.width / 2) *
@@ -104,7 +107,6 @@ export class FirepowerComponent extends Container {
           player.player.x - player.player.displayWidth / 2,
           player.player.y - player.displayHeight + offsetY - 100
         );
-        this.baseScale = firepower.scale;
         firepower.setVelocityY(-(speed * gameDelta) / delta);
         firepower.setVelocityX(currentVelocity);
         firepower.setRotation(

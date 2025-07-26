@@ -37,4 +37,4 @@ export const gateEntityConfig: {
 export const gateEntityPresetConfig: {
   time: number;
   data: { quadrant: TQuadrant; count: number };
-}[] = [{ time: -10000, data: { quadrant: -1, count: 5 } }];
+}[] = [{ time: -10000, data: { quadrant: -1, count: 0 } }];

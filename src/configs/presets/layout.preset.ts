@@ -26,9 +26,12 @@ export const landingPreset = {
 export const firepowerPreset = {
   perspective: 190, // 透视效果
   offsetY: -10, // Y轴偏移
-  ratio: 23 / 320, // 大小比例
   speed: 800, // 子弹速度
   reload: 500, // 子彈間隔 ms
+  ratio: {
+    level1: 9 / 320, // 大小比例
+    level2: 17 / 320, // 大小比例
+  },
   damage: {
     level1: 50, // 伤害值
     level2: 100, // 伤害值
