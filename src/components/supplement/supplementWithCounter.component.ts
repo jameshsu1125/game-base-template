@@ -187,10 +187,17 @@ export default class SupplementWithCounterComponent extends Container {
     if (this.isDestroyed) return;
     this.isDestroyed = true;
 
-    this.bucket?.destroy();
-    this.item?.destroy();
-    this.bucket?.setVisible(false);
-    this.item?.setVisible(false);
+    if (this.item) {
+      this.item.setVisible(false);
+      this.item.destroy();
+    }
+
+    if (this.bucket) {
+      this.bucket.setVisible(false);
+      this.bucket.destroy();
+      if (this.bucket.body) this.bucket.body.enable = false;
+    }
+
     super.destroy();
     this.removeStateByName(this.supplementName);
   }

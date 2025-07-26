@@ -15,6 +15,7 @@ import {
 import { Easing } from "@/configs/constants/layout.constants";
 
 export class FinishComponent extends Container {
+  private isDestroyed = false;
   private isStarted = false;
   private startTime = 0;
 
@@ -100,7 +101,7 @@ export class FinishComponent extends Container {
   }
 
   public update(time: number): void {
-    if (!this.isStarted || !this.finishLine) return;
+    if (!this.isStarted || !this.finishLine || this.isDestroyed) return;
 
     const { timeOffset, duration } = finishLinePreset;
 
@@ -116,5 +117,20 @@ export class FinishComponent extends Container {
   public fire(time: number) {
     this.startTime = time;
     this.createLine();
+  }
+
+  public destroy(): void {
+    if (this.isDestroyed) return;
+    this.isDestroyed = true;
+
+    if (this.finishLine) {
+      this.finishLine.destroy();
+      this.finishLine.setVisible(false);
+    }
+
+    this.roadGraphics.destroy();
+    this.mask.destroy();
+
+    super.destroy();
   }
 }

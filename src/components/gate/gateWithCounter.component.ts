@@ -20,7 +20,7 @@ import {
   getDisplayPositionAlign as getAlign,
   getDisplaySizeByWidthPercentage as getSize,
 } from "@/utils/layout.utils";
-import { hitGateEffect } from "./gate.config";
+import { getGateReward, hitGateEffect } from "./gate.config";
 
 export default class GateWithCounterComponent extends Container {
   private isDestroyed = false;
@@ -33,7 +33,9 @@ export default class GateWithCounterComponent extends Container {
   public gate?: Sprite;
   private text?: Text;
 
-  private removeStateByName: (name: string) => void;
+  private graphicsName = "glow-particle";
+  private graphics = this.scene.make.graphics();
+
   private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
 
@@ -41,16 +43,19 @@ export default class GateWithCounterComponent extends Container {
     scene: Scene,
     config: { quadrant: TQuadrant; count: number },
     name: string,
-    removeStateByName: (name: string) => void,
     increaseGateCount: (gate: Sprite, firepower: Sprite) => void,
     increasePlayerCount: (count: number, gateName: string) => void
   ) {
     super(scene, 0, 0);
     this.gateName = name;
     this.quadrant = config.quadrant;
-    this.removeStateByName = removeStateByName;
     this.increaseGateCount = increaseGateCount;
     this.increasePlayerCount = increasePlayerCount;
+
+    this.graphics.fillStyle(0xffffff, 1);
+    this.graphics.fillCircle(16, 16, 16);
+    this.graphics.generateTexture(this.graphicsName, 32, 32);
+    this.graphics.destroy();
 
     this.num = config.count;
     this.build();
@@ -164,12 +169,35 @@ export default class GateWithCounterComponent extends Container {
 
     this.num = Math.min(this.num + 1, maxCount);
     if (this.num >= maxCount) {
-      if (this.gate) hitGateEffect(this.gate, true);
+      if (this.gate) hitGateEffect(this.gate, false);
     } else {
       if (this.gate) hitGateEffect(this.gate, false);
     }
 
     this.updateText();
+  }
+
+  public doAnimationAndDestroy(): void {
+    if (this.gate) {
+      getGateReward(this.gate, this.graphicsName);
+      this.destroy();
+    }
+  }
+
+  public destroy(): void {
+    if (this.isDestroyed) return;
+    this.isDestroyed = true;
+
+    if (this.gate) {
+      this.gate.destroy();
+      this.gate.setVisible(false);
+      if (this.gate.body) this.gate.body.enable = false;
+    }
+    if (this.text) {
+      this.text.destroy();
+      this.text.setVisible(false);
+    }
+    super.destroy();
   }
 
   public setPositionByPercentage(percentage: number) {
@@ -194,9 +222,7 @@ export default class GateWithCounterComponent extends Container {
       this.scene.scale.height - gate.displayHeight - offsetY - missOffsetY;
 
     if (y > missPositionY) {
-      this.isDestroyed = true;
       this.destroy();
-      this.removeStateByName(this.gateName);
     }
   }
 

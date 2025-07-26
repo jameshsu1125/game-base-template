@@ -65,7 +65,6 @@ export class GateComponent extends Container {
       this.scene,
       config,
       name,
-      this.removeStateByName.bind(this),
       this.increaseGateCount,
       this.increasePlayerCount
     );
@@ -85,13 +84,13 @@ export class GateComponent extends Container {
       (state) => state.target.gateName === name
     );
 
-    if (state) {
-      state.target.destroy();
-    }
-
     this.gateState = this.gateState.filter(
       (state) => state.target.gateName !== name
     );
+
+    if (state) {
+      state.target.doAnimationAndDestroy();
+    }
   }
 
   public increaseGateCountByName(name: string): void {
