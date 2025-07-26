@@ -303,7 +303,7 @@ export default class EnemyWithCounterComponent extends Container {
     const x =
       this.config?.type === "follow" &&
       this.enemy!.y > this.scene.scale.height / 3
-        ? this.enemy!.x + (playerX - this.enemy!.x) / 200
+        ? this.enemy!.x + (playerX - this.enemy!.x) / 100
         : this.enemy!.x +
           (this.enemy!.x > this.scene.scale.width / 2
             ? 0.5 * currentPercent
