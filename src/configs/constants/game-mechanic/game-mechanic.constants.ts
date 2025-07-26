@@ -11,8 +11,8 @@ type GameMechanicConfigSchema = {
 export const GAME_MECHANIC_CONFIG_SCHEMA: GameMechanicConfigSchema = {
   playerReinforce: {
     min: NUMERIC_MIN_VALUE,
-    max: 5,
-    default: 5,
+    max: 20,
+    default: 10,
   },
 };
 

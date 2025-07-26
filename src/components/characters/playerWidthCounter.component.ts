@@ -33,7 +33,7 @@ export default class PlayerWidthCounterComponent extends Container {
 
   public player?: Sprite;
   public healthBarBorder: Graphics = this.scene.add.graphics();
-  public healthBarMask: Graphics = this.scene.make.graphics({});
+  public healthBarMask: Graphics = this.scene.make.graphics();
   public mask = new BitmapMask(this.scene, this.healthBarMask);
   public healthBar: Image = this.scene.add.image(
     0,
@@ -58,10 +58,16 @@ export default class PlayerWidthCounterComponent extends Container {
     this.increasePlayerCount = increasePlayerCount;
     this.removePlayerByName = removePlayerByName;
 
-    this.healthBarBorder.setDepth(1000);
-    this.healthBarMask.setDepth(1000);
+    this.healthBarBorder.setDepth(1002);
+    this.healthBarBorder.setName("healthBar");
+
+    this.healthBarMask.setDepth(1002);
+    this.healthBarMask.setName("healthBar");
+
+    this.healthBar.setName("healthBar");
     this.healthBar.setOrigin(0, 0);
-    this.healthBar.setDepth(1000);
+    this.healthBar.setDepth(1002);
+
     this.build();
   }
 
@@ -122,7 +128,7 @@ export default class PlayerWidthCounterComponent extends Container {
       repeat: -1,
     });
     this.player = player;
-    this.player.setDepth(999);
+    this.player.setDepth(1001);
     this.addCollider(player);
   }
 
@@ -199,9 +205,7 @@ export default class PlayerWidthCounterComponent extends Container {
     this.mask.destroy();
     if (this.player) {
       this.player.destroy(true);
-      this.player = undefined;
     }
-    super.destroy();
   }
 
   public loseBlood() {

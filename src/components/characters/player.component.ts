@@ -8,7 +8,6 @@ import { playerPreset } from "@/configs/presets/layout.preset";
 import { playerFormation } from "@/configs/presets/player.preset";
 
 export class PlayerComponent extends Phaser.GameObjects.Container {
-  public group: Phaser.Physics.Arcade.StaticGroup | null = null;
   public players: PlayerWidthCounterComponent[] = [];
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = undefined;
 
@@ -61,7 +60,6 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
         this.increasePlayerCount,
         this.removePlayerByName.bind(this)
       );
-      this.group?.add(player);
       this.players.push(player);
       if (autoPlaySheet) {
         player.runAnimationSheet();
@@ -165,17 +163,5 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
       : 0;
     const targetX = this.x + deltaX;
     this.setCurrentPositionByUserInput(targetX, deltaX);
-  }
-
-  public destroy(): void {
-    this.isStarted = false;
-    this.cursors = undefined;
-    this.players.forEach((player) => player.destroy());
-    this.players = [];
-    if (this.group) {
-      this.group.clear(true, true);
-      this.group = null;
-    }
-    super.destroy();
   }
 }

@@ -29,7 +29,7 @@ export class EndComponent extends Container {
   constructor(scene: Scene) {
     super(scene);
     this.build();
-    this.setDepth(1000);
+    this.setDepth(2000);
     this.setVisibility(false);
   }
 
@@ -49,7 +49,7 @@ export class EndComponent extends Container {
       1
     );
     darkScreen.setOrigin(0, 0);
-    darkScreen.setDepth(1001);
+    darkScreen.setDepth(2000);
     darkScreen.setAlpha(0);
     this.darkScreen = darkScreen;
   }
@@ -66,7 +66,7 @@ export class EndComponent extends Container {
     image.setDisplaySize(width, height);
     const { left, top } = getAlign(image, "CENTER_CENTER");
     image.setPosition(left, top + offsetY + 100);
-    image.setDepth(1001);
+    image.setDepth(2000);
     image.setAlpha(0);
 
     this.banner = image;
@@ -75,7 +75,7 @@ export class EndComponent extends Container {
   private createButton(): void {
     const { ratio, offsetY } = endPreset.button;
     const image = this.scene.add.image(0, 0, GAME_ASSET_KEYS.endButton);
-    image.setDepth(1001);
+    image.setDepth(2000);
 
     const { width, height } = getSize(image, ratio);
     image.setDisplaySize(width, height);

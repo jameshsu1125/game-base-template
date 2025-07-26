@@ -1,7 +1,9 @@
 import { EnemyComponent } from "@/components/characters/enemy.component";
+import { FinishComponent } from "@/components/finishLine/finishLine.component";
 import { GateComponent } from "@/components/gate/gate.component";
 import { LandingComponent } from "@/components/landing.component";
 import { SupplementComponent } from "@/components/supplement/supplement.component";
+import { Sprite } from "@/configs/constants/constants";
 import Phaser from "phaser";
 import { PlayerComponent } from "../../components/characters/player.component";
 import { EndComponent } from "../../components/end.component";
@@ -11,8 +13,7 @@ import { GAME_ASSET_KEYS } from "../../features/asset-management/game-assets";
 import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
-import { FinishComponent } from "@/components/finishLine/finishLine.component";
-import { gamePreset } from "@/configs/presets/layout.preset";
+import { gamePreset, gatePreset } from "@/configs/presets/layout.preset";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -262,13 +263,31 @@ export default class SceneLayoutManager {
     this.isGameOver = true;
     this.gameOverCallback();
 
-    Object.entries(this.layoutContainers).forEach(([key, container]) => {
-      if (key === "sceneContainer") return;
-      if (key === "endScreenComponent") {
-        container.gameResult = "VICTORY";
-        container.setVisibility(true);
+    // TODO PHASER BUG
+    this.scene.children.list.forEach((child) => {
+      if (child.name.startsWith("player")) {
+        const currentChild = child as Sprite;
+        currentChild.setDepth(1500);
+      } else if (child.name.startsWith("healthBar")) {
+        const currentChild = child as Sprite;
+        currentChild.setAlpha(0.00001);
       }
     });
+
+    this.scene.tweens.add({
+      targets: { time: 0 },
+      time: gamePreset.gameVictoryDelay,
+      onComplete: () => {
+        Object.entries(this.layoutContainers).forEach(([key, container]) => {
+          if (key === "sceneContainer") return;
+          if (key === "endScreenComponent") {
+            container.gameResult = "VICTORY";
+            container.setVisibility(true);
+          }
+        });
+      },
+    });
+
     this.scene.sound.add(GAME_ASSET_KEYS.audioVictory).play({ volume: 0.5 });
   }
 

@@ -33,6 +33,7 @@ export const hitEnemyEffect = (enemy: Sprite) => {
 export const enemyDeadEffect = (
   enemy: Sprite,
   graphicsName: string,
+  type: "ghost" | "boss",
   onStart: () => void,
   onComplete: () => void
 ) => {
@@ -83,15 +84,21 @@ export const enemyDeadEffect = (
     },
   });
 
+  const lifespan =
+    type === "boss" ? { min: 1000, max: 2000 } : { min: 100, max: 500 };
+  const scale = type === "boss" ? { start: 1, end: 0 } : { start: 0.3, end: 0 };
+  const quantity = type === "boss" ? 60 : 40;
+  const explode = type === "boss" ? 60 : 30;
+
   const fireEmitter = scene.add.particles(enemy.x, enemy.y, graphicsName, {
+    scale,
+    quantity,
+    lifespan,
+    blendMode: "ADD",
     speed: { min: 180, max: 350 },
     angle: { min: 0, max: 360 },
-    scale: { start: 0.3, end: 0 },
-    blendMode: "ADD",
-    lifespan: { min: 100, max: 500 },
     tint: [0xff0000, 0xffa500, 0xffff00],
-    quantity: 40,
   });
 
-  fireEmitter.explode(30);
+  fireEmitter.explode(explode);
 };

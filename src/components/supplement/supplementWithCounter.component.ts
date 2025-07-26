@@ -110,7 +110,6 @@ export default class SupplementWithCounterComponent extends Container {
     );
     this.bucket.setName(this.supplementName);
     this.add(this.bucket);
-    this.sendToBack(this.bucket);
 
     const { width, height } = getSize(this.bucket, ratio);
     this.bucket.setDisplaySize(width, height);

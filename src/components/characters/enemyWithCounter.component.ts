@@ -275,22 +275,25 @@ export default class EnemyWithCounterComponent extends Container {
       this.scene.sound
         .add(GAME_ASSET_KEYS.audioEnemyDead)
         .play({ volume: 0.2 });
-      this.destroy();
-      this.removeStateByName(this.enemyName);
 
       if (this.config?.blood.type === "boss") {
         this.onGameVictory();
       }
+
+      this.destroy();
+      this.removeStateByName(this.enemyName);
     }
   }
 
   public destroy(): void {
+    if (this.isDestroyed) return;
     this.isDestroyed = true;
 
     if (this.enemy)
       enemyDeadEffect(
         this.enemy,
         this.graphicsName,
+        this.config?.blood.type || "ghost",
         () => {
           [this.healthBarBorder, this.healthBarMask, this.healthBar].forEach(
             (item) => {

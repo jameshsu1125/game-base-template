@@ -100,7 +100,7 @@ export class FirepowerComponent extends Container {
           delta;
 
         const currentVelocity = random.enable
-          ? -random.velocity * 0.5 + velocityX + Math.random() * 100
+          ? -random.velocity * 0.5 + Math.random() * random.velocity + velocityX
           : velocityX;
 
         firepower.setPosition(
