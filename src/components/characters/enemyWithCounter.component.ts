@@ -78,12 +78,12 @@ export default class EnemyWithCounterComponent extends Container {
     this.graphics.generateTexture(this.graphicsName, 32, 32);
     this.graphics.destroy();
 
+    const { width, height } = enemyPreset.healthBar.boss;
     const colorGraphics = this.scene.make.graphics();
     colorGraphics.fillStyle(this.config.blood.color, 1);
-    colorGraphics.fillRect(0, 0, 150, 150);
-    colorGraphics.generateTexture("map", 150, 150);
-
-    this.healthBar.setTexture("map");
+    colorGraphics.fillRect(0, 0, width, height);
+    colorGraphics.generateTexture(`${this.config.blood.color}`, width, height);
+    this.healthBar.setTexture(`${this.config.blood.color}`);
 
     this.build();
     this.setHealthBar();
@@ -279,7 +279,6 @@ export default class EnemyWithCounterComponent extends Container {
       if (this.config?.blood.type === "boss") {
         this.onGameVictory();
       }
-
       this.destroy();
       this.removeStateByName(this.enemyName);
     }

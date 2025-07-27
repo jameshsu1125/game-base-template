@@ -101,4 +101,8 @@ export const enemyDeadEffect = (
   });
 
   fireEmitter.explode(explode);
+  // TODO phaser Bug
+  if (type === "boss") {
+    fireEmitter.setDepth(1498);
+  }
 };

@@ -265,12 +265,13 @@ export default class SceneLayoutManager {
 
     // TODO PHASER BUG
     this.scene.children.list.forEach((child) => {
+      const currentChild = child as Sprite;
       if (child.name.startsWith("player")) {
-        const currentChild = child as Sprite;
         currentChild.setDepth(1500);
       } else if (child.name.startsWith("healthBar")) {
-        const currentChild = child as Sprite;
         currentChild.setAlpha(0.00001);
+      } else if (child.name.startsWith("enemy")) {
+        currentChild.setDepth(1499);
       }
     });
 
