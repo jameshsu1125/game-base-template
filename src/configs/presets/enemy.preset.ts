@@ -35,19 +35,12 @@ const smallEnemy: TBlood = {
 
 const boss: TBlood = {
   type: "boss",
-  max: 8000,
-  value: 8000,
+  max: 7000,
+  value: 7000,
   color: 0xff6600,
 };
 
-export const enemyEntityConfig: {
-  time: number;
-  data: {
-    x: number;
-    type: "follow" | "straight";
-    blood: TBlood;
-  };
-}[] = [
+export const enemyEntityConfig: TEnemyPresetConfig[] = [
   { time: 2000, data: { x: 50, type: "follow", blood: smallEnemy } },
   { time: 3500, data: { x: 25, type: "follow", blood: smallEnemy } },
   { time: 4500, data: { x: 45, type: "follow", blood: smallEnemy } },
@@ -81,5 +74,4 @@ export const enemyEntityPresetConfig: TEnemyPresetConfig[] = [
   { time: -4000, data: { x: 70, type: "follow", blood: practiceEnemy } },
   { time: -6000, data: { x: 20, type: "follow", blood: practiceEnemy } },
   { time: -7000, data: { x: 80, type: "follow", blood: practiceEnemy } },
-  { time: -8000, data: { x: 100, type: "follow", blood: practiceEnemy } },
 ];
