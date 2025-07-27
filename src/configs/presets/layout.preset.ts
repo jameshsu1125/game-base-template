@@ -138,7 +138,7 @@ export const endPreset = {
 };
 
 export const finishLinePreset = {
-  miss: 150,
+  missOffsetY: 150,
   ratio: 180 / 320,
   perspective: 0.4,
   duration: 20000 / 1.3,

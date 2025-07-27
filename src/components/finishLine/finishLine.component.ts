@@ -21,7 +21,7 @@ export class FinishComponent extends Container {
 
   private finishLine?: Image;
 
-  public roadGraphics: Graphics = this.scene.make.graphics({});
+  public roadGraphics: Graphics = this.scene.make.graphics();
   public mask = new BitmapMask(this.scene, this.roadGraphics);
 
   public offsetTime = 0;
@@ -48,6 +48,7 @@ export class FinishComponent extends Container {
     this.roadGraphics.beginPath();
 
     this.roadGraphics.moveTo(this.roadPoints[0].x, this.roadPoints[0].y);
+
     this.roadPoints.forEach((point) => {
       this.roadGraphics.lineTo(point.x, point.y);
     });
@@ -57,7 +58,7 @@ export class FinishComponent extends Container {
   private createLine(): void {
     const { ratio } = finishLinePreset;
 
-    this.finishLine = this.scene.add.image(0, 0, GAME_ASSET_KEYS.finishLine);
+    this.finishLine = this.scene.add.image(0, -900, GAME_ASSET_KEYS.finishLine);
     const { width, height } = getSize(this.finishLine, ratio);
     this.finishLine.setDisplaySize(width, height);
     this.finishLine.setPosition(
@@ -73,25 +74,26 @@ export class FinishComponent extends Container {
   private setPositionByPercentage(percent: number): void {
     if (!this.finishLine) return;
 
-    const { miss } = finishLinePreset;
+    const { missOffsetY } = finishLinePreset;
 
     const currentPercent = Easing(percent);
-    const scale = 0.12 + ((0.62 - 0.12) / (0.64 - 0.001)) * currentPercent;
+    const scale = 0.03 + ((0.64 - 0.12) / (0.51 - 0.001)) * currentPercent;
 
     this.finishLine.setScale(scale, scale);
 
     const x = 0;
     const y =
+      -55 +
       getAlign(this.finishLine, this.scene, "TOP") -
       Math.abs(this.finishLine.displayHeight) +
       this.scene.scale.height * currentPercent;
 
+    this.finishLine.setPosition(x, y);
+
     this.setVisibility(this.finishLine.y > this.historyY);
     this.historyY = y;
 
-    this.finishLine.setPosition(x, y);
-
-    if (this.finishLine.y > this.scene.scale.height * 0.5 - miss) {
+    if (this.finishLine.y > this.scene.scale.height * 0.5 - missOffsetY) {
       this.onGameVictory();
     }
   }
@@ -107,6 +109,7 @@ export class FinishComponent extends Container {
 
     const percent =
       (time - this.startTime - this.offsetTime + timeOffset) / duration;
+
     this.setPositionByPercentage(percent);
   }
 
