@@ -34,7 +34,7 @@ export default class PlayerWidthCounterComponent extends Container {
   public player?: Sprite;
   public healthBarBorder: Graphics = this.scene.add.graphics();
   public healthBarMask: Graphics = this.scene.make.graphics();
-  public mask = new BitmapMask(this.scene, this.healthBarMask);
+  public bitmapMask = new BitmapMask(this.scene, this.healthBarMask);
   public healthBar: Image = this.scene.add.image(
     0,
     0,
@@ -108,7 +108,7 @@ export default class PlayerWidthCounterComponent extends Container {
     const percent = this.blood / 100;
     this.healthBar.setPosition(currentX, currentY);
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
-    this.healthBar.setMask(this.mask);
+    this.healthBar.setMask(this.bitmapMask);
   }
 
   private addPlayer(): void {
@@ -202,7 +202,7 @@ export default class PlayerWidthCounterComponent extends Container {
     this.healthBarBorder.destroy();
     this.healthBarMask.destroy();
     this.healthBar.destroy();
-    this.mask.destroy();
+    this.bitmapMask.destroy();
     if (this.player) {
       this.player.destroy(true);
     }

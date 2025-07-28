@@ -1,17 +1,18 @@
 import { Container, Sprite } from "@/configs/constants/constants";
 import {
-  enemyEntityPresetConfig,
   enemyEntityConfig,
+  enemyEntityPresetConfig,
 } from "@/configs/presets/enemy.preset";
-import { enemyPreset, gatePreset } from "@/configs/presets/layout.preset";
+import { enemyPreset } from "@/configs/presets/layout.preset";
 import Phaser from "phaser";
 import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
 
 export class EnemyComponent extends Container {
   private isStarted = false;
-  public enemyState: TEnemyState[] = [];
   private index = 0;
+
+  public enemyState: TEnemyState[] = [];
   public offsetTime = 0;
 
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
@@ -113,9 +114,7 @@ export class EnemyComponent extends Container {
   }
 
   public destroy(): void {
-    this.enemyState.forEach((state) => {
-      state.target.destroy();
-    });
+    this.enemyState.forEach((state) => state.target.destroy());
     this.enemyState = [];
   }
 }

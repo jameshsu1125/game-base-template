@@ -22,7 +22,7 @@ export class FinishComponent extends Container {
   private finishLine?: Image;
 
   public roadGraphics: Graphics = this.scene.make.graphics();
-  public mask = new BitmapMask(this.scene, this.roadGraphics);
+  public bitmapMask = new BitmapMask(this.scene, this.roadGraphics);
 
   public offsetTime = 0;
 
@@ -65,7 +65,7 @@ export class FinishComponent extends Container {
       getAlign(this.finishLine, this.scene, "TOP") -
         this.finishLine.displayHeight
     );
-    this.finishLine.setMask(this.mask);
+    this.finishLine.setMask(this.bitmapMask);
     this.add(this.finishLine);
   }
 
@@ -130,7 +130,7 @@ export class FinishComponent extends Container {
     }
 
     this.roadGraphics.destroy();
-    this.mask.destroy();
+    this.bitmapMask.destroy();
     super.destroy(true);
   }
 }

@@ -17,17 +17,17 @@ import { enemyDeadEffect, hitEnemyEffect } from "./enemy.config";
 export default class EnemyWithCounterComponent extends Container {
   private isDestroyed = false;
   private defaultScale = 1;
-  public enemyName = "";
 
   public enemy: Sprite | null = null;
-  public blood: number = 100;
+  public enemyName = "";
   public maxBlood: number = 100;
+  public blood: number = 100;
 
   private healthBarBorderWidth: number = 5;
-  public healthBarBorder = this.scene.add.graphics();
-  public healthBarMask = this.scene.make.graphics();
-  public healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
-  public mask = new BitmapMask(this.scene, this.healthBarMask);
+  private healthBarBorder = this.scene.add.graphics();
+  private healthBarMask = this.scene.make.graphics();
+  private healthBar = this.scene.add.image(0, 0, GAME_ASSET_KEYS.healthBar);
+  private healthMask = new BitmapMask(this.scene, this.healthBarMask);
 
   private graphicsName = "glow-particle";
   private graphics = this.scene.make.graphics();
@@ -221,7 +221,7 @@ export default class EnemyWithCounterComponent extends Container {
     const percent = this.blood / this.maxBlood;
     this.healthBar.setPosition(currentX, currentY);
     this.healthBar.setDisplaySize(currentWidth * percent, currentHeight);
-    this.healthBar.setMask(this.mask);
+    this.healthBar.setMask(this.healthMask);
   }
 
   public setPxy(x: number, y: number) {
@@ -300,7 +300,7 @@ export default class EnemyWithCounterComponent extends Container {
               item.destroy();
             }
           );
-          this.mask.destroy();
+          this.healthMask.destroy();
         },
         () => {
           this.enemy!.destroy(true);
