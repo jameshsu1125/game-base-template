@@ -35,8 +35,8 @@ const smallEnemy: TBlood = {
 
 const boss: TBlood = {
   type: "boss",
-  max: 7000,
-  value: 7000,
+  max: 6000,
+  value: 6000,
   color: 0xff6600,
 };
 
