@@ -115,6 +115,5 @@ export class GateComponent extends Container {
       state.target.destroy();
     });
     this.gateState = [];
-    super.destroy();
   }
 }

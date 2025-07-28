@@ -206,6 +206,7 @@ export default class PlayerWidthCounterComponent extends Container {
     if (this.player) {
       this.player.destroy(true);
     }
+    super.destroy(true);
   }
 
   public loseBlood() {

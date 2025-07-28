@@ -197,8 +197,13 @@ export default class SupplementWithCounterComponent extends Container {
       if (this.bucket.body) this.bucket.body.enable = false;
     }
 
-    super.destroy();
+    if (this.text) {
+      this.text.setVisible(false);
+      this.text.destroy();
+    }
+
     this.removeStateByName(this.supplementName);
+    super.destroy(true);
   }
 
   public doAnimationAndDestroy(): void {
@@ -219,8 +224,6 @@ export default class SupplementWithCounterComponent extends Container {
           this.item?.destroy();
           this.bucket?.setVisible(false);
           this.item?.setVisible(false);
-          super.destroy();
-
           this.removeStateByName(this.supplementName);
         }
       );

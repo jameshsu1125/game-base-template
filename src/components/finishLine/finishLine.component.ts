@@ -65,8 +65,7 @@ export class FinishComponent extends Container {
       getAlign(this.finishLine, this.scene, "TOP") -
         this.finishLine.displayHeight
     );
-    this.finishLine.mask = this.mask;
-
+    this.finishLine.setMask(this.mask);
     this.add(this.finishLine);
   }
 
@@ -132,7 +131,6 @@ export class FinishComponent extends Container {
 
     this.roadGraphics.destroy();
     this.mask.destroy();
-
-    super.destroy();
+    super.destroy(true);
   }
 }

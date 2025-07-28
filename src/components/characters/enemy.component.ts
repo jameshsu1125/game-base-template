@@ -117,6 +117,5 @@ export class EnemyComponent extends Container {
       state.target.destroy();
     });
     this.enemyState = [];
-    super.destroy();
   }
 }

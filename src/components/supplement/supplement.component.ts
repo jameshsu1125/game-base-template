@@ -112,7 +112,6 @@ export class SupplementComponent extends Container {
       state.target.destroy();
     });
     this.supplementState = [];
-    super.destroy();
   }
 
   public decreaseSupplementCount(supplementName: string): void {

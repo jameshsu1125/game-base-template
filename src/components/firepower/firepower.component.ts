@@ -261,6 +261,5 @@ export class FirepowerComponent extends Container {
       firepower.destroy();
     });
     this.firepowerContainer = [];
-    super.destroy();
   }
 }

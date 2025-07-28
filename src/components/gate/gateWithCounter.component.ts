@@ -209,7 +209,7 @@ export default class GateWithCounterComponent extends Container {
       this.text.destroy();
       this.text.setVisible(false);
     }
-    super.destroy();
+    super.destroy(true);
   }
 
   public setPositionByPercentage(percentage: number) {

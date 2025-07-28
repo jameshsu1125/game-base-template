@@ -61,6 +61,7 @@ export default class SceneLayoutManager {
 
     this.layoutContainers.background = this.createBackground();
     this.layoutContainers.road = this.createRoad();
+    this.layoutContainers.finishLine = this.createFinishLine();
     this.layoutContainers.gate = this.createGate();
     this.layoutContainers.enemy = this.createEnemy();
     this.layoutContainers.supplement = this.createSupplement();
@@ -69,7 +70,6 @@ export default class SceneLayoutManager {
     this.layoutContainers.logo = this.createLogo();
     this.layoutContainers.endScreenComponent = this.createEndScreenOverlay();
     this.layoutContainers.landing = this.createLanding();
-    this.layoutContainers.finishLine = this.createFinishLine();
 
     this.layoutContainers.sceneContainer.add([
       this.layoutContainers.background,
@@ -214,9 +214,8 @@ export default class SceneLayoutManager {
     enemy: Phaser.Physics.Arcade.Sprite
   ): void {
     if (enemy.name.startsWith("boss")) {
-      this.layoutContainers.enemy.removeStateByName(enemy.name);
+      // this.layoutContainers.enemy.removeStateByName(enemy.name);
       this.layoutContainers.player.removeAllPlayers();
-      this.layoutContainers.finishLine.destroy();
       this.onGameOver();
     } else {
       this.layoutContainers.player.loseBlood(player);
@@ -248,42 +247,60 @@ export default class SceneLayoutManager {
     this.layoutContainers.supplement.removeStateByName(supplementName);
     if (type === "ARMY") this.layoutContainers.player.increasePlayersCount(1);
     else this.layoutContainers.firepower.increaseFirepowerLevel();
-
     this.scene.sound.add(GAME_ASSET_KEYS.audioAward).play({ volume: 0.5 });
+  }
+
+  public fixGameBug(): void {
+    // TODO PHASER BUG
+    // road mask will mask end component don't know why
+    this.layoutContainers.finishLine.destroy();
+
+    // background and road player and enemy will disappear don't know why
+    this.scene.children.list.forEach((child) => {
+      const currentChild = child as Sprite;
+      if (child.name.startsWith("player")) {
+        currentChild.setDepth(1500);
+      } else if (child.name.startsWith("healthBar")) {
+        currentChild.setAlpha(0.00001);
+      } else if (child.name.startsWith("boss")) {
+        currentChild.setDepth(1499);
+      }
+    });
+
+    this.scene.add.existing(this.layoutContainers.background);
+    this.layoutContainers.background.setDepth(1497);
+    this.layoutContainers.background.setPosition(
+      this.scene.scale.width / 2,
+      this.scene.scale.height / 2
+    );
+
+    this.scene.add.existing(this.layoutContainers.road);
+    this.layoutContainers.road.setDepth(1498);
+    this.layoutContainers.road.setPosition(
+      this.scene.scale.width / 2,
+      this.scene.scale.height / 2
+    );
   }
 
   public onGameOver(): void {
     this.isGameOver = true;
     this.gameOverCallback();
 
-    console.log(this.scene.children.list);
+    this.fixGameBug();
 
-    this.scene.children.list.forEach((child) => {
-      const currentChild = child as Sprite;
-      console.log(child.name);
-
-      if (child.name.startsWith("player")) {
-        currentChild.setDepth(1500);
-      } else if (child.name.startsWith("healthBar")) {
-        currentChild.setAlpha(0.00001);
-      } else if (child.name.startsWith("enemy")) {
-        currentChild.setDepth(1499);
-      } else if (child.name.startsWith("background")) {
-        currentChild.setDepth(1497);
-      } else if (child.name.startsWith("road")) {
-        currentChild.setDepth(1498);
-      }
+    this.scene.tweens.add({
+      targets: { time: 0 },
+      time: gamePreset.gameVictoryDelay,
+      onComplete: () => {
+        Object.entries(this.layoutContainers).forEach(([key, container]) => {
+          if (key === "endScreenComponent") {
+            container.gameResult = "DEFEAT";
+            container.setVisibility(true);
+          }
+        });
+      },
     });
 
-    Object.entries(this.layoutContainers).forEach(([key, container]) => {
-      if (key === "sceneContainer") return;
-      if (key === "endScreenComponent") {
-        container.gameResult = "DEFEAT";
-        container.setVisibility(true);
-      }
-    });
-
-    this.layoutContainers.endScreenComponent.setVisibility(true);
     this.scene.sound.add(GAME_ASSET_KEYS.audioDefeat).play({ volume: 0.5 });
   }
 
@@ -291,24 +308,13 @@ export default class SceneLayoutManager {
     this.isGameOver = true;
     this.gameOverCallback();
 
-    // TODO PHASER BUG
-    this.scene.children.list.forEach((child) => {
-      const currentChild = child as Sprite;
-      if (child.name.startsWith("player")) {
-        currentChild.setDepth(1500);
-      } else if (child.name.startsWith("healthBar")) {
-        currentChild.setAlpha(0.00001);
-      } else if (child.name.startsWith("enemy")) {
-        currentChild.setDepth(1499);
-      }
-    });
+    this.fixGameBug();
 
     this.scene.tweens.add({
       targets: { time: 0 },
       time: gamePreset.gameVictoryDelay,
       onComplete: () => {
         Object.entries(this.layoutContainers).forEach(([key, container]) => {
-          if (key === "sceneContainer") return;
           if (key === "endScreenComponent") {
             container.gameResult = "VICTORY";
             container.setVisibility(true);
@@ -316,7 +322,6 @@ export default class SceneLayoutManager {
         });
       },
     });
-
     this.scene.sound.add(GAME_ASSET_KEYS.audioVictory).play({ volume: 0.5 });
   }
 
