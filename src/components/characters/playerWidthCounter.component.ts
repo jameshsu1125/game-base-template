@@ -132,6 +132,12 @@ export default class PlayerWidthCounterComponent extends Container {
     this.addCollider(player);
   }
 
+  public stopAnimationSheet(): void {
+    if (!this.player) return;
+    this.player.stop();
+    this.player.setFrame(0);
+  }
+
   public runAnimationSheet(): void {
     this.player?.play("run", true);
     new Tweener({

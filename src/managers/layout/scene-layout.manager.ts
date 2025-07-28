@@ -259,47 +259,10 @@ export default class SceneLayoutManager {
     this.scene.sound.add(GAME_ASSET_KEYS.audioAward).play({ volume: 0.5 });
   }
 
-  public fixGameBug(): void {
-    // TODO PHASER BUG
-    return;
-    // road mask will mask end component don't know why
-    this.layoutContainers.finishLine.destroy();
-
-    console.log(this.scene.children.list);
-
-    // background and road player and enemy will disappear don't know why
-    this.scene.children.list.forEach((child) => {
-      const currentChild = child as Sprite;
-      if (child.name.startsWith("player")) {
-        currentChild.setDepth(1500);
-      } else if (child.name.startsWith("healthBar")) {
-        currentChild.setAlpha(0.00001);
-      } else if (child.name.startsWith("boss")) {
-        currentChild.setDepth(1499);
-      }
-    });
-
-    this.scene.add.existing(this.layoutContainers.background);
-    this.layoutContainers.background.setDepth(1497);
-    this.layoutContainers.background.setPosition(
-      this.scene.scale.width / 2,
-      this.scene.scale.height / 2
-    );
-
-    this.scene.add.existing(this.layoutContainers.road);
-    this.layoutContainers.road.setDepth(1498);
-    this.layoutContainers.road.setPosition(
-      this.scene.scale.width / 2,
-      this.scene.scale.height / 2
-    );
-  }
-
   public onGameOver(): void {
     this.isGameOver = true;
     this.gameOverCallback();
     EnterFrame.stop();
-
-    this.fixGameBug();
 
     this.scene.tweens.add({
       targets: { time: 0 },
@@ -320,9 +283,9 @@ export default class SceneLayoutManager {
   public onGameVictory(): void {
     this.isGameOver = true;
     this.gameOverCallback();
-    EnterFrame.stop();
 
-    this.fixGameBug();
+    this.layoutContainers.player.stopAnimationSheet();
+    EnterFrame.stop();
 
     this.scene.tweens.add({
       targets: { time: 0 },
