@@ -37,7 +37,7 @@ export const firepowerPreset = {
     level2: 100, // 伤害值
   },
   random: {
-    enable: true, // 是否启用随機
+    enable: false, // 是否启用随機
     velocity: 200, // 随機x轴偏移
   },
 };

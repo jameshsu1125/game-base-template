@@ -169,6 +169,7 @@ export default class SceneLayoutManager {
       this.constants.containerHeight
     );
     background.setDepth(1);
+    background.setName("background");
 
     return background;
   }
@@ -181,6 +182,7 @@ export default class SceneLayoutManager {
       this.constants.containerHeight
     );
     road.setDepth(1);
+    road.setName("road");
     return road;
   }
 
@@ -211,8 +213,15 @@ export default class SceneLayoutManager {
     player: Phaser.Physics.Arcade.Sprite,
     enemy: Phaser.Physics.Arcade.Sprite
   ): void {
-    this.layoutContainers.player.loseBlood(player);
-    this.layoutContainers.enemy.removeStateByName(enemy.name);
+    if (enemy.name.startsWith("boss")) {
+      this.layoutContainers.enemy.removeStateByName(enemy.name);
+      this.layoutContainers.player.removeAllPlayers();
+      this.layoutContainers.finishLine.destroy();
+      this.onGameOver();
+    } else {
+      this.layoutContainers.player.loseBlood(player);
+      this.layoutContainers.enemy.removeStateByName(enemy.name);
+    }
     this.scene.sound.add(GAME_ASSET_KEYS.audioDeath).play({ volume: 0.5 });
   }
 
@@ -246,6 +255,25 @@ export default class SceneLayoutManager {
   public onGameOver(): void {
     this.isGameOver = true;
     this.gameOverCallback();
+
+    console.log(this.scene.children.list);
+
+    this.scene.children.list.forEach((child) => {
+      const currentChild = child as Sprite;
+      console.log(child.name);
+
+      if (child.name.startsWith("player")) {
+        currentChild.setDepth(1500);
+      } else if (child.name.startsWith("healthBar")) {
+        currentChild.setAlpha(0.00001);
+      } else if (child.name.startsWith("enemy")) {
+        currentChild.setDepth(1499);
+      } else if (child.name.startsWith("background")) {
+        currentChild.setDepth(1497);
+      } else if (child.name.startsWith("road")) {
+        currentChild.setDepth(1498);
+      }
+    });
 
     Object.entries(this.layoutContainers).forEach(([key, container]) => {
       if (key === "sceneContainer") return;

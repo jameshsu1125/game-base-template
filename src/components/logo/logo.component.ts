@@ -11,6 +11,7 @@ export class LogoComponent extends Container {
     super(scene, 0, 0);
     this.build();
     this.setDepth(1);
+    this.setName("logo");
   }
 
   private build(): void {

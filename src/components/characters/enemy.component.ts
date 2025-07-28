@@ -58,7 +58,7 @@ export class EnemyComponent extends Container {
     config: (typeof enemyEntityConfig)[number]["data"],
     time: number
   ): void {
-    const name = `enemy-${this.index++}`;
+    const name = `${config.blood.type}-${this.index++}`;
     const enemy = new EnemyWidthCounterComponent(
       this.scene,
       name,

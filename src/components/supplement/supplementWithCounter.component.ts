@@ -34,7 +34,6 @@ export default class SupplementWithCounterComponent extends Container {
   // items
   public bucket?: Sprite;
   private text?: Text;
-  private historyY: number = 0;
   private item?: Image;
 
   private graphicsName = "glow-particle";
@@ -105,7 +104,7 @@ export default class SupplementWithCounterComponent extends Container {
     const { ratio } = supplementPreset;
     this.bucket = this.scene.physics.add.staticSprite(
       0,
-      0,
+      -this.scene.scale.height,
       GAME_ASSET_KEYS.bucket
     );
     this.bucket.setName(this.supplementName);
@@ -176,16 +175,11 @@ export default class SupplementWithCounterComponent extends Container {
     const { offsetY } = preset;
 
     this.text?.setPosition(x, y);
-
     this.bucket?.setPosition(x, y);
     this.bucket?.refreshBody();
 
     const itemY = y - this.bucket!.displayHeight * 0.5 + offsetY * scale;
     this.item?.setPosition(x, itemY);
-
-    // prevent item revert move
-    if (this.bucket) this.setVisibility(this.bucket.y > this.historyY);
-    this.historyY = this.y;
   }
 
   public destroy(): void {
@@ -274,9 +268,12 @@ export default class SupplementWithCounterComponent extends Container {
     const x =
       this.scene.scale.width / 2 +
       (this.config?.quadrant || 0) * (bucket.displayWidth + gap);
-    const y =
-      (this.scene.scale.height + Math.abs(bucket.displayHeight)) *
-      currentPercent;
+    const predictY =
+      (Math.abs(this.scene.scale.height) + Math.abs(bucket.displayHeight)) *
+      Math.abs(currentPercent);
+    const y = currentPercent > 0 ? predictY : -this.scene.scale.height;
+
+    this.setVisibility(currentPercent > 0);
 
     this.setPxy(x, y, currentScale);
 

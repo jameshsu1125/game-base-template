@@ -303,7 +303,6 @@ export default class EnemyWithCounterComponent extends Container {
           this.mask.destroy();
         },
         () => {
-          // Remove enemy from the scene
           this.enemy!.destroy(true);
           this.removeStateByName(this.enemyName);
         }

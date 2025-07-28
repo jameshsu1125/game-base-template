@@ -25,7 +25,6 @@ export class FinishComponent extends Container {
   public mask = new BitmapMask(this.scene, this.roadGraphics);
 
   public offsetTime = 0;
-  private historyY: number = 0;
 
   private roadPoints = [
     { x: 165, y: 0 },
@@ -82,16 +81,15 @@ export class FinishComponent extends Container {
     this.finishLine.setScale(scale, scale);
 
     const x = 0;
-    const y =
+    const predictY =
       -55 +
       getAlign(this.finishLine, this.scene, "TOP") -
       Math.abs(this.finishLine.displayHeight) +
-      this.scene.scale.height * currentPercent;
+      Math.abs(this.scene.scale.height) * currentPercent;
+    const y = currentPercent > 0 ? predictY : -this.scene.scale.height;
 
     this.finishLine.setPosition(x, y);
-
-    this.setVisibility(this.finishLine.y > this.historyY);
-    this.historyY = y;
+    this.setVisibility(currentPercent > 0 && y > -this.scene.scale.height / 2);
 
     if (this.finishLine.y > this.scene.scale.height * 0.5 - missOffsetY) {
       this.onGameVictory();
@@ -107,8 +105,9 @@ export class FinishComponent extends Container {
 
     const { timeOffset, duration } = finishLinePreset;
 
-    const percent =
-      (time - this.startTime - this.offsetTime + timeOffset) / duration;
+    const percent = Math.abs(
+      (time - this.startTime - this.offsetTime + timeOffset) / duration
+    );
 
     this.setPositionByPercentage(percent);
   }

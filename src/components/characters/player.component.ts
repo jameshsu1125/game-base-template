@@ -141,6 +141,11 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     });
   }
 
+  public removeAllPlayers(): void {
+    this.players.forEach((player) => player.destroy());
+    this.players = [];
+  }
+
   public removePlayerByName(name: string): void {
     const [player] = this.players.filter((p) => p.playerName === name);
 
