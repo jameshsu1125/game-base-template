@@ -9,9 +9,7 @@ import { TGateState } from "./gate.config";
 import GateWithCounterComponent from "./gateWithCounter.component";
 
 export class GateComponent extends Container {
-  private isStarted = false;
   public gateState: TGateState[] = [];
-  public offsetTime = 0;
   private increaseGateCount: (gate: Sprite, firepower: Sprite) => void;
   private increasePlayerCount: (count: number, gateName: string) => void;
   private index = 0;
@@ -49,8 +47,6 @@ export class GateComponent extends Container {
   }
 
   public fire(time: number, config: (typeof gateEntityConfig)[number]): void {
-    if (!this.isStarted) return;
-
     [...config.data].forEach((cfg) => {
       this.createGate(cfg, time);
     });
@@ -75,10 +71,6 @@ export class GateComponent extends Container {
     });
   }
 
-  public onStart(): void {
-    this.isStarted = true;
-  }
-
   public removeStateByName(name: string): void {
     const [state] = this.gateState.filter(
       (state) => state.target.gateName === name
@@ -101,10 +93,9 @@ export class GateComponent extends Container {
   }
 
   public update(time: number): void {
-    if (!this.isStarted) return;
     const { duration } = gatePreset;
     this.gateState.forEach((state) => {
-      const percent = (time - state.startTime - this.offsetTime) / duration;
+      const percent = (time - state.startTime) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });

@@ -7,7 +7,6 @@ import ServiceLocator from "@/services/service-locator/service-locator.service";
  * FirepowerEntity class representing the firepower component in the game.
  */
 export default class EnemyEntity {
-  private isStarted = false;
   private state = { startTime: 0, index: -1 };
   private entityConfig = enemyEntityConfig.map((cfg, index) => ({
     ...cfg,
@@ -16,17 +15,7 @@ export default class EnemyEntity {
 
   constructor() {}
 
-  public onStart(time: number): void {
-    this.isStarted = true;
-    this.state.startTime = time;
-    ServiceLocator.get<SceneLayoutManager>(
-      "gameAreaManager"
-    ).layoutContainers.enemy.offsetTime = time;
-  }
-
   public update(time: number): void {
-    if (!this.isStarted) return;
-
     const currentTime = time - this.state.startTime;
     const [config] = this.entityConfig
       .filter(

@@ -4,7 +4,6 @@ import SceneLayoutManager from "@/managers/layout/scene-layout.manager";
 import ServiceLocator from "@/services/service-locator/service-locator.service";
 
 export default class FinishLineEntity {
-  private isStarted = false;
   private state = { startTime: 0, index: 0 };
   private entityConfig = finishLineEntityConfig.map((cfg, index) => ({
     ...cfg,
@@ -12,17 +11,7 @@ export default class FinishLineEntity {
   }));
   constructor() {}
 
-  public onStart(time: number): void {
-    this.isStarted = true;
-    this.state.startTime = time;
-    ServiceLocator.get<SceneLayoutManager>(
-      "gameAreaManager"
-    ).layoutContainers.enemy.offsetTime = time;
-  }
-
   public update(time: number): void {
-    if (!this.isStarted) return;
-
     const currentTime = time - this.state.startTime;
     const [config] = this.entityConfig
       .filter(

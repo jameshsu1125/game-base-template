@@ -10,9 +10,7 @@ import SupplementWithCounterComponent from "./supplementWithCounter.component";
 
 export class SupplementComponent extends Container {
   private index = 0;
-  private isStarted = false;
   public supplementState: TSupplementState[] = [];
-  public offsetTime = 0;
 
   private increaseSupplementCountByType: (
     type: "ARMY" | "GUN",
@@ -54,8 +52,6 @@ export class SupplementComponent extends Container {
     time: number,
     config: (typeof supplementEntityConfig)[number]
   ): void {
-    if (!this.isStarted) return;
-
     [...config.data].forEach((cfg) => {
       this.createSupplement(cfg, time);
     });
@@ -79,10 +75,6 @@ export class SupplementComponent extends Container {
     });
   }
 
-  public onStart(): void {
-    this.isStarted = true;
-  }
-
   public removeStateByName(name: string): void {
     const [state] = this.supplementState.filter(
       (state) => state.target.supplementName === name
@@ -98,10 +90,9 @@ export class SupplementComponent extends Container {
   }
 
   public update(time: number): void {
-    if (!this.isStarted) return;
     const { duration } = gatePreset;
     this.supplementState.forEach((state) => {
-      const percent = (time - state.startTime - this.offsetTime) / duration;
+      const percent = (time - state.startTime) / duration;
       const { target } = state;
       target.update(percent);
     });

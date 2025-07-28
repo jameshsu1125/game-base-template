@@ -14,6 +14,7 @@ import { ANCHORS } from "../../utils/anchors.constants";
 import { scaleImageToCover } from "../../utils/layout.utils";
 import BaseLayoutManager from "./base-layout.manager";
 import { gamePreset, gatePreset } from "@/configs/presets/layout.preset";
+import EnterFrame from "lesca-enterframe";
 
 type Background = Phaser.GameObjects.Image;
 
@@ -84,6 +85,14 @@ export default class SceneLayoutManager {
       this.layoutContainers.landing,
       this.layoutContainers.endScreenComponent,
     ]);
+
+    EnterFrame.add(({ delta }: { delta: number }) => {
+      this.layoutContainers.player.update();
+      this.layoutContainers.gate.update(delta);
+      this.layoutContainers.enemy.update(delta);
+      this.layoutContainers.supplement.update(delta);
+      this.layoutContainers.finishLine.update(delta);
+    });
 
     return this.layoutContainers;
   }
@@ -252,8 +261,11 @@ export default class SceneLayoutManager {
 
   public fixGameBug(): void {
     // TODO PHASER BUG
+    return;
     // road mask will mask end component don't know why
     this.layoutContainers.finishLine.destroy();
+
+    console.log(this.scene.children.list);
 
     // background and road player and enemy will disappear don't know why
     this.scene.children.list.forEach((child) => {
@@ -285,6 +297,7 @@ export default class SceneLayoutManager {
   public onGameOver(): void {
     this.isGameOver = true;
     this.gameOverCallback();
+    EnterFrame.stop();
 
     this.fixGameBug();
 
@@ -307,6 +320,7 @@ export default class SceneLayoutManager {
   public onGameVictory(): void {
     this.isGameOver = true;
     this.gameOverCallback();
+    EnterFrame.stop();
 
     this.fixGameBug();
 
@@ -329,20 +343,13 @@ export default class SceneLayoutManager {
     if (this.isGameOver) return;
     this.layoutContainers.player.update();
     this.layoutContainers.firepower.update();
-    this.layoutContainers.gate.update(time);
-    this.layoutContainers.enemy.update(time);
-    this.layoutContainers.supplement.update(time);
-    this.layoutContainers.finishLine.update(time);
   }
 
   public onStart(gameOver: () => void): void {
     this.gameOverCallback = gameOver;
     this.layoutContainers.player.onStart();
     this.layoutContainers.firepower.onStart();
-    this.layoutContainers.gate.onStart();
-    this.layoutContainers.enemy.onStart();
-    this.layoutContainers.supplement.onStart();
-    this.layoutContainers.finishLine.onStart();
+
     this.layoutContainers.landing.destroy();
     this.scene.sound
       .add(GAME_ASSET_KEYS.audioBGM)

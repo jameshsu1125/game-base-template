@@ -16,15 +16,12 @@ import { Easing } from "@/configs/constants/layout.constants";
 
 export class FinishComponent extends Container {
   private isDestroyed = false;
-  private isStarted = false;
   private startTime = 0;
 
   private finishLine?: Image;
 
   public roadGraphics: Graphics = this.scene.make.graphics();
   public bitmapMask = new BitmapMask(this.scene, this.roadGraphics);
-
-  public offsetTime = 0;
 
   private roadPoints = [
     { x: 165, y: 0 },
@@ -100,19 +97,13 @@ export class FinishComponent extends Container {
   }
 
   public update(time: number): void {
-    if (!this.isStarted || !this.finishLine || this.isDestroyed) return;
+    if (!this.finishLine || this.isDestroyed) return;
 
     const { timeOffset, duration } = finishLinePreset;
 
-    const percent = Math.abs(
-      (time - this.startTime - this.offsetTime + timeOffset) / duration
-    );
+    const percent = Math.abs((time - this.startTime + timeOffset) / duration);
 
     this.setPositionByPercentage(percent);
-  }
-
-  public onStart(): void {
-    this.isStarted = true;
   }
 
   public fire(time: number) {

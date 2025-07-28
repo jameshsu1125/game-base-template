@@ -9,11 +9,9 @@ import { TEnemyState } from "./enemy.config";
 import EnemyWidthCounterComponent from "./enemyWithCounter.component";
 
 export class EnemyComponent extends Container {
-  private isStarted = false;
   private index = 0;
 
   public enemyState: TEnemyState[] = [];
-  public offsetTime = 0;
 
   private decreaseEnemyBlood: (enemy: Sprite, firepower: Sprite) => void;
   private decreasePlayerBlood: (player: Sprite, enemy: Sprite) => void;
@@ -51,7 +49,6 @@ export class EnemyComponent extends Container {
   }
 
   public fire(time: number, config: (typeof enemyEntityConfig)[number]): void {
-    if (!this.isStarted) return;
     this.createEnemy(config.data, time);
   }
 
@@ -77,10 +74,6 @@ export class EnemyComponent extends Container {
     });
   }
 
-  public onStart(): void {
-    this.isStarted = true;
-  }
-
   public removeStateByName(name: string): void {
     const [state] = this.enemyState.filter(
       (state) => state.target.enemyName === name
@@ -103,11 +96,9 @@ export class EnemyComponent extends Container {
   }
 
   public update(time: number): void {
-    if (!this.isStarted) return;
     const { timeOffset, duration } = enemyPreset;
     this.enemyState.forEach((state) => {
-      const percent =
-        (time - state.startTime - this.offsetTime + timeOffset) / duration;
+      const percent = (time - state.startTime + timeOffset) / duration;
       const { target } = state;
       target.setPositionByPercentage(percent);
     });
