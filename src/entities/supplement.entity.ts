@@ -24,10 +24,6 @@ export default class SupplementEntity {
 
   public update(time: number): void {
     if (!this.isStarted) return;
-    if (this.state.startTime === 0) {
-      this.state.startTime = time;
-      return;
-    }
 
     const currentTime = time - this.state.startTime;
     const [config] = this.entityConfig

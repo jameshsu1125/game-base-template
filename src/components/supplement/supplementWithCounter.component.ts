@@ -134,7 +134,7 @@ export default class SupplementWithCounterComponent extends Container {
   }
 
   private addCollision(bucket: Phaser.Physics.Arcade.Sprite): void {
-    const { firepower, player } =
+    const { firepower } =
       ServiceLocator.get<SceneLayoutManager>(
         "gameAreaManager"
       ).layoutContainers;
