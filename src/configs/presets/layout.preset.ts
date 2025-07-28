@@ -1,7 +1,7 @@
 export const gamePreset = {
   perspective: 0.1,
   delta: 16, // default delta when game are not lag
-  preventJumpTime: 500,
+  preventJumpTime: 500, // (ms)如果太lag到時間差超過這個值，則不新增實體避免閃現
   gameVictoryDelay: 1000,
 };
 

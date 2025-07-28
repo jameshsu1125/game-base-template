@@ -17,7 +17,6 @@ export default class FirepowerEntity {
 
   public update(time: number, delta: number): void {
     if (!this.isStarted) return;
-    if (this.state.startTime === 0) this.state.startTime = time;
 
     const { reload } = firepowerPreset;
 
