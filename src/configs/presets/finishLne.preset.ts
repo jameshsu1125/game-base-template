@@ -1,1 +1,1 @@
-export const finishLineEntityConfig: { time: number }[] = [{ time: 34000 }];
+export const finishLineEntityConfig: { time: number }[] = [{ time: 31000 }];

@@ -9,6 +9,7 @@ import ServiceRegistry from "../services/service-registry.service";
 import EndScreenSystem from "../systems/end-screen.system";
 import FinishLineEntity from "@/entities/finishLine.entity";
 import { STOP_COLLISION } from "@/configs/constants/game.constants";
+import EnterFrame from "lesca-enterframe";
 // import { DebugOverlay } from "../services/event-bus/debug-overlay";
 
 export default class MainScene extends Phaser.Scene {
@@ -55,6 +56,13 @@ export default class MainScene extends Phaser.Scene {
     this.enemyEntity = new EnemyEntity();
     this.supplementEntity = new SupplementEntity();
     this.finishLineEntity = new FinishLineEntity();
+
+    EnterFrame.add((time: { delta: number }) => {
+      this.gateEntity?.update(time.delta);
+      this.enemyEntity?.update(time.delta);
+      this.supplementEntity?.update(time.delta);
+      this.finishLineEntity?.update(time.delta);
+    });
   }
 
   public onLandingAnimationEnd(): void {
@@ -65,17 +73,15 @@ export default class MainScene extends Phaser.Scene {
       );
 
       this.firepowerEntity?.onStart();
-      this.gateEntity?.onStart(this.updateTime);
-      this.enemyEntity?.onStart(this.updateTime);
-      this.supplementEntity?.onStart(this.updateTime);
-      this.finishLineEntity?.onStart(this.updateTime);
+
+      EnterFrame.play();
 
       window.removeEventListener("pointerdown", onUserInput);
       window.removeEventListener("keydown", onUserInput);
 
-      window.addEventListener("blur", () => {
-        if (!STOP_COLLISION) return location.reload();
-      });
+      // window.addEventListener("blur", () => {
+      //   if (!STOP_COLLISION) return location.reload();
+      // });
     };
     window.addEventListener("pointerdown", onUserInput);
     window.addEventListener("keydown", onUserInput);
@@ -95,9 +101,5 @@ export default class MainScene extends Phaser.Scene {
     if (this.isGameOver) return;
     ServiceLocator.get<SceneLayoutManager>("gameAreaManager").update(time);
     this.firepowerEntity?.update(time, delta);
-    this.gateEntity?.update(time);
-    this.enemyEntity?.update(time);
-    this.supplementEntity?.update(time);
-    this.finishLineEntity?.update(time);
   }
 }

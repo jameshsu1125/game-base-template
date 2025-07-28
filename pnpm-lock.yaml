@@ -11,6 +11,9 @@ importers:
       bezier-easing:
         specifier: ^2.1.0
         version: 2.1.0
+      lesca-enterframe:
+        specifier: ^1.3.1
+        version: 1.3.1
       lesca-object-tweener:
         specifier: ^2.4.7
         version: 2.4.7
@@ -448,6 +451,9 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  lesca-enterframe@1.3.1:
+    resolution: {integrity: sha512-damGGiLJQH/yXqorxDXYFgKdSfV12i+tlBuLfUKKdyKBuoG+E4KZI9c/mJj91HVXliV85EwDEuvlN34ka1iUCQ==}
 
   lesca-object-tweener@2.4.7:
     resolution: {integrity: sha512-/iaU07/lpbHK64w0CUXpIi3QqgVzBO/qS9/Qikg62acADRqJ3vwwjlx1KI1PZYDm7goTbAyNjyJUfT2oEzPRTw==}
@@ -948,6 +954,10 @@ snapshots:
   json-parse-even-better-errors@2.3.1: {}
 
   json5@2.2.3: {}
+
+  lesca-enterframe@1.3.1:
+    dependencies:
+      '@babel/runtime': 7.27.6
 
   lesca-object-tweener@2.4.7:
     dependencies:

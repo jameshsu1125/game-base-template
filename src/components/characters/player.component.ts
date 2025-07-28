@@ -158,6 +158,10 @@ export class PlayerComponent extends Phaser.GameObjects.Container {
     }
   }
 
+  public stopAnimationSheet(): void {
+    this.players.forEach((player) => player.stopAnimationSheet());
+  }
+
   public update(): void {
     const { speedByInput } = playerPreset;
     if (!this.cursors || this.players.length === 0 || !this.isStarted) return;
